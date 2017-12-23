@@ -1,7 +1,64 @@
 import Foundation
-public let path = "/Users/Chaitanya/Documents/Programming/"
-public let decoder = JSONDecoder()
-let availableVolumes: [SAAVolumes] = [.saa01, .saa05, .saa16]
+
+
+public struct OraccJSONtoSwiftInterface {
+    public let path = "/Users/Chaitanya/Documents/Programming/"
+    public let decoder = JSONDecoder()
+    let availableVolumes: [SAAVolumes] = [.saa01, .saa05, .saa16]
+    
+    public func loadCatalogue(_ volume: Int) -> OraccCatalog? {
+        switch volume {
+        case 1:
+            do {
+                let catalogueURL = path + "saao/saa01/catalogue.json"
+                let catalogueData = try Data(contentsOf: URL(fileURLWithPath: catalogueURL))
+                let catalogue = try decoder.decode(OraccCatalog.self, from: catalogueData)
+                return catalogue
+            } catch {
+                print(error.localizedDescription)
+                return nil
+            }
+            
+        case 5:
+            do {
+                let catalogueURL = path + "saao/saa05/catalogue.json"
+                let catalogueData = try Data(contentsOf: URL(fileURLWithPath: catalogueURL))
+                let catalogue = try decoder.decode(OraccCatalog.self, from: catalogueData)
+                return catalogue
+            } catch {
+                print(error.localizedDescription)
+                return nil
+            }
+            
+        case 16:
+            do {
+                let catalogueURL = path + "saao/saa16/catalogue.json"
+                let catalogueData = try Data(contentsOf: URL(fileURLWithPath: catalogueURL))
+                let catalogue = try decoder.decode(OraccCatalog.self, from: catalogueData)
+                return catalogue
+            } catch {
+                print(error.localizedDescription)
+                return nil
+            }
+        default:
+            print("Invalid")
+            return nil
+        }
+    }
+    
+    public func loadText(_ key: String, inCatalogue: OraccCatalog) -> OraccTextEdition? {
+        let urlString = path + "\(inCatalogue.project)/corpusjson/\(key).json"
+        let url = URL(fileURLWithPath: urlString)
+        do {
+            let jsonData = try Data(contentsOf: url)
+            let textLoaded = try decoder.decode(OraccTextEdition.self, from: jsonData)
+            return textLoaded
+        } catch {
+            print("\(error.localizedDescription)")
+            return nil
+        }
+    }
+}
 
 public struct OraccCatalog: Decodable {
     let source: URL
@@ -77,45 +134,7 @@ extension SAAVolumes {
     }
 }
 
-public func loadCatalogue(_ volume: Int) -> OraccCatalog? {
-    switch volume {
-    case 1:
-        do {
-            let catalogueURL = path + "saao/saa01/catalogue.json"
-            let catalogueData = try Data(contentsOf: URL(fileURLWithPath: catalogueURL))
-            let catalogue = try decoder.decode(OraccCatalog.self, from: catalogueData)
-            return catalogue
-        } catch {
-            print(error.localizedDescription)
-            return nil
-        }
-        
-    case 5:
-        do {
-            let catalogueURL = path + "saao/saa05/catalogue.json"
-            let catalogueData = try Data(contentsOf: URL(fileURLWithPath: catalogueURL))
-            let catalogue = try decoder.decode(OraccCatalog.self, from: catalogueData)
-            return catalogue
-        } catch {
-            print(error.localizedDescription)
-            return nil
-        }
-        
-    case 16:
-        do {
-            let catalogueURL = path + "saao/saa16/catalogue.json"
-            let catalogueData = try Data(contentsOf: URL(fileURLWithPath: catalogueURL))
-            let catalogue = try decoder.decode(OraccCatalog.self, from: catalogueData)
-            return catalogue
-        } catch {
-            print(error.localizedDescription)
-            return nil
-        }
-    default:
-        print("Invalid")
-        return nil
-    }
-}
+
 
 public struct OraccCatalogEntry {
     let displayName: String
