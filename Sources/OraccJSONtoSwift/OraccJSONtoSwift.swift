@@ -90,8 +90,8 @@ public enum SAAVolumes: Int {
     case saa01 = 1, saa02 = 2, saa03 = 3, saa04 = 4, saa05 = 5, saa06 = 6, saa07 = 7, saa08 = 8, saa09 = 9, saa10 = 10, saa11 = 11, saa12 = 12, saa13 = 13, saa14 = 14, saa15 = 15, saa16 = 16, saa17 = 17, saa18 = 18, saa19 = 19, saa20 = 20
 }
 
-extension SAAVolumes {
-    var title: String {
+public extension SAAVolumes {
+    public var title: String {
         switch self {
         case .saa01:
             return "SAA I: The Correspondence of Sargon II, Part I: Letters from Assyria and the West"
