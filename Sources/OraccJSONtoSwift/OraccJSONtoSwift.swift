@@ -2,7 +2,7 @@ import Foundation
 
 
 public struct OraccJSONtoSwiftInterface {
-    public let path = "/Users/Chaitanya/Documents/Programming/"
+    public let path: String
     public let decoder = JSONDecoder()
     public let availableVolumes: [SAAVolumes] = [.saa01, .saa05, .saa16]
     
@@ -59,7 +59,8 @@ public struct OraccJSONtoSwiftInterface {
         }
     }
 
-    public init(){
+    public init(withPath path: String = "/Users/Chaitanya/Documents/Programming/"){
+        self.path = path
     }
 }
 
