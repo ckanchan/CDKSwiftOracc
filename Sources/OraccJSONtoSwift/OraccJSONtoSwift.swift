@@ -64,12 +64,12 @@ public struct OraccJSONtoSwiftInterface {
 }
 
 public struct OraccCatalog: Decodable {
-    let source: URL
-    let project: String
-    let members: [String: OraccCatalogEntry]
+    public let source: URL
+    public let project: String
+    public let members: [String: OraccCatalogEntry]
     
     
-    lazy var keys: [String] = {
+    public lazy var keys: [String] = {
         var keys = [String]()
         for entry in self.members.keys {
             keys.append(entry)
@@ -77,7 +77,7 @@ public struct OraccCatalog: Decodable {
         return keys
     }()
     
-    mutating func sortBySAANum() {
+    public mutating func sortBySAANum() {
         let sortedMembers = members.sorted {
             return $0.value.SAAid < $1.value.SAAid
         }
@@ -140,13 +140,13 @@ extension SAAVolumes {
 
 
 public struct OraccCatalogEntry {
-    let displayName: String
-    let title: String
-    let id: String
-    let ancientAuthor: String?
-    let SAAid: Int
+    public let displayName: String
+    public let title: String
+    public let id: String
+    public let ancientAuthor: String?
+    public let SAAid: Int
     
-    let chapter: Int
+    public let chapter: Int
 }
 
 extension OraccCatalogEntry: Decodable {
