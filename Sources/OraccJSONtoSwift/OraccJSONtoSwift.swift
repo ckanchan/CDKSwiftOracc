@@ -4,7 +4,7 @@ import Foundation
 public struct OraccJSONtoSwiftInterface {
     public let path = "/Users/Chaitanya/Documents/Programming/"
     public let decoder = JSONDecoder()
-    let availableVolumes: [SAAVolumes] = [.saa01, .saa05, .saa16]
+    public let availableVolumes: [SAAVolumes] = [.saa01, .saa05, .saa16]
     
     public func loadCatalogue(_ volume: Int) -> OraccCatalog? {
         switch volume {
