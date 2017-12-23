@@ -1,9 +1,9 @@
 import Foundation
-let path = "/Users/Chaitanya/Documents/Programming/"
-let decoder = JSONDecoder()
+public let path = "/Users/Chaitanya/Documents/Programming/"
+public let decoder = JSONDecoder()
 let availableVolumes: [SAAVolumes] = [.saa01, .saa05, .saa16]
 
-struct OraccCatalog: Decodable {
+public struct OraccCatalog: Decodable {
     let source: URL
     let project: String
     let members: [String: OraccCatalogEntry]
@@ -26,7 +26,7 @@ struct OraccCatalog: Decodable {
 }
 
 
-enum SAAVolumes: Int {
+public enum SAAVolumes: Int {
     case saa01 = 1, saa02 = 2, saa03 = 3, saa04 = 4, saa05 = 5, saa06 = 6, saa07 = 7, saa08 = 8, saa09 = 9, saa10 = 10, saa11 = 11, saa12 = 12, saa13 = 13, saa14 = 14, saa15 = 15, saa16 = 16, saa17 = 17, saa18 = 18, saa19 = 19, saa20 = 20
 }
 
@@ -77,7 +77,7 @@ extension SAAVolumes {
     }
 }
 
-func loadCatalogue(_ volume: Int) -> OraccCatalog? {
+public func loadCatalogue(_ volume: Int) -> OraccCatalog? {
     switch volume {
     case 1:
         do {
@@ -117,7 +117,7 @@ func loadCatalogue(_ volume: Int) -> OraccCatalog? {
     }
 }
 
-struct OraccCatalogEntry {
+public struct OraccCatalogEntry {
     let displayName: String
     let title: String
     let id: String
@@ -137,7 +137,7 @@ extension OraccCatalogEntry: Decodable {
         case chapter = "ch_no"
     }
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let displayName = try container.decode(String.self, forKey: .displayName)
         let title = try container.decode(String.self, forKey: .title)
@@ -154,7 +154,7 @@ extension OraccCatalogEntry: Decodable {
 }
 
 extension OraccCatalogEntry: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         return """
         
         \(displayName) \(title)\t [\(id)]
@@ -164,7 +164,7 @@ extension OraccCatalogEntry: CustomStringConvertible {
     }
 }
 
-struct OraccTextEdition: Decodable {
+public struct OraccTextEdition: Decodable {
     let type: String
     let project: String
     let cdl: [OraccCDLNode]
@@ -173,7 +173,7 @@ struct OraccTextEdition: Decodable {
 }
 
 extension OraccTextEdition {
-    var transcription: String {
+    public var transcription: String {
         var str = ""
         
         for node in self.cdl {
@@ -183,7 +183,7 @@ extension OraccTextEdition {
         return str
     }
     
-    var literalTranslation: String {
+    public var literalTranslation: String {
         var str = ""
         
         for node in self.cdl {
@@ -193,7 +193,7 @@ extension OraccTextEdition {
         return str
     }
     
-    var cuneiform: String {
+    public var cuneiform: String {
         var str = ""
         
         for node in self.cdl {
@@ -222,7 +222,7 @@ extension OraccTextEdition {
     }
 }
 
-struct OraccCDLNode {
+public struct OraccCDLNode {
     struct Lemma {
         let frag: String
         let inst: String?
@@ -303,7 +303,7 @@ extension OraccCDLNode: Decodable {
         case label = "label"
     }
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let node = try container.decodeIfPresent(String.self, forKey: .node)
         
