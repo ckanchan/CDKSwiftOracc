@@ -58,6 +58,9 @@ public struct OraccJSONtoSwiftInterface {
             return nil
         }
     }
+
+    public init(){
+    }
 }
 
 public struct OraccCatalog: Decodable {
