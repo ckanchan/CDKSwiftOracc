@@ -1,5 +1,4 @@
 import Foundation
-import ZIPFoundation
 
 
 public struct OraccJSONtoSwiftInterface {
