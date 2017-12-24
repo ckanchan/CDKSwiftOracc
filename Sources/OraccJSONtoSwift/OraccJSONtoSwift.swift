@@ -6,10 +6,9 @@ public struct OraccJSONtoSwiftInterface {
     public let decoder = JSONDecoder()
     public let availableVolumes: [SAAVolumes] = [.saa01, .saa05, .saa16]
     
-    public func loadCatalogue(from path: String) -> OraccCatalog? {
+    public func loadCatalogue(from data: Data) -> OraccCatalog? {
         do {
-            let catalogueData = try Data(contentsOf: URL(fileURLWithPath: path))
-            let catalogue = try decoder.decode(OraccCatalog.self, from: catalogueData)
+            let catalogue = try decoder.decode(OraccCatalog.self, from: data)
             return catalogue
         } catch {
             print(error.localizedDescription)
