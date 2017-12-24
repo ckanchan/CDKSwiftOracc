@@ -5,6 +5,7 @@ public struct OraccJSONtoSwiftInterface {
     public let path: String
     public let decoder = JSONDecoder()
     public let availableVolumes: [SAAVolumes] = [.saa01, .saa05, .saa16]
+    public lazy var oraccJSONDownloader = OraccGithubJSONDownloader()
     
     public func loadCatalogue(_ volume: Int) -> OraccCatalog? {
         switch volume {
