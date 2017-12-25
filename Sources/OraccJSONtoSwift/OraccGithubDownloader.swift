@@ -45,7 +45,7 @@ class OraccGithubDownloader {
     }
     
     func downloadSAAVolume(_ vol: Int) {
-        guard let volume = SAAVolumes.init(rawValue: vol) else {
+        guard let volume = SAAVolumes(rawValue: vol) else {
             print("Error: Volume not valid")
             return
         }
