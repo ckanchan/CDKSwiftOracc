@@ -1,22 +1,151 @@
 import Foundation
 
 
-public struct OraccJSONtoSwiftInterface {
+public class OraccJSONtoSwiftInterface {
     public let path: String
     public let decoder = JSONDecoder()
-    public let availableVolumes: [SAAVolumes] = [.saa01, .saa05, .saa16]
+    public var availableVolumes: [SAAVolumes]
+    private let location: JSONSource
+    let downloader: OraccGithubDownloader?
+    let oraccPath = URL(string:"http://www.oracc.org")!
+    let session = URLSession(configuration: URLSessionConfiguration.default)
+    let fileManager = FileManager.default
+    var downloadLocation: URL? = nil
+
+    /**
+     Represents possible locations that expose Oracc JSON data.
+     - Oracc: Connects to http://oracc.org to get JSON data. Should be the most up to date, but most JSON isn't available yet.
+     - Github: Connects to the Oracc Github repository which contains ZIP archives of JSON. Requires local disk space as the uncompressed archives are quite large.
+     - Local: Takes a local path to JSON stored on disk. Useful for debugging.
+     
+ */
     
-    public func loadCatalogue(from data: Data) -> OraccCatalog? {
-        do {
-            let catalogue = try decoder.decode(OraccCatalog.self, from: data)
-            return catalogue
-        } catch {
-            print(error.localizedDescription)
+    public enum JSONSource {
+        case github
+        case oracc
+        case local(String)
+    }
+    
+    /**
+     Initialises an OraccJSONtoSwiftInterface object that consumes JSON and returns Swift structs from the location specified.
+     - Parameter fromLocation: Takes a `JSONSource` value, with `local` requiring a local path specified.
+ */
+    
+    
+    public init(fromLocation loc: JSONSource){
+        switch loc {
+        case .github:
+            self.location = loc
+            downloader = OraccGithubDownloader()
+            self.path = self.downloader!.resourcePath
+            availableVolumes = (downloader!.getAvailableVolumes())!
+            
+        case .oracc:
+            self.location = loc
+            self.path = "http://oracc.org/"
+            self.downloader = nil
+            availableVolumes = []
+            
+        case .local(let localPath):
+            self.location = loc
+            self.path = localPath
+            self.downloader = nil
+            availableVolumes = []
+            
+        }
+    }
+    
+    
+    /**
+     Refreshes the list of available volumes from the data source. Must be called immediately after initialisation
+ */
+    
+    public func getAvailableVolumes() {
+        switch self.location {
+        case .github:
+            downloader!.interface = self
+            availableVolumes = self.downloader!.getAvailableVolumes()!
+        case .oracc:
+            let request = URLRequest(url: oraccPath.appendingPathComponent("projects.json"))
+            let task = session.dataTask(with: request) { (data, response, error) in
+                if let projectJSON = data {
+                        let projects = try! self.decoder.decode(OraccProjectList.self, from: projectJSON)
+                        print(projects.projects)
+                } else {
+                    print("Error: no valid JSON downloaded")
+                    if let err = error {
+                        print(err)
+                    }
+                }
+            }
+            task.resume()
+            
+        case .local(_):
+            do {
+                let folders = try fileManager.subpathsOfDirectory(atPath: self.path)
+                for folder in folders {
+                    if let saa = SAAVolumes(rawValue: folder) {
+                        self.availableVolumes.append(saa)
+                    }
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    public func loadCatalogue(_ cat: SAAVolumes) -> OraccCatalog? {
+        guard availableVolumes.contains(cat) else {
+            print("Volume not available")
+            return nil
+        }
+        
+        switch self.location {
+        case .local(_):
+            return self.loadCatalogue(cat, source: self.location)
+            
+        case .oracc:
+            return self.loadCatalogue(cat, source: self.location)
+            
+        case .github:
+            downloader?.downloadSAAVolume(cat)
+            return nil
+            }
+        }
+    
+    func loadCatalogue(_ cat: SAAVolumes, source: JSONSource) -> OraccCatalog? {
+        switch self.location {
+        case .local(let path):
+            do {
+                let catPath = path + cat.directoryForm + "catalogue.json"
+                let data = try Data(contentsOf: URL(fileURLWithPath: catPath))
+                let catalogue = try decoder.decode(OraccCatalog.self, from: data)
+                return catalogue
+            } catch {
+                print(error.localizedDescription)
+                return nil
+            }
+            
+        case .oracc:
+            do {
+                let catPath = self.path + cat.directoryForm + "catalogue.json"
+                let data = try Data(contentsOf: URL(string: catPath)!)
+                let catalogue = try decoder.decode(OraccCatalog.self, from: data)
+                return catalogue
+            } catch {
+                print(error.localizedDescription)
+                return nil
+            }
+            
+        default:
+            print("Error, this should not be reached")
             return nil
         }
     }
     
-    public func loadCatalogue(_ volume: Int) -> OraccCatalog? {
+    
+    
+    public func loadSAACatalogue(_ volume: Int) -> OraccCatalog? {
         switch volume {
         case 1:
             do {
@@ -69,9 +198,7 @@ public struct OraccJSONtoSwiftInterface {
         }
     }
 
-    public init(withPath path: String = "/Users/Chaitanya/Documents/Programming/"){
-        self.path = path
-    }
+
 }
 
 public struct OraccCatalog: Decodable {
@@ -97,8 +224,8 @@ public struct OraccCatalog: Decodable {
 }
 
 
-public enum SAAVolumes: Int {
-    case saa01 = 1, saa02 = 2, saa03 = 3, saa04 = 4, saa05 = 5, saa06 = 6, saa07 = 7, saa08 = 8, saa09 = 9, saa10 = 10, saa11 = 11, saa12 = 12, saa13 = 13, saa14 = 14, saa15 = 15, saa16 = 16, saa17 = 17, saa18 = 18, saa19 = 19, saa20 = 20
+public enum SAAVolumes: String {
+    case saa01, saa02, saa03, saa04, saa05, saa06, saa07, saa08, saa09, saa10, saa11, saa12, saa13, saa14, saa15, saa16, saa17, saa18, saa19, saa20
 }
 
 public extension SAAVolumes {
@@ -148,6 +275,14 @@ public extension SAAVolumes {
     }
 }
 
+private struct OraccProjectList: Decodable {
+    let type: String
+    let projects: [String]
+    
+    enum CodingKeys: String, CodingKey {
+        case projects = "public", type
+    }
+}
 
 
 public struct OraccCatalogEntry {
@@ -519,6 +654,5 @@ extension OraccCDLNode { //Text analysis functions
         return types
     }
 }
-
 
 

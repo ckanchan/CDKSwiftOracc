@@ -8,16 +8,45 @@
 import Foundation
 import ZIPFoundation
 
-class OraccGithubDownloader {
+public class OraccGithubDownloader {
     
     let session = URLSession(configuration: URLSessionConfiguration.default)
     let githubPath = "https://github.com/oracc/json/blob/master/"
     let resourcePath = Bundle.main.resourcePath!
-    private let fileManager = FileManager.default
-    private var dataLocation: URL?
+    let fileManager = FileManager.default
+    var dataLocation: URL?
+    weak var interface: OraccJSONtoSwiftInterface?
     
+    init() {
+        self.interface = nil
+    }
     
-    private func downloadJSONArchive(_ archive: String) {
+    public func getAvailableVolumes() -> [SAAVolumes]? {
+        let saaoPath = resourcePath + "/saao"
+        guard fileManager.fileExists(atPath: saaoPath) else {
+            print("Error: No volumes available")
+            return nil
+        }
+        
+        let volumePaths = fileManager.subpaths(atPath: saaoPath)
+        
+        if let volumePaths = volumePaths {
+            let volumes = volumePaths.map {
+                SAAVolumes(rawValue: $0)!
+            }
+            return volumes
+        } else {
+            print("Error: no volumes downloaded")
+            return nil
+        }
+        
+    }
+    
+    func downloadSAAVolume(_ vol: SAAVolumes) {
+        self.downloadJSONArchive(vol.gitHubZipForm)
+    }
+    
+    func downloadJSONArchive(_ archive: String) {
         let archivePath = "\(githubPath)\(archive).zip?raw=true"
         //let localSuffix = archive.replacingOccurrences(of: "-", with: "/")
         guard let archiveURL = URL(string: archivePath) else {return}
@@ -37,21 +66,15 @@ class OraccGithubDownloader {
                 }
             }
             
-            _ = self.unzipJSONData()
+            if let destination = self.unzipJSONData() {
+                self.unzipped(destination)
+            }
             
         }
         
         task.resume()
     }
-    
-    func downloadSAAVolume(_ vol: Int) {
-        guard let volume = SAAVolumes(rawValue: vol) else {
-            print("Error: Volume not valid")
-            return
-        }
-        self.downloadJSONArchive(volume.gitHubZipForm)
-    }
-    
+
     private func unzipJSONData() -> URL? {
         guard self.dataLocation != nil else {
             print("Error: no data downloaded")
@@ -67,53 +90,62 @@ class OraccGithubDownloader {
             return nil
         }
     }
+
+    func unzipped(_ destination: URL) {
+        
+    }
+    
 }
 
 
 extension SAAVolumes {
-    var gitHubZipForm: String {
+    var directoryForm: String {
         switch self {
         case .saa01:
-            return "saao-saa01"
+            return "saa01"
         case .saa02:
-            return "saao-saa02"
+            return "saa02"
         case .saa03:
-            return "saao-saa03"
+            return "saa03"
         case .saa04:
-            return "saao-saa04"
+            return "saa04"
         case .saa05:
-            return "saao-saa05"
+            return "saa05"
         case .saa06:
-            return "saao-saa06"
+            return "saa06"
         case .saa07:
-            return "saao-saa07"
+            return "saa07"
         case .saa08:
-            return "saao-saa08"
+            return "saa08"
         case .saa09:
-            return "saao-saa09"
+            return "saa09"
         case .saa10:
-            return "saao-saa10"
+            return "saa10"
         case .saa11:
-            return "saao-saa1q"
+            return "saa11"
         case .saa12:
-            return "saao-saa12"
+            return "saa12"
         case .saa13:
-            return "saao-saa13"
+            return "saa13"
         case .saa14:
-            return "saao-saa14"
+            return "saa14"
         case .saa15:
-            return "saao-saa15"
+            return "saa15"
         case .saa16:
-            return "saao-saa16"
+            return "saa16"
         case .saa17:
-            return "saao-saa17"
+            return "saa17"
         case .saa18:
-            return "saao-saa18"
+            return "saa18"
         case .saa19:
-            return "saao-saa19"
+            return "saa19"
         case .saa20:
-            return "saao-saa20"
+            return "saa20"
         }
+    }
+    
+    var gitHubZipForm: String {
+        return "saao-\(self.directoryForm)"
     }
 }
 
