@@ -14,14 +14,13 @@ public class OraccGithubDownloader {
     let githubPath = "https://github.com/oracc/json/blob/master/"
     let resourcePath = Bundle.main.resourcePath!
     let fileManager = FileManager.default
-    var dataLocation: URL?
     weak var interface: OraccJSONtoSwiftInterface?
     
     init() {
         self.interface = nil
     }
     
-    public func getAvailableVolumes() -> [SAAVolumes]? {
+    public func getAvailableVolumes() -> [OraccVolume]? {
         let saaoPath = resourcePath + "/saao"
         guard fileManager.fileExists(atPath: saaoPath) else {
             print("Error: No volumes available")
@@ -32,7 +31,7 @@ public class OraccGithubDownloader {
         
         if let volumePaths = volumePaths {
             let volumes = volumePaths.map {
-                SAAVolumes(rawValue: $0)!
+                OraccVolume(rawValue: $0)!
             }
             return volumes
         } else {
@@ -42,15 +41,14 @@ public class OraccGithubDownloader {
         
     }
     
-    func downloadSAAVolume(_ vol: SAAVolumes) {
-        self.downloadJSONArchive(vol.gitHubZipForm)
-    }
     
-    func downloadJSONArchive(_ archive: String) {
+    func downloadJSONArchive(_ vol: OraccVolume, completion: @escaping (OraccCatalog) -> Void) {
+        let archive = vol.gitHubZipForm
         let archivePath = "\(githubPath)\(archive).zip?raw=true"
-        //let localSuffix = archive.replacingOccurrences(of: "-", with: "/")
+        var downloadLocation: URL?
         guard let archiveURL = URL(string: archivePath) else {return}
         
+        //Initialise an asynchronous session to download the JSON ZIP archive
         let request = URLRequest(url: archiveURL)
         let task = session.downloadTask(with: request) {
             (data, response, error) -> Void in
@@ -59,93 +57,40 @@ public class OraccGithubDownloader {
                 let destinationString = "\(self.resourcePath)/\(archive).zip"
                 let destinationURL = URL(fileURLWithPath: destinationString)
                 if self.fileManager.fileExists(atPath: destinationString) {
-                    self.dataLocation = try! self.fileManager.replaceItemAt(destinationURL, withItemAt: data)
+                    downloadLocation = try! self.fileManager.replaceItemAt(destinationURL, withItemAt: data)
                 } else {
                     try! self.fileManager.moveItem(at: data, to: destinationURL)
-                    self.dataLocation = destinationURL
+                    downloadLocation = destinationURL
                 }
             }
             
-            if let destination = self.unzipJSONData() {
-                self.unzipped(destination)
+            // Unzip the JSON and, if successful, decode a catalogue from it and call the supplied completion handler.
+            if let destination = self.unzipJSONData(at: downloadLocation!) {
+                
+                do {
+                let data = try Data(contentsOf: destination)
+                    let catalogue = try self.interface!.decoder.decode(OraccCatalog.self, from: data)
+                completion(catalogue)
+                } catch {
+                    print(error.localizedDescription)
+                }
             }
-            
         }
         
         task.resume()
     }
 
-    private func unzipJSONData() -> URL? {
-        guard self.dataLocation != nil else {
-            print("Error: no data downloaded")
-            return nil
-        }
+    private func unzipJSONData(at url: URL) -> URL? {
         let resourceURL = URL(fileURLWithPath: self.resourcePath, isDirectory: true)
         
         do {
-            try self.fileManager.unzipItem(at: self.dataLocation!, to: resourceURL)
+            try self.fileManager.unzipItem(at: url, to: resourceURL)
             return resourceURL
         } catch {
             print(error.localizedDescription)
             return nil
         }
     }
-
-    func unzipped(_ destination: URL) {
-        
-    }
     
-}
-
-
-extension SAAVolumes {
-    var directoryForm: String {
-        switch self {
-        case .saa01:
-            return "saa01"
-        case .saa02:
-            return "saa02"
-        case .saa03:
-            return "saa03"
-        case .saa04:
-            return "saa04"
-        case .saa05:
-            return "saa05"
-        case .saa06:
-            return "saa06"
-        case .saa07:
-            return "saa07"
-        case .saa08:
-            return "saa08"
-        case .saa09:
-            return "saa09"
-        case .saa10:
-            return "saa10"
-        case .saa11:
-            return "saa11"
-        case .saa12:
-            return "saa12"
-        case .saa13:
-            return "saa13"
-        case .saa14:
-            return "saa14"
-        case .saa15:
-            return "saa15"
-        case .saa16:
-            return "saa16"
-        case .saa17:
-            return "saa17"
-        case .saa18:
-            return "saa18"
-        case .saa19:
-            return "saa19"
-        case .saa20:
-            return "saa20"
-        }
-    }
-    
-    var gitHubZipForm: String {
-        return "saao-\(self.directoryForm)"
-    }
 }
 
