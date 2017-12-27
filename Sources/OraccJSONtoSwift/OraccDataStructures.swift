@@ -74,7 +74,7 @@ extension OraccCatalogEntry: Decodable {
     }
 }
 
-public extension OraccCatalogEntry: CustomStringConvertible {
+extension OraccCatalogEntry: CustomStringConvertible {
     public var description: String {
         return """
         
