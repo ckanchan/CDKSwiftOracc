@@ -6,7 +6,7 @@ import Foundation
 
 public class OraccJSONtoSwiftInterface {
     
-    // Array of available volumes as enumerated entries.
+    /// Array of available volumes as enumerated entries.
     public var availableVolumes: [OraccVolume]
     
     let decoder = JSONDecoder()
@@ -20,15 +20,17 @@ public class OraccJSONtoSwiftInterface {
 
     /**
      Represents possible locations that expose Oracc JSON data.
-     - Oracc: Connects to http://oracc.org to get JSON data. Should be the most up to date, but most JSON isn't available yet.
-     - Github: Connects to the Oracc Github repository which contains ZIP archives of JSON. Requires local disk space as the uncompressed archives are quite large.
-     - Local: Takes a local path to JSON stored on disk. Useful for debugging.
-     
  */
     
     public enum JSONSource {
+       ///Github: Connects to the Oracc Github repository which contains ZIP archives of JSON. Requires local disk space as the uncompressed archives are quite large.
+        
         case github
+ 
+        ///Oracc: Connects to http://oracc.org to get JSON data. Should be the most up to date, but most JSON isn't available yet.
         case oracc
+        
+        ///Local: Takes a local path to JSON stored on disk. Useful for debugging.
         case local(String)
     }
     
@@ -44,7 +46,7 @@ public class OraccJSONtoSwiftInterface {
             self.location = location
             downloader = OraccGithubDownloader()
             self.path = self.downloader!.resourcePath
-            availableVolumes = (downloader!.getAvailableVolumes())!
+            availableVolumes = downloader!.getAvailableVolumes() ?? []
             
         case .oracc:
             self.location = location
