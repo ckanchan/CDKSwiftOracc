@@ -29,7 +29,7 @@ public class OraccGithubDownloader {
         
         do {
             let volumePaths = try fileManager.contentsOfDirectory(atPath: saaoPath)
-            let volumes = volumePaths.map {OraccVolume(rawValue: $0)!}
+            let volumes = volumePaths.flatMap {OraccVolume(rawValue: $0)}
             return volumes
         } catch {
             print(error.localizedDescription)
