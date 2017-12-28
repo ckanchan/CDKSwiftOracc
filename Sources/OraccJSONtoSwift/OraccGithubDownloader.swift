@@ -20,6 +20,20 @@ public class OraccGithubDownloader {
         self.interface = nil
     }
     
+    public func getDownloadList(_ completion: @escaping ([ZipListEntry]) -> Void) {
+        let listURL = URL(string: "https://api.github.com/repos/oracc/json/contents")!
+        
+        do {
+            let data = try Data(contentsOf: listURL)
+            let ziplist = try interface!.decoder.decode([ZipListEntry].self, from: data)
+            completion(ziplist)
+            
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    
     public func getAvailableVolumes() -> [OraccVolume]? {
         let saaoPath = resourcePath + "/saao"
         guard fileManager.fileExists(atPath: saaoPath) else {
@@ -36,7 +50,7 @@ public class OraccGithubDownloader {
             return nil
         }
     }
-    
+
     
     func downloadJSONArchive(_ vol: OraccVolume, completion: @escaping (OraccCatalog) -> Void) {
         let archive = vol.gitHubZipForm
@@ -88,5 +102,14 @@ public class OraccGithubDownloader {
         }
     }
     
+}
+
+public struct ZipListEntry: Decodable {
+    let name: String
+    let downloadURL: URL
+    
+    private enum CodingKeys: String, CodingKey {
+        case name, downloadURL = "download_url"
+    }
 }
 
