@@ -46,7 +46,7 @@ public class OraccJSONtoSwiftInterface {
             self.location = location
             downloader = OraccGithubDownloader()
             self.path = self.downloader!.resourcePath
-            availableVolumes = downloader!.getAvailableVolumes() ?? []
+            availableVolumes = []
             
         case .oracc:
             self.location = location
@@ -71,7 +71,7 @@ public class OraccJSONtoSwiftInterface {
         switch self.location {
         case .github:
             downloader!.interface = self
-            availableVolumes = self.downloader!.getAvailableVolumes()!
+            availableVolumes = self.downloader!.getAvailableVolumes() ?? []
         case .oracc:
             let request = URLRequest(url: oraccPath.appendingPathComponent("projects.json"))
             let task = session.dataTask(with: request) { (data, response, error) in
