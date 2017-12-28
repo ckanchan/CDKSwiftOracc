@@ -20,7 +20,7 @@ public class OraccGithubDownloader {
         self.interface = nil
     }
     
-    public func getDownloadList(_ completion: @escaping ([ZipListEntry]) -> Void) {
+    func getDownloadList(_ completion: @escaping ([ZipListEntry]) -> Void) {
         let listURL = URL(string: "https://api.github.com/repos/oracc/json/contents")!
         
         do {
@@ -105,8 +105,8 @@ public class OraccGithubDownloader {
 }
 
 public struct ZipListEntry: Decodable {
-    let name: String
-    let downloadURL: URL
+    public let name: String
+    public let downloadURL: URL
     
     private enum CodingKeys: String, CodingKey {
         case name, downloadURL = "download_url"

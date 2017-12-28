@@ -63,6 +63,15 @@ public class OraccJSONtoSwiftInterface {
         }
     }
     
+    public func getDownloadList(_ completion: @escaping ([ZipListEntry]) -> Void){
+        switch self.location {
+        case .github:
+            downloader!.getDownloadList(completion)
+        default:
+            print("Error, should not have called function")
+        }
+    }
+    
     
     /**
      Refreshes the list of available volumes from the data source. Must be called immediately after initialisation
