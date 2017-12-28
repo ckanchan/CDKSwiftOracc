@@ -27,18 +27,14 @@ public class OraccGithubDownloader {
             return nil
         }
         
-        let volumePaths = fileManager.subpaths(atPath: saaoPath)
-        
-        if let volumePaths = volumePaths {
-            let volumes = volumePaths.map {
-                OraccVolume(rawValue: $0)!
-            }
+        do {
+            let volumePaths = try fileManager.contentsOfDirectory(atPath: saaoPath)
+            let volumes = volumePaths.map {OraccVolume(rawValue: $0)!}
             return volumes
-        } else {
-            print("Error: no volumes downloaded")
+        } catch {
+            print(error.localizedDescription)
             return nil
         }
-        
     }
     
     
