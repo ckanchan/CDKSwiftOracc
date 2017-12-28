@@ -117,13 +117,14 @@ public class OraccJSONtoSwiftInterface {
      - Parameter completion: Called if an OraccCatalog has been successfully downloaded and decoded. Use the completion handler to store the returned OraccCatalog for querying.
  */
     public func loadCatalogue(_ volume: OraccVolume, completion: @escaping (OraccCatalog) -> Void){
-        guard availableVolumes.contains(volume) else {
-            print("Volume not available")
-            return
-        }
+
         
         switch self.location {
         case .local(let path):
+            guard availableVolumes.contains(volume) else {
+                print("Volume not available")
+                return
+            }
             do {
                 let catPath = path + volume.directoryForm + "catalogue.json"
                 let data = try Data(contentsOf: URL(fileURLWithPath: catPath))
@@ -134,6 +135,10 @@ public class OraccJSONtoSwiftInterface {
             }
             
         case .oracc:
+            guard availableVolumes.contains(volume) else {
+                print("Volume not available")
+                return
+            }
             do {
                 let catPath = self.path + volume.directoryForm + "catalogue.json"
                 let data = try Data(contentsOf: URL(string: catPath)!)
