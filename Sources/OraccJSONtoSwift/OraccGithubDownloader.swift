@@ -20,12 +20,12 @@ public class OraccGithubDownloader {
         self.interface = nil
     }
     
-    func getDownloadList(_ completion: @escaping ([ZipListEntry]) -> Void) {
+    func getDownloadList(_ completion: @escaping ([GithubArchiveEntry]) -> Void) {
         let listURL = URL(string: "https://api.github.com/repos/oracc/json/contents")!
         
         do {
             let data = try Data(contentsOf: listURL)
-            let ziplist = try interface!.decoder.decode([ZipListEntry].self, from: data)
+            let ziplist = try interface!.decoder.decode([GithubArchiveEntry].self, from: data)
             completion(ziplist)
             
         } catch {
@@ -37,7 +37,7 @@ public class OraccGithubDownloader {
     public func getAvailableVolumes() -> [OraccVolume]? {
         let saaoPath = resourcePath + "/saao"
         guard fileManager.fileExists(atPath: saaoPath) else {
-            print("Error: No volumes available")
+            print("Error: No volumes have been downloaded for local use")
             return nil
         }
         
@@ -104,12 +104,5 @@ public class OraccGithubDownloader {
     
 }
 
-public struct ZipListEntry: Decodable {
-    public let name: String
-    public let downloadURL: URL
-    
-    private enum CodingKeys: String, CodingKey {
-        case name, downloadURL = "download_url"
-    }
-}
+
 

@@ -23,14 +23,14 @@ public class OraccJSONtoSwiftInterface {
  */
     
     public enum JSONSource {
-       ///Github: Connects to the Oracc Github repository which contains ZIP archives of JSON. Requires local disk space as the uncompressed archives are quite large.
+       ///Connects to the Oracc Github repository which contains ZIP archives of JSON. Requires local disk space as the uncompressed archives are quite large.
         
         case github
  
-        ///Oracc: Connects to http://oracc.org to get JSON data. Should be the most up to date, but most JSON isn't available yet.
+        ///Connects to http://oracc.org to get JSON data. Should be the most up to date, but most JSON isn't available yet.
         case oracc
         
-        ///Local: Takes a local path to JSON stored on disk. Useful for debugging.
+        ///Takes a local path to JSON stored on disk. Useful for debugging.
         case local(String)
     }
     
@@ -63,20 +63,16 @@ public class OraccJSONtoSwiftInterface {
         }
     }
     
-    public func getDownloadList(_ completion: @escaping ([ZipListEntry]) -> Void){
-        switch self.location {
-        case .github:
-            downloader!.getDownloadList(completion)
-        default:
-            print("Error, should not have called function")
-        }
+    public func getDownloadList(_ completion: @escaping ([ZipListEntry]) -> Void) {
+        guard case .github = self.location else { return }
+        downloader!.getDownloadList(completion)
     }
     
     
     /**
      Refreshes the list of available volumes from the data source. Must be called immediately after initialisation
  */
-    public func getAvailableVolumes() {
+    public func getAvailableVolumes(_ completion: @escaping (OraccProjectList) -> Void) {
         switch self.location {
         case .github:
             downloader!.interface = self
@@ -86,7 +82,8 @@ public class OraccJSONtoSwiftInterface {
             let task = session.dataTask(with: request) { (data, response, error) in
                 if let projectJSON = data {
                         let projects = try! self.decoder.decode(OraccProjectList.self, from: projectJSON)
-                        print(projects.projects)
+                        completion(projects)
+                    
                 } else {
                     print("Error: no valid JSON downloaded")
                     if let err = error {
@@ -113,7 +110,7 @@ public class OraccJSONtoSwiftInterface {
     /**
      Downloads and decodes an `OraccCatalogue` struct for the volume requested, then calls the supplied completion handler.
      
-     - Parameter _: Takes an `OraccVolume` value.
+     - Parameter volume: Takes an `OraccVolume` value.
      - Parameter completion: Called if an OraccCatalog has been successfully downloaded and decoded. Use the completion handler to store the returned OraccCatalog for querying.
  */
     public func loadCatalogue(_ volume: OraccVolume, completion: @escaping (OraccCatalog) -> Void){
