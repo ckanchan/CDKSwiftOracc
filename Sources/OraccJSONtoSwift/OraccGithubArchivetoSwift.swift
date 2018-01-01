@@ -23,18 +23,25 @@ public class OraccGithubtoSwift: Interface {
     public var availableVolumes: [OraccProjectEntry]
     
     /// Downloads a list of available JSON ZIP archives from Github, and calls the supplied completion handler on them.
-    public func getArchiveList(_ completion: @escaping ([GithubArchiveEntry]) throws -> Void) {
+    func getArchiveList(_ completion: @escaping ([GithubArchiveEntry]) -> Void) throws {
         let listURL = URL(string: "https://api.github.com/repos/oracc/json/contents")!
-        
-        guard let data = try Data(contentsOf: listURL) else { throw InterfaceError.ArchiveError.unableToDownloadList}
+        var data: Data
+        do {
+            data = try Data(contentsOf: listURL)
+        } catch {
+            throw InterfaceError.ArchiveError.unableToDownloadList
+        }
         
         do {
             let archiveList = try self.decoder.decode([GithubArchiveEntry].self, from: data)
+            
             completion(archiveList)
         } catch {
-            throw InterfaceError.unableToDecode(error.localizedDescription)
+            throw InterfaceError.JSONError.unableToDecode(swiftError: error.localizedDescription)
         }
     }
+    
+    
     
     /// Presents a list of
     public func getAvailableVolumes(_ completion: @escaping (OraccProjectList) throws -> Void) {

@@ -19,23 +19,18 @@ protocol Interface {
     
     func getAvailableVolumes(_ completion: @escaping (OraccProjectList) throws -> Void)
     
-    func loadCatalogue(_ volume: OraccVolume, completion: @escaping (OraccCatalog) throws -> Void)
+    func loadCatalogue(_ volume: OraccProjectEntry, completion: @escaping (OraccCatalog) throws -> Void)
     
     func loadText(_ key: String, inCatalogue: OraccCatalog) throws -> OraccTextEdition
 }
 
 extension Interface {
-    private func getOraccProjects() -> [OraccProjectEntry]{
+    private func getOraccProjects() -> [OraccProjectEntry] {
         let listData = try! Data(contentsOf: URL(string: "http://oracc.museum.upenn.edu/projectlist.json")!)
         let projectList = self.decoder.decode(OraccProjectList.self, from: listData)
         return projectList.projects
     }
 }
-
-
-
-
-
 
 
 //MARK:- API Errors
@@ -45,23 +40,23 @@ extension Interface {
 
 enum InterfaceError: Error {
     
-    enum JSONError {
+    enum JSONError: Error {
         case unableToDecode(swiftError: String)
     }
     
-    enum ArchiveError {
+    enum ArchiveError: Error {
         case unableToDownloadList
     }
     
-    enum VolumeError {
+    enum VolumeError: Error {
         case notAvailable
     }
     
-    enum CatalogueError {
+    enum CatalogueError: Error {
         case notAvailable, doesNotContainText
     }
     
-    enum TextError {
+    enum TextError: Error {
         case notAvailable
     }
 }
