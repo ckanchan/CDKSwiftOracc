@@ -12,28 +12,36 @@ import Foundation
  */
 
 protocol Interface {
+    var decoder: JSONDecoder { get }
+    
     var oraccProjects: [OraccProjectEntry] { get }
     var availableVolumes: [OraccProjectEntry] { get }
-    func getOraccProjects() -> [OraccProjectEntry]
+    func getOraccProjects() throws -> [OraccProjectEntry]
     
     
-    func getAvailableVolumes(_ completion: @escaping (OraccProjectList) throws -> Void)
+    func getAvailableVolumes(_ completion: @escaping ([OraccProjectEntry])  -> Void) throws
     
-    func loadCatalogue(_ volume: OraccProjectEntry, completion: @escaping (OraccCatalog) throws -> Void)
+    func loadCatalogue(_ volume: OraccProjectEntry, completion: @escaping (OraccCatalog)  -> Void) throws
     
-    func loadText(_ key: String, inCatalogue: OraccCatalog) throws -> OraccTextEdition
+    func loadText(_ key: String, inCatalogue catalogue: OraccCatalog) throws -> OraccTextEdition
 }
 
 extension Interface {
-    private func getOraccProjects() -> [OraccProjectEntry] {
-        let listData = try! Data(contentsOf: URL(string: "http://oracc.museum.upenn.edu/projectlist.json")!)
-        let projectList = self.decoder.decode(OraccProjectList.self, from: listData)
-        return projectList.projects
+    func loadText(_ url: URL) throws -> OraccTextEdition {
+        guard let jsonData = try? Data(contentsOf: url) else {throw InterfaceError.TextError.notAvailable}
+        
+        do {
+        let textLoaded = try decoder.decode(OraccTextEdition.self, from: jsonData)
+        return textLoaded
+        } catch {
+            throw InterfaceError.JSONError.unableToDecode(swiftError: error.localizedDescription)
+        }
     }
 }
 
 
 //MARK:- API Errors
+
 /**
  Enumeration defining the errors that are returned from an interface object
  */
@@ -46,6 +54,10 @@ enum InterfaceError: Error {
     
     enum ArchiveError: Error {
         case unableToDownloadList
+        case unableToDownloadArchive
+        case alreadyExists
+        case unableToWriteArchiveToFile
+        case errorReadingArchive(swiftError: String)
     }
     
     enum VolumeError: Error {
@@ -59,4 +71,6 @@ enum InterfaceError: Error {
     enum TextError: Error {
         case notAvailable
     }
+    
+    case Unimplemented(String)
 }

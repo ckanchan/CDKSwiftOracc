@@ -7,7 +7,7 @@ import Foundation
 public class OraccJSONtoSwiftInterface {
     
     /// Array of available volumes as enumerated entries.
-    public var availableVolumes: [OraccVolume]
+    public var availableVolumes: [OraccProjectEntry]
     
     let decoder = JSONDecoder()
     let path: String
@@ -63,11 +63,12 @@ public class OraccJSONtoSwiftInterface {
         }
     }
     
+    /*
     public func getDownloadList(_ completion: @escaping ([ZipListEntry]) -> Void) {
         guard case .github = self.location else { return }
         downloader!.getDownloadList(completion)
     }
-    
+    */
     
     /**
      Refreshes the list of available volumes from the data source. Must be called immediately after initialisation
@@ -76,7 +77,7 @@ public class OraccJSONtoSwiftInterface {
         switch self.location {
         case .github:
             downloader!.interface = self
-            availableVolumes = self.downloader!.getAvailableVolumes() ?? []
+            availableVolumes = []
         case .oracc:
             let request = URLRequest(url: oraccPath.appendingPathComponent("projects.json"))
             let task = session.dataTask(with: request) { (data, response, error) in
@@ -92,7 +93,7 @@ public class OraccJSONtoSwiftInterface {
                 }
             }
             task.resume()
-            
+            /*
         case .local(_):
             do {
                 let folders = try fileManager.subpathsOfDirectory(atPath: self.path)
@@ -105,6 +106,10 @@ public class OraccJSONtoSwiftInterface {
                 print(error.localizedDescription)
             }
         }
+ */
+        case .local(_):
+            break
+        }
     }
     
     /**
@@ -113,7 +118,7 @@ public class OraccJSONtoSwiftInterface {
      - Parameter volume: Takes an `OraccVolume` value.
      - Parameter completion: Called if an OraccCatalog has been successfully downloaded and decoded. Use the completion handler to store the returned OraccCatalog for querying.
  */
-    public func loadCatalogue(_ volume: OraccVolume, completion: @escaping (OraccCatalog) -> Void){
+    public func loadCatalogue(_ volume: OraccProjectEntry, completion: @escaping (OraccCatalog) -> Void){
 
         
         switch self.location {
@@ -123,7 +128,7 @@ public class OraccJSONtoSwiftInterface {
                 return
             }
             do {
-                let catPath = path + volume.directoryForm + "catalogue.json"
+                let catPath = path + volume.pathname + "catalogue.json"
                 let data = try Data(contentsOf: URL(fileURLWithPath: catPath))
                 let catalogue = try decoder.decode(OraccCatalog.self, from: data)
                 completion(catalogue)
@@ -137,7 +142,7 @@ public class OraccJSONtoSwiftInterface {
                 return
             }
             do {
-                let catPath = self.path + volume.directoryForm + "catalogue.json"
+                let catPath = self.path + volume.pathname + "catalogue.json"
                 let data = try Data(contentsOf: URL(string: catPath)!)
                 let catalogue = try decoder.decode(OraccCatalog.self, from: data)
                 completion(catalogue)
@@ -146,7 +151,7 @@ public class OraccJSONtoSwiftInterface {
             }
             
         case .github:
-            downloader?.downloadJSONArchive(volume, completion: completion)
+            break
             }
         }    
     

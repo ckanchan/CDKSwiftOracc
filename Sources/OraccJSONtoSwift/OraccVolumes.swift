@@ -17,10 +17,43 @@ public struct OraccProjectEntry: Decodable {
     var githubKey: String {
         return pathname.replacingOccurrences(of: "/", with: "-").appending(".zip")
     }
+}
 
+extension OraccProjectEntry: Equatable, Hashable {
+    public var hashValue: Int {
+        return pathname.hashValue ^ abbrev.hashValue ^ name.hashValue ^ blurb.hashValue
+    }
+    
+    public static func ==(lhs: OraccProjectEntry, rhs: OraccProjectEntry) -> Bool {
+        return lhs.pathname == rhs.pathname && lhs.blurb == rhs.blurb
+    }
+}
+
+extension OraccProjectEntry: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        let str =
+        """
+        name: \(name)
+        abbrev: \(abbrev)
+        pathname: \(pathname)
+        githubKey: \(githubKey)
+        blurb: \(blurb)
+        """
+        
+        return str
+    }
+}
+
+extension Array where Element == OraccProjectEntry {
+    func debugPrint(){
+        for element in self {
+            print(element.debugDescription)
+        }
+    }
+}
 
 public struct OraccProjectList: Decodable {
     let type: String
     let projects: [OraccProjectEntry]
     }
-}
+

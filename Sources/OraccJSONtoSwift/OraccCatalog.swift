@@ -12,7 +12,6 @@ public struct OraccCatalog: Decodable {
     public let project: String
     public let members: [String: OraccCatalogEntry]
     
-    
     public lazy var keys: [String] = {
         var keys = [String]()
         for entry in self.members.keys {

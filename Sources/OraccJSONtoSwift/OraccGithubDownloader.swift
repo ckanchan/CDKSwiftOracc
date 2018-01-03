@@ -20,12 +20,13 @@ public class OraccGithubDownloader {
         self.interface = nil
     }
     
-    func getDownloadList(_ completion: @escaping ([GithubArchiveEntry]) -> Void) {
+    /// Gets a simple list of ZIP archives from Github. Deprecated.
+    func getDownloadList(_ completion: @escaping ([OraccGithubtoSwift.GithubArchiveEntry]) -> Void) {
         let listURL = URL(string: "https://api.github.com/repos/oracc/json/contents")!
         
         do {
             let data = try Data(contentsOf: listURL)
-            let ziplist = try interface!.decoder.decode([GithubArchiveEntry].self, from: data)
+            let ziplist = try interface!.decoder.decode([OraccGithubtoSwift.GithubArchiveEntry].self, from: data)
             completion(ziplist)
             
         } catch {
@@ -33,8 +34,9 @@ public class OraccGithubDownloader {
         }
     }
     
-    
-    public func getAvailableVolumes() -> [OraccVolume]? {
+    /*
+ 
+    public func getAvailableVolumes() -> [OraccProjectEntry]? {
         let saaoPath = resourcePath + "/saao"
         guard fileManager.fileExists(atPath: saaoPath) else {
             print("Error: No volumes have been downloaded for local use")
@@ -101,8 +103,11 @@ public class OraccGithubDownloader {
             return nil
         }
     }
+ 
+ */
     
 }
+
 
 
 
