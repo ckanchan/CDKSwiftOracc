@@ -242,7 +242,7 @@ public class OraccGithubToSwiftInterface: OraccInterface {
         }
     }
     
-    init() throws {
+    public init() throws {
         self.fileManager = FileManager.default
         self.resourceURL = fileManager.temporaryDirectory.appendingPathComponent("oraccGithubCache")
         
