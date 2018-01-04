@@ -192,9 +192,9 @@ public class OraccGithubtoSwift: Interface {
     }
     
     public func loadText(_ key: String, inCatalogue catalogue: OraccCatalog) throws -> OraccTextEdition {
-        let textURL = resourceURL.appendingPathComponent(catalogue.project).appendingPathComponent(key)
+        let textURL = resourceURL.appendingPathComponent(catalogue.project).appendingPathComponent("corpusjson").appendingPathComponent(key).appendingPathExtension("json")
         
-        if fileManager.fileExists(atPath: textURL.absoluteString) {
+        if fileManager.fileExists(atPath: textURL.path) {
             do {
                 return try loadText(textURL)
             } catch {
