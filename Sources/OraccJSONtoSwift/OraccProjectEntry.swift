@@ -9,10 +9,10 @@ import Foundation
 
 /// Structure representing the decoded output of an Oracc JSON project list.
 public struct OraccProjectEntry: Decodable {
-    let pathname: String
-    let abbrev: String
-    let name: String
-    let blurb: String
+    public let pathname: String
+    public let abbrev: String
+    public let name: String
+    public let blurb: String
     
     var githubKey: String {
         return pathname.replacingOccurrences(of: "/", with: "-").appending(".zip")
