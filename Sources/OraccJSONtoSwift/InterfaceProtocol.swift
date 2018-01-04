@@ -11,7 +11,7 @@ import Foundation
  Protocol adopted by framework interface objects. Exposes a public API for selecting Oracc catalogues, querying the texts within, and getting output from them.
  */
 
-protocol Interface {
+protocol OraccInterface {
     var decoder: JSONDecoder { get }
     
     var oraccProjects: [OraccProjectEntry] { get }
@@ -26,7 +26,23 @@ protocol Interface {
     func loadText(_ key: String, inCatalogue catalogue: OraccCatalog) throws -> OraccTextEdition
 }
 
-extension Interface {
+extension OraccInterface {
+    /**
+     Fetches and decodes an array of all projects hosted on Oracc.
+     - Returns: An array of `OraccProjectEntry` where each entry represents an Oracc project.
+     - Throws: `InterfaceError.JSONError.unableToDecode` if the remote JSON cannot be parsed.
+     */
+    
+    func getOraccProjects() throws -> [OraccProjectEntry]{
+        let listData = try! Data(contentsOf: URL(string: "http://oracc.museum.upenn.edu/projectlist.json")!)
+        do {
+            let projectList = try decoder.decode(OraccProjectList.self, from: listData)
+            return projectList.projects
+        } catch {
+            throw InterfaceError.JSONError.unableToDecode(swiftError: error.localizedDescription)
+        }
+    }
+    
     func loadText(_ url: URL) throws -> OraccTextEdition {
         guard let jsonData = try? Data(contentsOf: url) else {throw InterfaceError.TextError.notAvailable}
         

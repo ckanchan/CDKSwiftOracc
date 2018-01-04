@@ -8,7 +8,10 @@
 import Foundation
 import ZIPFoundation
 
-public class OraccGithubtoSwift: Interface {
+
+// Class that connects to Github and manages the decoding of texts from archives hosted there.
+
+public class OraccGithubToSwiftInterface: OraccInterface {
     
     //MARK:- Helper type
     
@@ -51,22 +54,6 @@ public class OraccGithubtoSwift: Interface {
     
     //MARK:- Internal functions
     // Oracc directory loading functions
-    
-    /**
-     Fetches and decodes an array of all projects hosted on Oracc.
-     - Returns: An array of `OraccProjectEntry` where each entry represents an Oracc project.
-     - Throws: `InterfaceError.JSONError.unableToDecode` if the remote JSON cannot be parsed.
-     */
-    
-    func getOraccProjects() throws -> [OraccProjectEntry] {
-        let listData = try! Data(contentsOf: URL(string: "http://oracc.museum.upenn.edu/projectlist.json")!)
-        do {
-            let projectList = try self.decoder.decode(OraccProjectList.self, from: listData)
-            return projectList.projects
-        } catch {
-            throw InterfaceError.JSONError.unableToDecode(swiftError: error.localizedDescription)
-        }
-    }
     
     func getArchiveList() throws -> [GithubArchiveEntry] {
         let listURL = URL(string: "https://api.github.com/repos/oracc/json/contents")!
@@ -147,6 +134,23 @@ public class OraccGithubtoSwift: Interface {
         }
     }
     
+    func decompressItem(_ itemPath: String, inArchive archiveURL: URL) throws -> URL {
+        guard let archive = Archive(url: archiveURL, accessMode: .read) else {
+            throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: "Does not exist")
+        }
+        
+        guard let item = archive[itemPath] else {throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: "File does not exist in archive")}
+        
+        let destinationURL = resourceURL.appendingPathComponent(itemPath)
+        do {
+            _ = try archive.extract(item, to: destinationURL)
+        } catch {
+            throw InterfaceError.ArchiveError.unableToWriteArchiveToFile
+        }
+        
+        return destinationURL
+        
+    }
     
     
     // MARK: - Public API
@@ -169,40 +173,62 @@ public class OraccGithubtoSwift: Interface {
      - Parameter volume: An `OraccProjectEntry` from `availableVolumes` representing the desired volume.
      - Parameter completion: the handler to be called upon successful catalogue decoding.
      */
+    
     public func loadCatalogue(_ volume: OraccProjectEntry, completion: @escaping (OraccCatalog) -> Void) throws {
-        
-        //If the catalogue exists locally, load it from disk
-        let localCatalogueURL = resourceURL.appendingPathComponent(volume.pathname).appendingPathComponent("catalogue.json")
-        if let catalogueData = try? Data(contentsOf: localCatalogueURL) {
+        let cataloguePath = volume.pathname + "/catalogue.json"
+        let localURL = resourceURL.appendingPathComponent(cataloguePath)
+        let data: Data
+        let catalogue: OraccCatalog
             do {
-                let catalogue = try decoder.decode(OraccCatalog.self, from: catalogueData)
+                if fileManager.fileExists(atPath: localURL.path) {
+                    data = try Data(contentsOf: localURL)
+                    catalogue = try decoder.decode(OraccCatalog.self, from: data)
+                } else {
+                    let localArchiveURL = try downloadJSONArchive(volume)
+                    let catalogueURL = try decompressItem(cataloguePath, inArchive: localArchiveURL)
+                    data = try Data(contentsOf: catalogueURL)
+                    catalogue = try decoder.decode(OraccCatalog.self, from: data)
+                }
                 completion(catalogue)
-            } catch {
-                throw InterfaceError.JSONError.unableToDecode(swiftError: error.localizedDescription)
-            }
-        } else { // The catalogue doesn't exist locally; load it from Github
-            do {
-                let localArchiveURL = try downloadJSONArchive(volume)
-                let localCatalogue = try unzipArchive(at: localArchiveURL,volume: volume)
-                completion(localCatalogue)
             } catch {
                 throw error
             }
         }
-    }
+    /**
+     Loads the specified text ID from a given catalogue.
+     - Parameter key: CDLI Text id of the text to be loaded
+     - Parameter inCatalogue: Catalogue containing the text to be loaded.
+     - Throws: Throws `InterfaceError.JSONError` if text cannot be decoded, `.TextError.notAvailable` if text cannot be found, `.ArchiveError` if retrieving the text directly from the Zip archive fails.
+    */
     
     public func loadText(_ key: String, inCatalogue catalogue: OraccCatalog) throws -> OraccTextEdition {
-        let textURL = resourceURL.appendingPathComponent(catalogue.project).appendingPathComponent("corpusjson").appendingPathComponent(key).appendingPathExtension("json")
+        let itemPath = catalogue.project + "/corpusjson/" + key + ".json"
+        let textURL = resourceURL.appendingPathComponent(itemPath)
+        var text: OraccTextEdition? = nil
+        
         
         if fileManager.fileExists(atPath: textURL.path) {
             do {
-                return try loadText(textURL)
+                text = try loadText(textURL)
             } catch {
                 throw error
             }
+        } else {
+            let archiveName = catalogue.project.replacingOccurrences(of: "/", with: "-") + ".zip"
+            let archiveURL = resourceURL.appendingPathComponent(archiveName)
+            do {
+                let itemURL = try decompressItem(itemPath, inArchive: archiveURL)
+                text = try loadText(itemURL)
+            } catch {
+                throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: error.localizedDescription)
+            }
         }
         
-        throw InterfaceError.TextError.notAvailable
+        if let result = text {
+            return result
+        } else {            
+            throw InterfaceError.TextError.notAvailable
+        }
     }
 
     /**

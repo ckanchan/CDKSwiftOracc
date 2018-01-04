@@ -15,52 +15,52 @@ class OraccGithubtoSwiftTests: XCTestCase {
     }
     
     func testArchiveList() throws {
-        var interface: OraccGithubtoSwift
-        var archiveList: [OraccGithubtoSwift.GithubArchiveEntry]
+        var interface: OraccGithubToSwiftInterface
+        var archiveList: [OraccGithubToSwiftInterface.GithubArchiveEntry]
         
         do {
-            interface = try OraccGithubtoSwift()
+            interface = try OraccGithubToSwiftInterface()
             archiveList = try interface.getArchiveList()
         } catch {
             throw error
         }
         
-        XCTAssert(archiveList.contains(where: {$0.name == "saao-saa01.zip"}), "Downloads list contains `saao-saa01.zip`")
-        XCTAssert(archiveList.contains(where: {$0.name == "rimanum.zip"}), "Downloads list contains `rimanum.zip`")
+        XCTAssertTrue(archiveList.contains(where: {$0.name == "saao-saa01.zip"}), "Downloads list does not contain `saao-saa01.zip`")
+        XCTAssertTrue(archiveList.contains(where: {$0.name == "rimanum.zip"}), "Downloads list does not contain `rimanum.zip`")
     }
 
     func testOraccProjects() throws {
         
         let testProjects = SampleProjectData()
         
-        var interface: OraccGithubtoSwift
+        var interface: OraccGithubToSwiftInterface
         var oraccProjects: [OraccProjectEntry]
         
         do {
-            interface = try OraccGithubtoSwift()
+            interface = try OraccGithubToSwiftInterface()
             oraccProjects = try interface.getOraccProjects()
         } catch {
             throw error
         }
         
-        XCTAssert(oraccProjects.contains(where: {$0 == testProjects.RIAo}), "Oracc projects succesfully downloaded and decoded RIAo")
-        XCTAssert(oraccProjects.contains(where: {$0 == testProjects.SAA13}), "Oracc projects succesfully downloaded and decoded SAA13")
+        XCTAssertTrue(oraccProjects.contains(where: {$0 == testProjects.RIAo}), "Oracc projects succesfully downloaded and decoded RIAo")
+        XCTAssertTrue(oraccProjects.contains(where: {$0 == testProjects.SAA13}), "Oracc projects succesfully downloaded and decoded SAA13")
     }
 
     func testLoadKeyedProjectList() throws {
         let projects = SampleProjectData()
-        var interface: OraccGithubtoSwift
-        var archiveList: [OraccGithubtoSwift.GithubArchiveEntry]
+        var interface: OraccGithubToSwiftInterface
+        var archiveList: [OraccGithubToSwiftInterface.GithubArchiveEntry]
         var keyedProjectList: [OraccProjectEntry: URL]
         
         do {
-            interface = try OraccGithubtoSwift()
+            interface = try OraccGithubToSwiftInterface()
             archiveList = try interface.getArchiveList()
         } catch {
             throw error
         }
         
-        XCTAssert(archiveList.contains(where: {$0.name == "saao-saa01.zip"}), "Downloads list contains `saao-saa01.zip`")
+        XCTAssertTrue(archiveList.contains(where: {$0.name == "saao-saa01.zip"}), "Downloads list contains `saao-saa01.zip`")
         
         do {
             keyedProjectList = try interface.loadKeyedProjectList(archiveList)
@@ -68,12 +68,12 @@ class OraccGithubtoSwiftTests: XCTestCase {
             throw error
         }
         
-        XCTAssert(keyedProjectList[projects.SAA13] == URL(string: "https://raw.githubusercontent.com/oracc/json/master/saao-saa13.zip")!)
-        XCTAssert(keyedProjectList[projects.RIAo] == URL(string: "https://raw.githubusercontent.com/oracc/json/master/riao.zip"))
+        XCTAssertEqual(keyedProjectList[projects.SAA13],  URL(string: "https://raw.githubusercontent.com/oracc/json/master/saao-saa13.zip")!)
+        XCTAssertEqual(keyedProjectList[projects.RIAo], URL(string: "https://raw.githubusercontent.com/oracc/json/master/riao.zip"))
     }
     
     func testDownloadingProjects() throws {
-        var interface: OraccGithubtoSwift
+        var interface: OraccGithubToSwiftInterface
         var project: OraccProjectEntry?
         var url: URL
         var catalogue: OraccCatalog
@@ -81,7 +81,7 @@ class OraccGithubtoSwiftTests: XCTestCase {
         
         
         do {
-            interface = try OraccGithubtoSwift()
+            interface = try OraccGithubToSwiftInterface()
             let projects = try interface.getOraccProjects()
             project = projects.first(where: {$0.pathname == "saao/saa01"}) ?? nil
             XCTAssertNotNil(project)
@@ -91,7 +91,7 @@ class OraccGithubtoSwiftTests: XCTestCase {
             throw error
         }
         
-        XCTAssert(fileManager.fileExists(atPath: url.path), "Zip archive successfully downloaded")
+        XCTAssertTrue(fileManager.fileExists(atPath: url.path), "Zip archive successfully downloaded")
         
         do {
             catalogue = try interface.unzipArchive(at: url, volume: project!)
@@ -99,7 +99,7 @@ class OraccGithubtoSwiftTests: XCTestCase {
             throw error
         }
         
-        XCTAssert(catalogue.members.contains(where: {$0.key == "P224485"}))
+        XCTAssertTrue(catalogue.members.contains(where: {$0.key == "P224485"}))
         
     }
     
@@ -107,30 +107,29 @@ class OraccGithubtoSwiftTests: XCTestCase {
     //MARK:- Public API tests
     func testAvailableVolumesAPI() throws{
         let projects = SampleProjectData()
-        var interface: OraccGithubtoSwift
+        var interface: OraccGithubToSwiftInterface
         var availableVolumes = [OraccProjectEntry]()
         
         do {
-            interface = try OraccGithubtoSwift()
+            interface = try OraccGithubToSwiftInterface()
             try interface.getAvailableVolumes(){volumes in
                 availableVolumes = volumes
-                XCTAssert(availableVolumes.contains(projects.RIAo), "Available volumes contains RIAo")
-                XCTAssert(availableVolumes.contains(projects.SAA13), "Available volumes contains SAA13")
+                XCTAssertTrue(availableVolumes.contains(projects.RIAo), "Available volumes does not contain RIAo")
+                XCTAssertTrue(availableVolumes.contains(projects.SAA13), "Available volumes does not contain SAA 13")
             }
         } catch {
             throw error
         }
     }
     
-    func testGetAvailableVolumesAPI() throws {
+    func testLoadCatalogueAPI() throws {
         let projects = SampleProjectData()
-        var interface: OraccGithubtoSwift
-        
-        
+        var interface: OraccGithubToSwiftInterface
+
         do {
-            interface = try OraccGithubtoSwift()
+            interface = try OraccGithubToSwiftInterface()
             try interface.loadCatalogue(projects.SAA13){ catalogue in
-                XCTAssert(catalogue.project == "saao/saa13", "Catalogue SAA13 decoded sucessfully")
+                XCTAssertEqual(catalogue.project, "saao/saa13")
             }
         } catch {
             throw error
@@ -139,29 +138,79 @@ class OraccGithubtoSwiftTests: XCTestCase {
     
     func testLoadTextAPI() throws {
         let projects = SampleProjectData()
-        var interface: OraccGithubtoSwift
-        var catalogue = OraccCatalog(source: URL(string:"http://oracc.org")!, project: "", members: [String:OraccCatalogEntry](), keys: nil){
-            didSet {
-                let textP285574 = try? interface.loadText("P285574", inCatalogue: catalogue)
-                XCTAssertNotNil(textP285574)
-                XCTAssert(textP285574?.project == "saao/saa13", "Text succesfully decoded project field")
-                XCTAssertNotNil(textP285574?.cuneiform)
-            }
-        }
+        
+        var interface: OraccGithubToSwiftInterface
+        var catalogue: OraccCatalog? = nil
+        let catalogueLoaded = expectation(description: "Catalogue successfully loaded")
         
         do {
-            interface = try OraccGithubtoSwift()
+            interface = try OraccGithubToSwiftInterface()
             try interface.loadCatalogue(projects.SAA13) { cat in
+                print("Entering completion handler")
                 catalogue = cat
+                XCTAssertNotNil(catalogue)
+                XCTAssertEqual(catalogue!.project, "saao/saa13")
+                catalogueLoaded.fulfill()
+
+                
             }
         } catch {
             throw error
         }
+        
+        waitForExpectations(timeout: 10) { error in
+            if let error = error {
+                print(error.localizedDescription)
+            } else {
+                let textP285574 = try? interface.loadText("P285574", inCatalogue: catalogue!)
+                XCTAssertNotNil(textP285574)
+                XCTAssertEqual(textP285574?.project, "saao/saa13")
+                XCTAssertNotNil(textP285574?.cuneiform)
+            }
+        }
     }
+    
+    func measureTextLoad() {
+        let projects = SampleProjectData()
+        
+        let interface = try! OraccGithubToSwiftInterface()
+        var catalogue: OraccCatalog? = nil
+        let catalogueLoaded = expectation(description: "Catalogue successfully loaded")
+        
+        measure {
+            try! interface.loadCatalogue(projects.SAA13) { cat in
+                print("Entering completion handler")
+                catalogue = cat
+                XCTAssertNotNil(catalogue)
+                XCTAssertEqual(catalogue!.project, "saao/saa13")
+                catalogueLoaded.fulfill()
+            }
+        }
+        
+        measure {
+            waitForExpectations(timeout: 10) { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                } else {
+                    let textP285574 = try? interface.loadText("P285574", inCatalogue: catalogue!)
+                    XCTAssertNotNil(textP285574)
+                    XCTAssertEqual(textP285574?.project, "saao/saa13")
+                    XCTAssertNotNil(textP285574?.cuneiform)
+                }
+            }
+        }
+    }
+    
     
     static var allTests = [
         ("testArchiveList", testArchiveList),
         ("testOraccProjects", testOraccProjects),
-        ("testDownloadingProjects", testDownloadingProjects)
+        ("testLoadKeyedProjectList", testLoadKeyedProjectList),
+        ("testDownloadingProjects", testDownloadingProjects),
+        ("testAvailableVolumesAPI", testAvailableVolumesAPI),
+        ("testLoadCatalogueAPI", testLoadCatalogueAPI),
+        ("testLoadTextAPI", testLoadTextAPI),
+        ("measureTextLoad", measureTextLoad)
+        
     ]
 }
