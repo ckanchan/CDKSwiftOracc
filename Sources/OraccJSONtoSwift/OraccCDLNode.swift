@@ -12,7 +12,7 @@ public struct OraccCDLNode {
         let frag: String
         let inst: String?
         struct f: Decodable {
-            let lang: String
+            let lang: String?
             let form: String
             struct GraphemeDescription: Decodable {
                 let gdl_utf8: String?
@@ -20,6 +20,8 @@ public struct OraccCDLNode {
             let gdl: [GraphemeDescription]
             let sense: String?
             let norm: String?
+            
+            
         }
         let f: f
     }

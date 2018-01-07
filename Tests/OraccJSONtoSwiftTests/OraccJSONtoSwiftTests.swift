@@ -162,10 +162,11 @@ class OraccGithubtoSwiftTests: XCTestCase {
             if let error = error {
                 print(error.localizedDescription)
             } else {
-                let textP285574 = try? interface.loadText("P285574", inCatalogue: catalogue!)
+                var textP285574 = try? interface.loadText("P285574", inCatalogue: catalogue!)
                 XCTAssertNotNil(textP285574)
                 XCTAssertEqual(textP285574?.project, "saao/saa13")
                 XCTAssertNotNil(textP285574?.cuneiform)
+                print(textP285574?.cuneiform)
             }
         }
     }
@@ -192,7 +193,7 @@ class OraccGithubtoSwiftTests: XCTestCase {
                 if let error = error {
                     print(error.localizedDescription)
                 } else {
-                    let textP285574 = try? interface.loadText("P285574", inCatalogue: catalogue!)
+                    var textP285574 = try? interface.loadText("P285574", inCatalogue: catalogue!)
                     XCTAssertNotNil(textP285574)
                     XCTAssertEqual(textP285574?.project, "saao/saa13")
                     XCTAssertNotNil(textP285574?.cuneiform)

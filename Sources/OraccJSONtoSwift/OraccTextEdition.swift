@@ -13,7 +13,8 @@ public struct OraccTextEdition: Decodable {
     let cdl: [OraccCDLNode]
     let textid: String
     
-    public lazy var transliteration: String = {
+    /// Computed transliteration. This is recalculated every time it is called so you will need to store it yourself.
+    public var transliteration: String {
         var str = ""
         
         for node in self.cdl {
@@ -21,9 +22,10 @@ public struct OraccTextEdition: Decodable {
         }
         
         return str
-    }()
+    }
     
-    public lazy var transcription: String = {
+    /// Computed normalisation. This may not be applicable if a text has not been lemmatised. This is recalculated every time it is called so you will need to store it yourself.
+    public var transcription: String {
         var str = ""
         
         for node in self.cdl {
@@ -31,9 +33,10 @@ public struct OraccTextEdition: Decodable {
         }
         
         return str
-    }()
+    }
     
-    public lazy var literalTranslation: String = {
+    /// Computed literal translation. This may not be applicable if a text has not been lemmatised. This is recalculated every time it is called so you will need to store it yourself.
+    public var literalTranslation: String  {
         var str = ""
         
         for node in self.cdl {
@@ -41,9 +44,10 @@ public struct OraccTextEdition: Decodable {
         }
         
         return str
-    }()
+    }
     
-    public lazy var cuneiform: String = {
+    /// Computed cuneiform. This is recalculated every time it is called so you will need to store it yourself.
+    public var cuneiform: String  {
         var str = ""
         
         for node in self.cdl {
@@ -51,7 +55,7 @@ public struct OraccTextEdition: Decodable {
         }
         
         return str
-    }()
+    }
 }
 
 public extension OraccTextEdition {

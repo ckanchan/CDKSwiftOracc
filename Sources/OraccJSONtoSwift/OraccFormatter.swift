@@ -5,6 +5,8 @@
 //  Created by Chaitanya Kanchan on 07/01/2018.
 //
 
+#if os(iOS)
+
 import Foundation
 import UIKit
 
@@ -84,3 +86,5 @@ extension OraccCDLNode {
         return NSAttributedString(attributedString: str)
     }
 }
+
+#endif
