@@ -233,7 +233,7 @@ public class OraccGithubToSwiftInterface: OraccInterface {
     
     public func loadGlossary(_ glossary: OraccGlossaryType, inCatalogue catalogue: OraccCatalog) throws -> OraccGlossary {
         
-        let itemPath = catalogue.project + glossary.jsonName
+        let itemPath = catalogue.project + "/" + glossary.jsonName
         let glossaryURL = resourceURL.appendingPathComponent(itemPath)
         var glossary: OraccGlossary? = nil
         
