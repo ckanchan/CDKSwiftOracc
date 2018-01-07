@@ -47,8 +47,19 @@ extension OraccInterface {
         guard let jsonData = try? Data(contentsOf: url) else {throw InterfaceError.TextError.notAvailable}
         
         do {
-        let textLoaded = try decoder.decode(OraccTextEdition.self, from: jsonData)
-        return textLoaded
+            let textLoaded = try decoder.decode(OraccTextEdition.self, from: jsonData)
+            return textLoaded
+        } catch {
+            throw InterfaceError.JSONError.unableToDecode(swiftError: error.localizedDescription)
+        }
+    }
+    
+    func loadGlossary(_ url: URL) throws -> OraccGlossary {
+        guard let jsonData = try? Data(contentsOf: url) else { throw InterfaceError.GlossaryError.notAvailable}
+        
+        do {
+            let glossaryLoaded = try decoder.decode(OraccGlossary.self, from: jsonData)
+            return glossaryLoaded
         } catch {
             throw InterfaceError.JSONError.unableToDecode(swiftError: error.localizedDescription)
         }
@@ -85,6 +96,10 @@ enum InterfaceError: Error {
     }
     
     enum TextError: Error {
+        case notAvailable
+    }
+    
+    enum GlossaryError: Error {
         case notAvailable
     }
     

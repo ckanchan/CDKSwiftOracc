@@ -24,10 +24,14 @@ public struct OraccCatalogEntry {
     /// Path for the originating project
     public let project: String
     
-    public let chapterNumber: Int
-    public let chapterName: String
+    public let chapterNumber: Int?
+    public let chapterName: String?
     public var chapter: String {
-        return "Ch.\(chapterNumber) (\(chapterName))"
+        if let name = self.chapterNumber, let number = self.chapterName {
+            return "Ch.\(name) (\(number))"}
+        else {
+            return "No chapter assigned"
+        }
     }
     public let genre: String?
     public let material: String?
@@ -45,7 +49,9 @@ extension OraccCatalogEntry: Decodable {
     private enum CodingKeys: String, CodingKey {
         case displayName = "display_name"
         case title
+        case popular_name
         case id = "id_text"
+        case id_composite
         case ancientAuthor = "ancient_author"
         case project
         
@@ -63,13 +69,15 @@ extension OraccCatalogEntry: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let displayName = try container.decode(String.self, forKey: .displayName)
-        let title = try container.decode(String.self, forKey: .title)
-        let id = try container.decode(String.self, forKey: .id)
+        let title = try container.decodeIfPresent(String.self, forKey: .title)
+        let popularName = try container.decodeIfPresent(String.self, forKey: .popular_name)
+        let textID = try container.decodeIfPresent(String.self, forKey: .id)
+        let compositeID = try container.decodeIfPresent(String.self, forKey: .id_composite)
+        let id = textID ?? compositeID ?? "no ID available"
         let ancientAuthor = try container.decodeIfPresent(String.self, forKey: .ancientAuthor)
         let project = try container.decode(String.self, forKey: .project)
-        let chapterNumStr = try container.decode(String.self, forKey: .chapterNumber)
-        let chapterNumber = Int(String(chapterNumStr.split(separator: " ").last!))!
-        let chapterName = try container.decode(String.self, forKey: .chapterName)
+        let chapterNumStr = try container.decodeIfPresent(String.self, forKey: .chapterNumber)
+        let chapterName = try container.decodeIfPresent(String.self, forKey: .chapterName)
         
         let genre = try container.decodeIfPresent(String.self, forKey: .genre)
         let material = try container.decodeIfPresent(String.self, forKey: .material)
@@ -80,7 +88,12 @@ extension OraccCatalogEntry: Decodable {
         let publicationHistory = try container.decodeIfPresent(String.self, forKey: .publicationHistory)
         let credits = try container.decodeIfPresent(String.self, forKey: .credits)
         
-        self.init(displayName: displayName, title: title, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: chapterNumber, chapterName: chapterName, genre: genre, material: material, period: period, provenience: provenience, primaryPublication: primaryPublication, museumNumber: museumNumber, publicationHistory: publicationHistory, credits: credits)
+        let chapterNumber: Int? = {
+            guard let chapterNumStr = chapterNumStr else {return nil}
+            return Int(String(chapterNumStr.split(separator: " ").last!))!
+        }()
+        
+        self.init(displayName: displayName, title: title ?? popularName ?? "no title", id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: chapterNumber, chapterName: chapterName, genre: genre, material: material, period: period, provenience: provenience, primaryPublication: primaryPublication, museumNumber: museumNumber, publicationHistory: publicationHistory, credits: credits)
         
         
         

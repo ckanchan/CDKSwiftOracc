@@ -13,10 +13,17 @@ public struct OraccTextEdition: Decodable {
     let cdl: [OraccCDLNode]
     let textid: String
     
-}
-
-public extension OraccTextEdition {
-    public var transcription: String {
+    public lazy var transliteration: String = {
+        var str = ""
+        
+        for node in self.cdl {
+            str.append(node.transliterated())
+        }
+        
+        return str
+    }()
+    
+    public lazy var transcription: String = {
         var str = ""
         
         for node in self.cdl {
@@ -24,9 +31,9 @@ public extension OraccTextEdition {
         }
         
         return str
-    }
+    }()
     
-    public var literalTranslation: String {
+    public lazy var literalTranslation: String = {
         var str = ""
         
         for node in self.cdl {
@@ -34,9 +41,9 @@ public extension OraccTextEdition {
         }
         
         return str
-    }
+    }()
     
-    public var cuneiform: String {
+    public lazy var cuneiform: String = {
         var str = ""
         
         for node in self.cdl {
@@ -44,7 +51,10 @@ public extension OraccTextEdition {
         }
         
         return str
-    }
+    }()
+}
+
+public extension OraccTextEdition {
     
     var discontinuityTypes: Set<String> {
         var types = Set<String>()

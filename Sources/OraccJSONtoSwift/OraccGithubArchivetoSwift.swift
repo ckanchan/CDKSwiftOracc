@@ -230,6 +230,38 @@ public class OraccGithubToSwiftInterface: OraccInterface {
             throw InterfaceError.TextError.notAvailable
         }
     }
+    
+    public func loadGlossary(_ glossary: OraccGlossaryType, inCatalogue catalogue: OraccCatalog) throws -> OraccGlossary {
+        
+        let itemPath = catalogue.project + glossary.jsonName
+        let glossaryURL = resourceURL.appendingPathComponent(itemPath)
+        var glossary: OraccGlossary? = nil
+        
+        
+        if fileManager.fileExists(atPath: glossaryURL.path) {
+            do {
+                glossary = try loadGlossary(glossaryURL)
+            } catch {
+                throw error
+            }
+        } else {
+            let archiveName = catalogue.project.replacingOccurrences(of: "/", with: "-") + ".zip"
+            let archiveURL = resourceURL.appendingPathComponent(archiveName)
+            do {
+                let itemURL = try decompressItem(itemPath, inArchive: archiveURL)
+                glossary = try loadGlossary(itemURL)
+            } catch {
+                throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: error.localizedDescription)
+            }
+        }
+        
+        if let result = glossary {
+            return result
+        } else {
+            throw InterfaceError.GlossaryError.notAvailable
+        }
+    }
+    
 
     /**
      Clears downloaded volumes from disk.

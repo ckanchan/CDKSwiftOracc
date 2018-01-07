@@ -34,7 +34,7 @@ public struct OraccCDLNode {
     
     public struct Discontinuity {
         enum DiscontinuityType: String {
-            case bottom, edge, nonw, nonx, obverse, object, linestart = "line-start", punct, right, reverse, surface, top
+            case bottom, column, edge, excised, left, nonw, nonx, obverse, object, linestart = "line-start", punct, right, reverse, surface, top
         }
         let type: DiscontinuityType
         let label: String?
@@ -133,12 +133,38 @@ extension OraccCDLNode: Decodable {
 }
 
 extension OraccCDLNode { //Text analysis functions
+    func transliterated() -> String {
+        var str = ""
+        switch self.node {
+        case .l(let lemma):
+            str.append(lemma.frag + " ")
+        case .c(let chunk):
+            for node in chunk.cdl {
+                str.append(node.transliterated())
+            }
+        case .d(let discontinuity):
+            switch discontinuity.type {
+            case .obverse:
+                str.append("Obverse: \n")
+            case .linestart:
+                str.append("\n\(discontinuity.label!) ")
+            case .reverse:
+                str.append("Reverse: \n")
+            default:
+                break
+            }
+        case .linkbase(_):
+            break
+        }
+        return str
+    }
+    
     func normalised() -> String {
         var str = ""
         
         switch self.node {
         case .l(let lemma):
-            str.append(lemma.f.norm ?? lemma.inst ?? "[x]")
+            str.append(lemma.f.norm ?? "[x]")
             str.append(" ")
         case .c(let chunk):
             for node in chunk.cdl {
