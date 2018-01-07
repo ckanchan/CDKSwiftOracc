@@ -12,6 +12,7 @@ public struct OraccCDLNode {
         let frag: String
         let inst: String?
         struct f: Decodable {
+            let lang: String
             let form: String
             struct GraphemeDescription: Decodable {
                 let gdl_utf8: String?
@@ -177,7 +178,7 @@ extension OraccCDLNode { //Text analysis functions
             case .linestart:
                 str.append("\n\(discontinuity.label!) ")
             case .reverse:
-                str.append("Reverse: \n")
+                str.append("\n Reverse: \n")
             default:
                 break
             }
@@ -188,6 +189,7 @@ extension OraccCDLNode { //Text analysis functions
         
         return str
     }
+    
     
     func literalTranslation() -> String {
         var str = ""
