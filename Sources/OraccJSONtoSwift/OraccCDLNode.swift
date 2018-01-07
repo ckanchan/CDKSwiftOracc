@@ -16,9 +16,13 @@ public struct GraphemeDescription: Decodable {
     /// These seem to represent sign values. Not sure why they're keyed differently
     public let v: String?
     public let s: String?
+    public let form: String?
     
     /// If a logogram, the role it plays in the text.
     public let role: String?
+    
+    /// If a logogram consists of multiple graphemes, it seems to be represented by this
+    public let group: [GraphemeDescription]?
     
     /// This seems to represent subelements in a name
     public let gdl: [GraphemeDescription]?
@@ -60,6 +64,10 @@ public struct GraphemeDescription: Decodable {
             for grapheme in seq {
                 str.append(grapheme.transliteration)
             }
+        } else if let group = group {
+            for grapheme in group {
+                str.append(grapheme.transliteration)
+            }
         } else if let v = v {
             let delimiter = delim ?? " "
             str.append(v)
@@ -68,7 +76,13 @@ public struct GraphemeDescription: Decodable {
             let delimiter = delim ?? " "
             str.append(s)
             str.append(delimiter)
-        } else {
+        } else if let form = form {
+            let delimiter = delim ?? " "
+            str.append(form)
+            str.append(delimiter)
+        }
+        
+        else {
             str.append(" ")
         }
         
