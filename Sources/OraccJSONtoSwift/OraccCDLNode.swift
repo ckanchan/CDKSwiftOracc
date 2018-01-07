@@ -7,6 +7,75 @@
 
 import Foundation
 
+/// Base structure for representing cuneiform signs (graphemes) decoded from the grapheme description language. Enables sign-by-sign cuneiform and transliteration functionality.
+
+public struct GraphemeDescription: Decodable {
+    /// Cuneiform glyph in UTF-8
+    public let gdl_utf8: String?
+    
+    /// These seem to represent sign values. Not sure why they're keyed differently
+    public let v: String?
+    public let s: String?
+    
+    /// If a logogram, the role it plays in the text.
+    public let role: String?
+    
+    /// This seems to represent subelements in a name
+    public let gdl: [GraphemeDescription]?
+    
+    /// Some kind of container for further elements
+    public let seq: [GraphemeDescription]?
+    
+    /// If defined, a string that separates this character from the next one.
+    public let delim: String?
+    
+    /// A computed property that returns cuneiform
+    public var cuneiform: String {
+        var str = ""
+        if let gdl = gdl {
+            for grapheme in gdl {
+                str.append(grapheme.cuneiform)
+            }
+        } else if let seq = seq {
+            for grapheme in seq {
+                str.append(grapheme.cuneiform)
+            }
+        } else if let utf8 = gdl_utf8 {
+            str.append(utf8)
+        } else {
+            str.append("")
+        }
+        
+        return str
+    }
+    
+    /// A computed property that returns sign transliteration
+    public var transliteration: String {
+        var str = ""
+        if let gdl = gdl {
+            for grapheme in gdl {
+                str.append(grapheme.transliteration)
+            }
+        } else if let seq = seq {
+            for grapheme in seq {
+                str.append(grapheme.transliteration)
+            }
+        } else if let v = v {
+            let delimiter = delim ?? " "
+            str.append(v)
+            str.append(delimiter)
+        } else if let s = s {
+            let delimiter = delim ?? " "
+            str.append(s)
+            str.append(delimiter)
+        } else {
+            str.append(" ")
+        }
+        
+        return str
+    }
+}
+
 public struct OraccCDLNode {
     public struct Lemma {
         let frag: String
@@ -14,16 +83,19 @@ public struct OraccCDLNode {
         struct f: Decodable {
             let lang: String?
             let form: String
-            struct GraphemeDescription: Decodable {
-                let gdl_utf8: String?
-            }
             let gdl: [GraphemeDescription]
             let sense: String?
             let norm: String?
-            
-            
         }
         let f: f
+        
+        var transliteration: String {
+            var str = ""
+            for grapheme in self.f.gdl {
+                str.append(grapheme.transliteration)
+            }
+            return str
+        }
     }
     
     public struct Chunk {
@@ -140,7 +212,7 @@ extension OraccCDLNode { //Text analysis functions
         var str = ""
         switch self.node {
         case .l(let lemma):
-            str.append(lemma.frag + " ")
+            str.append(lemma.transliteration)
         case .c(let chunk):
             for node in chunk.cdl {
                 str.append(node.transliterated())
@@ -152,7 +224,7 @@ extension OraccCDLNode { //Text analysis functions
             case .linestart:
                 str.append("\n\(discontinuity.label!) ")
             case .reverse:
-                str.append("Reverse: \n")
+                str.append("\nReverse: \n")
             default:
                 break
             }
@@ -233,7 +305,7 @@ extension OraccCDLNode { //Text analysis functions
             
         case .l(let lemma):
             for entry in lemma.f.gdl {
-                str.append(entry.gdl_utf8 ?? "[]")
+                str.append(entry.cuneiform)
             }
             str.append(" ")
             

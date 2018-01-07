@@ -49,7 +49,7 @@ extension OraccCDLNode {
                 let attrStr: NSAttributedString
                 if let norm = lemma.f.norm {
                      attrStr = NSAttributedString(
-                        string: norm,
+                        string: "\(norm) ",
                         attributes: [NSAttributedStringKey.font: font.getItalicFont()]
                     )
                 } else {
@@ -65,6 +65,7 @@ extension OraccCDLNode {
             for node in chunk.cdl {
                 str.append(node.normalisedAttributedString(withFont: font))
             }
+            
         case .d(let discontinuity):
             switch discontinuity.type {
             case .obverse:
@@ -85,6 +86,8 @@ extension OraccCDLNode {
         
         return NSAttributedString(attributedString: str)
     }
+    
+    
 }
 
 #endif
