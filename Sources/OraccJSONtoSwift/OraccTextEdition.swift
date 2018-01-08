@@ -10,7 +10,9 @@ import Foundation
 public struct OraccTextEdition: Decodable {
     let type: String
     let project: String
-    let cdl: [OraccCDLNode]
+    
+    /// Access to the raw CDL node array
+    public let cdl: [OraccCDLNode]
     let textid: String
     
     /// Computed transliteration. This is recalculated every time it is called so you will need to store it yourself.
@@ -58,7 +60,9 @@ public struct OraccTextEdition: Decodable {
     }
 }
 
-public extension OraccTextEdition {
+
+// Debugging extensions
+extension OraccTextEdition {
     
     var discontinuityTypes: Set<String> {
         var types = Set<String>()
