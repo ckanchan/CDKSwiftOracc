@@ -7,27 +7,29 @@
 
 import Foundation
 
-
 public struct OraccCDLNode {
+    
+    /// A single unit of meaning, in cuneiform and translated forms. Summary information is included in the top-level properties; more detailed information can be accessed under the Form property and its Translation and GraphemeDescription fields.
     public struct Lemma {
-        let frag: String
-        let inst: String?
-        struct f: Decodable {
-            let lang: String?
-            let form: String
-            let gdl: [GraphemeDescription]
-            let sense: String?
-            let norm: String?
-        }
-        let f: f
+        
+        /// Transliteration with diacritical marks.
+        let fragment: String
+        
+        /// String key containing normalisation[translation]partofspeech
+        let instanceTranslation: String?
+        
+        /// Detailed wordform information
+        let wordForm: WordForm
         
         var transliteration: String {
             var str = ""
-            for grapheme in self.f.gdl {
+            for grapheme in self.wordForm.graphemeDescriptions {
                 str.append(grapheme.transliteration)
             }
             return str
         }
+
+    
     }
     
     public struct Chunk {
@@ -62,8 +64,6 @@ public struct OraccCDLNode {
     }
     
     public let node: CDLNode
-    
-    
     init(lemma l: Lemma) {
         self.node = CDLNode.l(l)
     }
@@ -83,9 +83,9 @@ public struct OraccCDLNode {
 
 extension OraccCDLNode: Decodable {
     enum CodingKeys: String, CodingKey {
-        case frag = "frag"
-        case inst = "inst"
-        case f = "f"
+        case fragment = "frag"
+        case instanceTranslation = "inst"
+        case wordForm = "f"
         case sense = "sense"
         case norm = "norm"
         case type = "type"
@@ -108,10 +108,10 @@ extension OraccCDLNode: Decodable {
                 self = OraccCDLNode(discontinuity: d)
                 
             case "l":
-                let frag = try container.decode(String.self, forKey: .frag)
-                let inst = try container.decodeIfPresent(String.self, forKey: .inst)
-                let f = try container.decode(OraccCDLNode.Lemma.f.self, forKey: .f)
-                let l = OraccCDLNode.Lemma(frag: frag, inst: inst, f: f)
+                let frag = try container.decode(String.self, forKey: .fragment)
+                let inst = try container.decodeIfPresent(String.self, forKey: .instanceTranslation)
+                let f = try container.decode(WordForm.self, forKey: .wordForm)
+                let l = OraccCDLNode.Lemma(fragment: frag, instanceTranslation: inst, wordForm: f)
                 self = OraccCDLNode(lemma: l)
                 
             case "c":
@@ -171,7 +171,7 @@ extension OraccCDLNode { //Text analysis functions
         
         switch self.node {
         case .l(let lemma):
-            str.append(lemma.f.norm ?? "[x]")
+            str.append(lemma.wordForm.normalisation ?? "[x]")
             str.append(" ")
         case .c(let chunk):
             for node in chunk.cdl {
@@ -206,7 +206,7 @@ extension OraccCDLNode { //Text analysis functions
             break
             
         case .l(let lemma):
-            str.append(lemma.f.sense ?? "[?]")
+            str.append(lemma.wordForm.translation.sense ?? "[?]")
             str.append(" ")
             
         case .c(let chunk):
@@ -236,13 +236,13 @@ extension OraccCDLNode { //Text analysis functions
             break
             
         case .l(let lemma):
-            for entry in lemma.f.gdl {
+            for entry in lemma.wordForm.graphemeDescriptions {
                 str.append(entry.cuneiform)
             }
             str.append(" ")
             
         case .c(let chunk):
-            for node in chunk.cdl{
+            for node in chunk.cdl {
                 str.append(node.cuneiform())
             }
         case .d(let discontinuity):

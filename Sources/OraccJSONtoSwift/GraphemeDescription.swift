@@ -7,13 +7,30 @@
 
 import Foundation
 
+/// Datatype enumerating a specific reading of a cuneiform sign.
 public enum CuneiformSign {
+    
+    /// Sign read with syllabic value.
     case value(String)
+    
+    /// Sign read with name. Usually indicates a logogram in Akkadian texts.
     case name(String)
+    
+    /// Sexagesimal number
     case number(String)
+    
+    /** Complex sign form variant
+     - Parameter form: simple text representation of the complex sign.
+     - Parameter base: basic sign value component
+     - Parameter modifier: array of cuneiform sign modifiers, represented as `CuneiformSign.Modifier`
+    */
+    
     case formVariant(form: String, base: String, modifier: [Modifier])
+    
+    /// Debug value, shouldn't appear under normal circumstances and shouldn't be used directly.
     case null
     
+    /// Various kinds of cuneiform sign graphical variations.
     public enum Modifier {
         case curved, flat, gunu, šešig, tenu, nutillu, zidatenu, kabatenu, verticallyReflected, horizontallyReflected, rotated(Int), variant
         
@@ -21,6 +38,7 @@ public enum CuneiformSign {
         case FormVariant(String)
     }
 }
+
 
 extension CuneiformSign.Modifier {
     static func modifierFromString(_ s: String) -> CuneiformSign.Modifier? {
@@ -42,6 +60,7 @@ extension CuneiformSign.Modifier {
     }
 }
 
+/// Position of a determinative
 public enum Determinative: String {
     case pre, post
 }
@@ -53,23 +72,15 @@ public struct GraphemeDescription {
     /// Cuneiform glyph in UTF-8
     public let graphemeUTF8: String?
     
-    /// These seem to represent sign values. Not sure why they're keyed differently yet: could be refactored into an enumeration if I find they're completely exclusive.
-    
+    /// Graphical description of the sign.
     public let sign: CuneiformSign
     
-//    public let v: String?
-//    public let s: String?
-//    public let form: String?
-    
-    /// If a logogram, the role it plays in the text.
-//    public let role: String?
+    /// True if the sign is a logogram. Useful for formatting purposes.
     public let isLogogram: Bool
     
     /// If a determinative, what role it plays (usually 'semantic'), and position it occupies
     public let isDeterminative: Determinative?
-//    public let det: String?
-//    public let pos: String?
-    
+
     /// If a logogram consists of multiple graphemes, it seems to be represented by this
     public let group: [GraphemeDescription]?
     
@@ -167,17 +178,21 @@ extension GraphemeDescription: Decodable {
             }
         }
         
+        // Recursive calls
         let group = try container.decodeIfPresent([GraphemeDescription].self, forKey: .group)
         let sequence = try container.decodeIfPresent([GraphemeDescription].self, forKey: .sequence)
         let gdl = try container.decodeIfPresent([GraphemeDescription].self, forKey: .gdl)
         
         let delimiter = try container.decodeIfPresent(String.self, forKey: .delim)
         
+        // Init
         self.init(graphemeUTF8: graphemeUTF8, sign: cuneiformSign, isLogogram: isLogogram, isDeterminative: determinative, group: group, gdl: gdl, sequence: sequence, delim: delimiter)
     }
 }
 
 public extension GraphemeDescription {
+    
+    /// A computed property that returns cuneiform.
     public var cuneiform: String {
         var str = ""
         if let gdl = gdl {
@@ -199,6 +214,7 @@ public extension GraphemeDescription {
         return str
     }
     
+    /// A computed property that returns transliteration as an unformatted string.
     public var transliteration: String {
         var str = ""
         if let gdl = gdl {
