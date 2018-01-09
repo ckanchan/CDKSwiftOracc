@@ -1,23 +1,22 @@
 //
-//  OraccFormatter.swift
+//  OraccNSFontFormatter.swift
 //  OraccJSONtoSwift
 //
-//  Created by Chaitanya Kanchan on 07/01/2018.
+//  Created by Chaitanya Kanchan on 09/01/2018.
 //
 
 import Foundation
 
-#if os(iOS)
-    import UIKit
-    
-let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
+#if os(macOS)
+    import Cocoa
+let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]
     
     
     /// Formats strings and text using Assyriological conventions. Available for iOS only.
     public extension OraccTextEdition {
         
         /// Returns a string formatted with Akkadian normalisation.
-        public func formattedNormalisation(withFont font: UIFont) -> NSAttributedString {
+        public func formattedNormalisation(withFont font: NSFont) -> NSAttributedString {
             let str = NSMutableAttributedString(string: "")
             
             for node in self.cdl {
@@ -28,7 +27,7 @@ let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont
         }
         
         /// Returns a formatted transliteration.
-        public func formattedTransliteration(withFont font: UIFont) -> NSAttributedString {
+        public func formattedTransliteration(withFont font: NSFont) -> NSAttributedString {
             let str = NSMutableAttributedString(string: "")
             for node in self.cdl {
                 str.append(node.transliteratedAttributedString(withFont: font))
@@ -38,30 +37,23 @@ let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont
         }
     }
     
-    extension UIFont {
-        func getItalicFont() -> UIFont {
+    extension NSFont {
+        func getItalicFont() -> NSFont {
             let fontDsc = self.fontDescriptor
-            let italicDsc = UIFontDescriptorSymbolicTraits.traitItalic
+            let italicDsc = NSFontDescriptor.SymbolicTraits.italic
             let italicfntDsc = fontDsc.withSymbolicTraits(italicDsc)
-            if let descriptor = italicfntDsc {
-                return UIFont(descriptor: descriptor, size: self.pointSize)
-            } else {
-                return UIFont.italicSystemFont(ofSize: self.pointSize)
-            }
-        }
-        
-        var reducedFontSize: UIFont {
-            return UIFont(descriptor: self.fontDescriptor, size: self.pointSize / 2)
+            let systemFontDsc = NSFont.systemFont(ofSize: self.pointSize).fontDescriptor
+            
+            return NSFont(descriptor: italicfntDsc, size: self.pointSize) ?? NSFont(descriptor: systemFontDsc, size: self.pointSize)!
         }
     }
     
     extension GraphemeDescription {
-        public func transliteratedAttributedString(withFont font: UIFont) -> NSAttributedString {
+        public func transliteratedAttributedString(withFont font: NSFont) -> NSAttributedString {
             let str = NSMutableAttributedString(string: "")
             //Formatting attributes
             let italicFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: font.getItalicFont()]
-            let superscriptFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.baselineOffset: 10,
-                                                                       NSAttributedStringKey.font: font.reducedFontSize]
+            let superscriptFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.superscript: 1]
             
             
             
@@ -87,9 +79,9 @@ let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont
                 str.append(syllable)
                 str.append(delim)
             } else if let group = group {
-            
-            //Recursing
-            
+                
+                //Recursing
+                
                 group.forEach{str.append($0.transliteratedAttributedString(withFont: font))}
             } else if let gdl = gdl {
                 gdl.forEach{str.append($0.transliteratedAttributedString(withFont: font))}
@@ -156,12 +148,12 @@ let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont
     }
     
     extension OraccCDLNode {
-        func normalisedAttributedString(withFont font: UIFont) -> NSAttributedString {
+        func normalisedAttributedString(withFont font: NSFont) -> NSAttributedString {
             
             let str: NSMutableAttributedString = NSMutableAttributedString(string: "")
             let italicFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: font.getItalicFont()]
-            let editorialFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.regular)]
-            let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.bold)]
+            let editorialFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.regular)]
+            let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.bold)]
             
             switch self.node {
             case .l(let lemma):
@@ -228,10 +220,10 @@ let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont
         }
         
         
-        func transliteratedAttributedString(withFont font: UIFont) -> NSAttributedString {
+        func transliteratedAttributedString(withFont font: NSFont) -> NSAttributedString {
             
-            let editorialFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.regular)]
-            let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.bold)]
+            let editorialFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.regular)]
+            let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.bold)]
             
             let str = NSMutableAttributedString(string: "")
             switch self.node {
@@ -265,5 +257,5 @@ let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont
         }
     }
 
+    
 #endif
-

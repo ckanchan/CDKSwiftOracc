@@ -133,7 +133,13 @@ extension GraphemeDescription: Decodable {
             // More complex readings associated with the 'form' field.
             
             // If a cuneiform sign with modifiers, create annotated sign
-            if let modifiers = try container.decodeIfPresent([String: String].self, forKey: .modifiers) {
+            if let modifiersArray = try container.decodeIfPresent([[String: String]].self, forKey: .modifiers) {
+                
+                var modifiers = [String:String]()
+                for modifier in modifiersArray {
+                    modifiers.merge(modifier, uniquingKeysWith: {(_, new) in new})
+                }
+                
                 let base = modifiers["b"] ?? "x"
                 var mods = [CuneiformSign.Modifier]()
 

@@ -38,7 +38,7 @@ public struct OraccCDLNode {
         }
         
         let type: Chunktype
-        let cdl: [OraccCDLNode]
+        public let cdl: [OraccCDLNode]
     }
     
     public struct Discontinuity {
@@ -139,8 +139,8 @@ extension OraccCDLNode: Decodable {
     }
 }
 
-extension OraccCDLNode { //Text analysis functions
-    func transliterated() -> String {
+public extension OraccCDLNode { //Text analysis functions
+    public func transliterated() -> String {
         var str = ""
         switch self.node {
         case .l(let lemma):

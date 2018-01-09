@@ -15,6 +15,11 @@ public struct OraccTextEdition: Decodable {
     public let cdl: [OraccCDLNode]
     let textid: String
     
+    /// URL for online edition. Returns `nil` if unable to form URL.
+    public var url: URL? {
+        return URL(string: "http://oracc.museum.upenn.edu/\(project)/\(textid)/html")
+    }
+    
     /// Computed transliteration. This is recalculated every time it is called so you will need to store it yourself.
     public var transliteration: String {
         var str = ""
@@ -57,6 +62,29 @@ public struct OraccTextEdition: Decodable {
         }
         
         return str
+    }
+}
+
+public extension OraccTextEdition {
+    
+    /// Tries to scrape translation from Oracc HTML. A bit hackish. Returns nil if a translation can't be formed.
+    public var scrapeTranslation: String? {
+        var translation: String = ""
+        
+        do {
+            guard let url = self.url else { return nil}
+            let xml = try XMLDocument(contentsOf: url, options: XMLNode.Options.documentTidyHTML)
+            let nodes = try xml.nodes(forXPath: "//*/td[3]/p/span")
+            nodes.forEach{
+                if let str = $0.stringValue {
+                    translation.append(str)
+                }
+            }
+        } catch {
+            return nil
+        }
+        
+        return translation
     }
 }
 
