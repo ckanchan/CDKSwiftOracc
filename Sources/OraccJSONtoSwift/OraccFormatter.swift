@@ -7,6 +7,61 @@
 
 import Foundation
 
+public extension NSAttributedStringKey {
+    public static var oraccCitationForm: NSAttributedStringKey {
+        return self.init("oraccCitationForm")
+    }
+    
+    public static var oraccGuideWord: NSAttributedStringKey {
+        return self.init("oraccGuideWord")
+    }
+    
+    public static var oraccSense: NSAttributedStringKey {
+        return self.init("oraccSense")
+    }
+    
+    public static var partOfSpeech: NSAttributedStringKey {
+        return self.init("partOfSpeech")
+    }
+    
+    public static var effectivePartOfSpeech: NSAttributedStringKey {
+        return self.init("effectivePartOfSpeech")
+    }
+    
+    public static var oraccLanguage: NSAttributedStringKey {
+        return self.init("oraccLanguage")
+    }
+    
+    public static var writtenForm: NSAttributedStringKey {
+        return self.init("writtenForm")
+    }
+    
+    public static var normalisation: NSAttributedStringKey {
+        return self.init("normalisation")
+    }
+    
+    public static var instanceTranslation: NSAttributedStringKey {
+        return self.init("instanceTranslation")
+    }
+}
+
+extension OraccCDLNode.Lemma {
+    public func getExtendedAttributes() -> [NSAttributedStringKey: Any] {
+        var attributes = [NSAttributedStringKey:Any]()
+        attributes[.oraccCitationForm] = self.wordForm.translation.citationForm ?? ""
+        attributes[.oraccGuideWord] = self.wordForm.translation.guideWord
+        attributes[.oraccSense] = self.wordForm.translation.sense ?? ""
+        attributes[.partOfSpeech] = self.wordForm.translation.partOfSpeech
+        attributes[.effectivePartOfSpeech] = self.wordForm.translation.effectivePartOfSpeech
+        attributes[.oraccLanguage] = self.wordForm.language
+        attributes[.writtenForm] = self.fragment
+        attributes[.instanceTranslation] = self.instanceTranslation
+        
+        return attributes
+    }
+}
+
+
 #if os(iOS)
     import UIKit
     
@@ -167,14 +222,16 @@ let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont
             case .l(let lemma):
                 switch lemma.wordForm.language {
                 case .Akkadian(_):
-                    let attrStr: NSAttributedString
+                    let attrStr: NSMutableAttributedString
                     if let norm = lemma.wordForm.normalisation {
-                        attrStr = NSAttributedString(
+                        let translationAttrs = lemma.getExtendedAttributes()
+                        attrStr = NSMutableAttributedString(
                             string: "\(norm) ",
                             attributes: italicFormatting
                         )
+                        attrStr.addAttributes(translationAttrs, range: NSMakeRange(0, attrStr.string.count))
                     } else {
-                        attrStr = NSAttributedString(
+                        attrStr = NSMutableAttributedString(
                             string: "x ",
                             attributes: editorialFormatting
                         )
