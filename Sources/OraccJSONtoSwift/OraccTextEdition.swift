@@ -65,6 +65,7 @@ public struct OraccTextEdition: Decodable {
     }
 }
 
+#if os(macOS)
 public extension OraccTextEdition {
     
     /// Tries to scrape translation from Oracc HTML. A bit hackish. Returns nil if a translation can't be formed.
@@ -87,7 +88,63 @@ public extension OraccTextEdition {
         return translation
     }
 }
+#endif
 
+#if os(iOS)
+    class OraccTranslationScraper: NSObject, XMLParserDelegate {
+        let parser: XMLParser
+        var insideTranslation = false
+        var currentElement = ""
+        var completion: (String) -> Void
+        
+        init(withURL url: URL, completion: @escaping (String) -> Void) {
+            self.parser = XMLParser(contentsOf: url)!
+            self.completion = completion
+            super.init()
+            self.parser.delegate = self
+        }
+        
+        func scrape() {
+            parser.parse()
+        }
+        
+        func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
+            
+            if elementName == "td" && attributeDict["class"] == "t1 xtr" {
+                self.insideTranslation = true
+            } else if attributeDict["class"] == "tlit" {
+                self.insideTranslation = false
+            } else if attributeDict["class"] == "l" {
+                self.insideTranslation = false
+            }
+        }
+        
+        func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
+            
+            if elementName == "td" {
+                self.insideTranslation = false
+            }
+        }
+        
+        func parser(_ parser: XMLParser, foundCharacters string: String) {
+            if insideTranslation {
+                currentElement.append(string)
+            }
+        }
+        
+        func parserDidEndDocument(_ parser: XMLParser) {
+            completion(self.currentElement)
+        }
+    }
+
+    public extension OraccTextEdition {
+        public func scrapeTranslation(_ completion: @escaping (String) -> Void) throws {
+            guard let url = self.url else { throw InterfaceError.TextError.notAvailable }
+            let scraper = OraccTranslationScraper(withURL: url, completion: completion)
+            scraper.scrape()
+        }
+    }
+#endif
 
 // Debugging extensions
 extension OraccTextEdition {
