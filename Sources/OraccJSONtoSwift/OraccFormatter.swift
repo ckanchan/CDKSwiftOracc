@@ -7,6 +7,8 @@
 
 import Foundation
 
+
+// Adds keys that support the encoding of Oracc lemmatisation information into attributed strings.
 public extension NSAttributedStringKey {
     public static var oraccCitationForm: NSAttributedStringKey {
         return self.init("oraccCitationForm")
@@ -45,6 +47,19 @@ public extension NSAttributedStringKey {
     }
 }
 
+// Adds keys that support the encoding of GDL grapheme data into attributed strings
+public extension NSAttributedStringKey {
+    public static var signValue: NSAttributedStringKey {
+        return self.init("signValue")
+    }
+    
+    public static var signModifiers: NSAttributedStringKey {
+        return self.init("signModifiers")
+    }
+    
+}
+
+
 extension OraccCDLNode.Lemma {
     public func getExtendedAttributes() -> [NSAttributedStringKey: Any] {
         var attributes = [NSAttributedStringKey:Any]()
@@ -61,11 +76,41 @@ extension OraccCDLNode.Lemma {
     }
 }
 
+extension CuneiformSign {
+    public func getExtendedAttributes() -> [NSAttributedStringKey: Any] {
+        var attributes = [NSAttributedStringKey:Any]()
+        let signValue: String
+        var modifiers: String? = nil
+        // Get the appropriate values from the enumerated type
+        switch self {
+        case .value(let value):
+            signValue = value
+        case .name(let name):
+            signValue = name
+        case .number(let number):
+            signValue = number
+        case .formVariant(_, let base, let modifier):
+            signValue = base
+            modifiers = modifier.description
+        case .null:
+            signValue = ""
+        }
+        
+        attributes[.signValue] = signValue
+        if let modifiers = modifiers { attributes[.signModifiers] = modifiers}
+        return attributes
+    }
+}
+
+
+
 
 #if os(iOS)
     import UIKit
     
 let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
+let editorialFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.regular)]
+let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.bold)]
     
     
     /// Formats strings and text using Assyriological conventions. Available for iOS only.
@@ -89,6 +134,17 @@ let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont
                 str.append(node.transliteratedAttributedString(withFont: font))
             }
             
+            return str
+        }
+        
+        /// Returns a cuneified string with additional metadata
+        /// - Parameter font: A font that covers cuneiform codepoints. Allows choice between OB or NA glyphs.
+        public func formattedCuneiform(withFont font: UIFont) -> NSAttributedString {
+            let str = NSMutableAttributedString(string: "")
+            for node in self.cdl {
+                str.append(node.cuneiformAttributedString(withFont: font))
+            }
+
             return str
         }
     }
@@ -208,6 +264,38 @@ let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont
             
             return str
         }
+    
+        public func cuneiformAttributedString(withFont font: UIFont) -> NSAttributedString {
+            let str = NSMutableAttributedString(string: "")
+
+            // Recursive calls
+            if let gdl = gdl {
+                for grapheme in gdl {
+                    str.append(grapheme.cuneiformAttributedString(withFont: font))
+                }
+            } else if let sequence = sequence {
+                for grapheme in sequence {
+                    str.append(grapheme.cuneiformAttributedString(withFont: font))
+                }
+            } else if let group = group {
+                for grapheme in group {
+                    str.append(grapheme.cuneiformAttributedString(withFont: font))
+                }
+            } else {
+                var attributes = self.sign.getExtendedAttributes()
+                attributes[.font] = font
+
+                let text = graphemeUTF8 ?? ""
+                
+                let sign = NSMutableAttributedString(string: text, attributes: attributes)
+                
+
+                str.append(sign)
+            }
+
+            return str
+        }
+    
     }
     
     extension OraccCDLNode {
@@ -286,15 +374,16 @@ let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont
         
         
         func transliteratedAttributedString(withFont font: UIFont) -> NSAttributedString {
-            
-            let editorialFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.regular)]
-            let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.bold)]
-            
             let str = NSMutableAttributedString(string: "")
             switch self.node {
             case .l(let lemma):
                 for grapheme in lemma.wordForm.graphemeDescriptions {
-                    str.append(grapheme.transliteratedAttributedString(withFont: font))
+                    let sstr = NSMutableAttributedString(string: "")
+                    let attribs = lemma.getExtendedAttributes()
+                    
+                    sstr.append(grapheme.transliteratedAttributedString(withFont: font))
+                    sstr.addAttributes(attribs, range: NSMakeRange(0, sstr.string.count)) 
+                    str.append(sstr)
                 }
             case .c(let chunk):
                 for node in chunk.cdl {
@@ -318,6 +407,45 @@ let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont
                 break
             }
             
+            return NSAttributedString(attributedString: str)
+        }
+
+
+        func cuneiformAttributedString(withFont font: UIFont) -> NSAttributedString {
+
+            let str: NSMutableAttributedString = NSMutableAttributedString(string: "")
+            let space = NSAttributedString(string: " ")
+
+            switch self.node {
+            case .l(let lemma):
+                for grapheme in lemma.wordForm.graphemeDescriptions {
+                    str.append(grapheme.cuneiformAttributedString(withFont: font))
+                    str.append(space)
+                }
+
+            case .c(let chunk):
+                for node in chunk.cdl {
+                    str.append(node.cuneiformAttributedString(withFont: font))
+                }
+
+            case .d(let discontinuity):
+                switch discontinuity.type {
+                case .obverse:
+                    let obv = NSAttributedString(string: "Obverse: \n", attributes: editorialBoldFormatting)
+                    str.append(obv)
+                case .linestart:
+                    let ln = NSAttributedString(string: "\n\(discontinuity.label!) ", attributes: editorialFormatting)
+                    str.append(ln)
+                case .reverse:
+                    let rev = NSAttributedString(string: "\n\n\n Reverse: \n", attributes: editorialBoldFormatting)
+                    str.append(rev)
+                default:
+                    break
+                }
+            case .linkbase(_):
+                break
+            }
+
             return NSAttributedString(attributedString: str)
         }
     }
