@@ -35,31 +35,57 @@ public class OraccGlossary: Decodable {
 public struct GlossaryEntry: Decodable, CustomStringConvertible {
     
     // MARK :- Helper types
+    /// Encodes information about individual spellings for a given headword.
     public struct Form: Decodable, CustomStringConvertible {
-        let n: String
+        public let spelling: String
+        public let id: String
+        public let instanceCount: String
+        public let instancePercentage: String
+        
+        enum CodingKeys: String, CodingKey {
+            case spelling = "n"
+            case id
+            case instanceCount = "icount"
+            case instancePercentage = "ipct"
+        }
+        
         public var description: String {
-            return n
+            return spelling
         }
     }
     
+    /// Encodes information about the normalisations of spellings made by translators and editors.
     public struct Norm: Decodable, CustomStringConvertible {
-        let n: String
+        public let id: String
+        public let normalisation: String
+        public let instanceCount: String
+        public let instancePercentage: String
+        
+        enum CodingKeys: String, CodingKey {
+            case id
+            case normalisation = "n"
+            case instanceCount = "icount"
+            case instancePercentage = "ipct"
+        }
+        
         public var description: String {
-            return n
+            return normalisation
         }
     }
     
     public struct Sense: Decodable, CustomStringConvertible {
-        let n: String
+        let headWord: String?
         let meaning: String?
+        let partOfSpeech: String?
         
         enum codingKeys: String, CodingKey {
-            case n
+            case headWord = "n"
             case meaning = "mng"
+            case partOfSpeech = "pos"
         }
         
         public var description: String {
-            var str =  "\(n)"
+            var str =  "\(headWord)"
             if let m = meaning {
                 str.append(" Meaning: \(m)")
             }
@@ -67,11 +93,24 @@ public struct GlossaryEntry: Decodable, CustomStringConvertible {
         }
     }
     
-    /// Main heading for entry
-    public let headword: String
+    /// Unique ID for entry
+    public let id: String
     
-    /// Rough meaning
-    public let meaning: String?
+    /// Main heading for entry, formatted as `entry[translation]POS`
+    public let headWord: String
+    
+    /// Conventional citation form as found in the Concise Dictionary of Akkadian
+    public let citationForm: String
+    
+    /// Guide translation
+    public let guideWord: String?
+    
+    /// Part of speech
+    public let partOfSpeech: String?
+    
+    /// Number of times this headword appears in the corpus
+    public let instanceCount: String?
+    
     
     /// Transliterated spellings found in the corpus
     public let forms: [Form]?
@@ -82,18 +121,18 @@ public struct GlossaryEntry: Decodable, CustomStringConvertible {
     /// Various senses for translation
     public let senses: [Sense]
     
+    
     enum CodingKeys: String, CodingKey {
-        case headword
-        case meaning = "gw"
-        case forms, norms, senses
+        case headWord = "headword"
+        case citationForm = "cf"
+        case guideWord = "gw"
+        case partOfSpeech = "pos"
+        case instanceCount = "icount"
+        case forms, norms, senses, id
     }
     
     public var description: String {
-        var str =   """
-        \(headword)
-        \(meaning ?? "n/a")
-        Senses: \(senses)
-        """
+        var str = "\(headWord)\n\(citationForm), \(guideWord ?? "")"
         
         if let forms = forms {
             str.append("\nForms: \(forms)")
