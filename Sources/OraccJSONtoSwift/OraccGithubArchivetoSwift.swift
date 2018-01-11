@@ -30,7 +30,7 @@ public class OraccGithubToSwiftInterface: OraccInterface {
     
     //MARK: - Properties
     // Internet-related properties
-    let decoder = JSONDecoder()
+    public let decoder = JSONDecoder()
     let session = URLSession(configuration: .default)
     let githubArchivePath = URL(string: "https://raw.githubusercontent.com/oracc/json/master/")!
     
@@ -41,7 +41,7 @@ public class OraccGithubToSwiftInterface: OraccInterface {
     // Oracc directory properties
     
     /// Array of all projects hosted on Oracc
-    lazy var oraccProjects: [OraccProjectEntry] = {
+    lazy public var oraccProjects: [OraccProjectEntry] = {
         return try! self.getOraccProjects()
     }()
     

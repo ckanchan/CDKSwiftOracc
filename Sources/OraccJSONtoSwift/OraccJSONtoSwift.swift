@@ -8,9 +8,13 @@
 import Foundation
 
 public class OraccToSwiftInterface: OraccInterface {
+    public func loadGlossary(_ glossary: OraccGlossaryType, inCatalogue catalogue: OraccCatalog) throws -> OraccGlossary {
+        throw InterfaceError.Unimplemented("ORacc doesn't provide glossaries right now")
+    }
     
-    let decoder = JSONDecoder()
-    lazy var oraccProjects: [OraccProjectEntry] = {
+    
+    public let decoder = JSONDecoder()
+    lazy public var oraccProjects: [OraccProjectEntry] = {
         do {
             return try getOraccProjects()
         } catch {
@@ -18,7 +22,7 @@ public class OraccToSwiftInterface: OraccInterface {
         }
     }()
     
-    lazy var availableVolumes: [OraccProjectEntry] = {
+    lazy public var availableVolumes: [OraccProjectEntry] = {
         return oraccProjects
     }()
     
