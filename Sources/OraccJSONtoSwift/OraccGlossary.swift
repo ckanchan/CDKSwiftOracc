@@ -90,7 +90,7 @@ public struct GlossaryEntry: Decodable, CustomStringConvertible {
         public let meaning: String?
         public let partOfSpeech: String?
         
-        enum codingKeys: String, CodingKey {
+        enum CodingKeys: String, CodingKey {
             case id
             case headWord = "n"
             case meaning = "mng"
