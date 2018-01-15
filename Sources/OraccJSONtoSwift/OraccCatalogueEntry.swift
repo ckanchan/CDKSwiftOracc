@@ -68,7 +68,7 @@ extension OraccCatalogEntry: Decodable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let displayName = try container.decode(String.self, forKey: .displayName)
+        let displayName = try container.decodeIfPresent(String.self, forKey: .displayName)
         let title = try container.decodeIfPresent(String.self, forKey: .title)
         let popularName = try container.decodeIfPresent(String.self, forKey: .popular_name)
         let textID = try container.decodeIfPresent(String.self, forKey: .id)
@@ -93,7 +93,7 @@ extension OraccCatalogEntry: Decodable {
             return Int(String(chapterNumStr.split(separator: " ").last!))!
         }()
         
-        self.init(displayName: displayName, title: title ?? popularName ?? "no title", id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: chapterNumber, chapterName: chapterName, genre: genre, material: material, period: period, provenience: provenience, primaryPublication: primaryPublication, museumNumber: museumNumber, publicationHistory: publicationHistory, credits: credits)
+        self.init(displayName: displayName ?? "no friendly name", title: title ?? popularName ?? "no title", id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: chapterNumber, chapterName: chapterName, genre: genre, material: material, period: period, provenience: provenience, primaryPublication: primaryPublication, museumNumber: museumNumber, publicationHistory: publicationHistory, credits: credits)
         
         
         

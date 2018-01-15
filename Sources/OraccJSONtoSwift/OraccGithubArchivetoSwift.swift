@@ -12,6 +12,7 @@ import ZIPFoundation
 // Class that connects to Github and manages the decoding of texts from archives hosted there.
 
 public class OraccGithubToSwiftInterface: OraccInterface {
+
     
     //MARK:- Helper type
     
@@ -36,7 +37,7 @@ public class OraccGithubToSwiftInterface: OraccInterface {
     
     // File management properties
     let fileManager: FileManager
-    let resourceURL: URL
+    var resourceURL: URL
     
     // Oracc directory properties
     
@@ -167,33 +168,38 @@ public class OraccGithubToSwiftInterface: OraccInterface {
         completion(availableVolumes)
     }
     
+    
+    
+    
     /**
-     Checks if a catalogue loads locally, then passes it to the supplied completion handler, else attempts to download the volume archive from Github, extract it, decode the catalogue and pass it to the supplied completion handler.
+     Returns a decoded `OraccCatalog` object, from the local file if present, otherwise downloads the archive from Github, extracts the catalogue, and decodes and returns.
      
      - Parameter volume: An `OraccProjectEntry` from `availableVolumes` representing the desired volume.
-     - Parameter completion: the handler to be called upon successful catalogue decoding.
+
      */
     
-    public func loadCatalogue(_ volume: OraccProjectEntry, completion: @escaping (OraccCatalog) -> Void) throws {
+    public func loadCatalogue(_ volume: OraccProjectEntry) throws -> OraccCatalog {
         let cataloguePath = volume.pathname + "/catalogue.json"
         let localURL = resourceURL.appendingPathComponent(cataloguePath)
         let data: Data
         let catalogue: OraccCatalog
-            do {
-                if fileManager.fileExists(atPath: localURL.path) {
-                    data = try Data(contentsOf: localURL)
-                    catalogue = try decoder.decode(OraccCatalog.self, from: data)
-                } else {
-                    let localArchiveURL = try downloadJSONArchive(volume)
-                    let catalogueURL = try decompressItem(cataloguePath, inArchive: localArchiveURL)
-                    data = try Data(contentsOf: catalogueURL)
-                    catalogue = try decoder.decode(OraccCatalog.self, from: data)
-                }
-                completion(catalogue)
-            } catch {
-                throw error
+        do {
+            if fileManager.fileExists(atPath: localURL.path) {
+                data = try Data(contentsOf: localURL)
+                catalogue = try decoder.decode(OraccCatalog.self, from: data)
+            } else {
+                let localArchiveURL = try downloadJSONArchive(volume)
+                let catalogueURL = try decompressItem(cataloguePath, inArchive: localArchiveURL)
+                data = try Data(contentsOf: catalogueURL)
+                catalogue = try decoder.decode(OraccCatalog.self, from: data)
             }
+            return catalogue
+        } catch {
+            throw error
         }
+    }
+    
+    
     /**
      Loads the specified text ID from a given catalogue.
      - Parameter key: CDLI Text id of the text to be loaded
@@ -262,10 +268,20 @@ public class OraccGithubToSwiftInterface: OraccInterface {
         }
     }
     
-
+    /** Changes the directory where archives are downloaded to another one specified by the user, if required. The default value is the user's temporary directory.
+     - Parameter url: A URL object representing the desired resource path
+     - Throws: `InterfaceError.cannotSetResourceURL`
+ */
+    public func setResourceURL(to url: URL) throws {
+        guard fileManager.fileExists(atPath: url.path) else {throw InterfaceError.cannotSetResourceURL}
+        self.resourceURL = url
+    }
+    
+    
     /**
      Clears downloaded volumes from disk.
      */
+    
     public func clearCaches() throws {
         do {
             try fileManager.removeItem(at: resourceURL)

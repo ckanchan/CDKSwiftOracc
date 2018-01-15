@@ -84,25 +84,27 @@ public struct GlossaryEntry: Decodable, CustomStringConvertible {
         }
     }
     
-    public struct Sense: Decodable, CustomStringConvertible {
+    public struct Sense: Decodable {
         public let id: String
-        public let headWord: String?
-        public let meaning: String?
-        public let partOfSpeech: String?
+        public let headWord: String
+        public let meaning: String
+        public let partOfSpeech: String
+        public let signatures: [Signature]?
         
         enum CodingKeys: String, CodingKey {
             case id
             case headWord = "n"
             case meaning = "mng"
             case partOfSpeech = "pos"
+            case signatures = "sigs"
         }
+    }
+    
+    public struct Signature: Decodable {
+        public let signature: String
         
-        public var description: String {
-            var str =  "\(headWord ?? "")"
-            if let m = meaning {
-                str.append(" Meaning: \(m)")
-            }
-            return str
+        enum CodingKeys: String, CodingKey {
+            case signature = "sig"
         }
     }
     

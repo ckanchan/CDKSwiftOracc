@@ -11,7 +11,7 @@ class OraccGithubtoSwiftTests: XCTestCase {
     }
 
     override func tearDown() {
-        try! fileManager.removeItem(at: fileManager.temporaryDirectory.appendingPathComponent("oraccGithubCache"))
+        try? fileManager.removeItem(at: fileManager.temporaryDirectory.appendingPathComponent("oraccGithubCache"))
     }
     
     func testArchiveList() throws {
@@ -128,9 +128,8 @@ class OraccGithubtoSwiftTests: XCTestCase {
 
         do {
             interface = try OraccGithubToSwiftInterface()
-            try interface.loadCatalogue(projects.SAA13){ catalogue in
-                XCTAssertEqual(catalogue.project, "saao/saa13")
-            }
+            let catalogue = try interface.loadCatalogue(projects.SAA13)
+            XCTAssertEqual(catalogue.project, "saao/saa13")
         } catch {
             throw error
         }
@@ -145,15 +144,10 @@ class OraccGithubtoSwiftTests: XCTestCase {
         
         do {
             interface = try OraccGithubToSwiftInterface()
-            try interface.loadCatalogue(projects.SAA13) { cat in
-                print("Entering completion handler")
-                catalogue = cat
-                XCTAssertNotNil(catalogue)
-                XCTAssertEqual(catalogue!.project, "saao/saa13")
-                catalogueLoaded.fulfill()
-
-                
-            }
+            catalogue = try interface.loadCatalogue(projects.SAA13)
+            XCTAssertNotNil(catalogue)
+            XCTAssertEqual(catalogue!.project, "saao/saa13")
+            catalogueLoaded.fulfill()
         } catch {
             throw error
         }
@@ -171,6 +165,7 @@ class OraccGithubtoSwiftTests: XCTestCase {
         }
     }
     
+    
     func measureTextLoad() {
         let projects = SampleProjectData()
         
@@ -179,13 +174,10 @@ class OraccGithubtoSwiftTests: XCTestCase {
         let catalogueLoaded = expectation(description: "Catalogue successfully loaded")
         
         measure {
-            try! interface.loadCatalogue(projects.SAA13) { cat in
-                print("Entering completion handler")
-                catalogue = cat
+            catalogue = try! interface.loadCatalogue(projects.SAA13)
                 XCTAssertNotNil(catalogue)
                 XCTAssertEqual(catalogue!.project, "saao/saa13")
                 catalogueLoaded.fulfill()
-            }
         }
         
         measure {

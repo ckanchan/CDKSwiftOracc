@@ -8,8 +8,12 @@
 import Foundation
 
 public class OraccToSwiftInterface: OraccInterface {
+    public func loadCatalogueSync(_ volume: OraccProjectEntry) throws -> OraccCatalog {
+        throw InterfaceError.Unimplemented("Oracc isn't providing a JSON API right now.")
+    }
+    
     public func loadGlossary(_ glossary: OraccGlossaryType, inCatalogue catalogue: OraccCatalog) throws -> OraccGlossary {
-        throw InterfaceError.Unimplemented("ORacc doesn't provide glossaries right now")
+        throw InterfaceError.Unimplemented("Oracc doesn't provide glossaries right now")
     }
     
     
@@ -30,7 +34,7 @@ public class OraccToSwiftInterface: OraccInterface {
         completion(availableVolumes)
     }
     
-    public func loadCatalogue(_ volume: OraccProjectEntry, completion: @escaping (OraccCatalog) -> Void) throws {
+    public func loadCatalogue(_ volume: OraccProjectEntry) throws -> OraccCatalog  {
         throw InterfaceError.Unimplemented("Oracc.org isn't serving JSON catalogues right now")
     }
     

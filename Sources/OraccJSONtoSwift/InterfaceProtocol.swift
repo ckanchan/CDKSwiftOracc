@@ -21,7 +21,7 @@ public protocol OraccInterface {
     
     func getAvailableVolumes(_ completion: @escaping ([OraccProjectEntry])  -> Void) throws
     
-    func loadCatalogue(_ volume: OraccProjectEntry, completion: @escaping (OraccCatalog)  -> Void) throws
+    func loadCatalogue(_ volume: OraccProjectEntry) throws -> OraccCatalog
     
     func loadText(_ key: String, inCatalogue catalogue: OraccCatalog) throws -> OraccTextEdition
     
@@ -76,6 +76,7 @@ extension OraccInterface {
  */
 
 enum InterfaceError: Error {
+    case cannotSetResourceURL
     
     enum JSONError: Error {
         case unableToDecode(swiftError: String)
