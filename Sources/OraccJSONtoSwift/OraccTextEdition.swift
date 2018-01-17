@@ -8,8 +8,9 @@
 import Foundation
 
 public struct OraccTextEdition: Decodable {
-    let type: String
-    let project: String
+    public let type: String
+    public let project: String
+    public var loadedFrom: URL? = nil
     
     /// Access to the raw CDL node array
     public let cdl: [OraccCDLNode]
@@ -79,6 +80,7 @@ public extension OraccTextEdition {
             nodes.forEach{
                 if let str = $0.stringValue {
                     translation.append(str)
+                    translation.append("\n")
                 }
             }
         } catch {

@@ -41,5 +41,9 @@ public class OraccToSwiftInterface: OraccInterface {
     public func loadText(_ key: String, inCatalogue catalogue: OraccCatalog) throws -> OraccTextEdition {
         throw InterfaceError.Unimplemented("Oracc.org isn't serving JSON texts right now")
     }
+    
+    public func loadText(_ textEntry: OraccCatalogEntry) throws -> OraccTextEdition {
+        throw InterfaceError.Unimplemented("Oracc.org isn't serving JSON right now.")
+    }
 }
 

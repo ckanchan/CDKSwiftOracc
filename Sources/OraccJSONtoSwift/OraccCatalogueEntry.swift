@@ -101,6 +101,27 @@ extension OraccCatalogEntry: Decodable {
     }
 }
 
+extension OraccCatalogEntry: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(displayName, forKey: .displayName)
+        try container.encode(title, forKey: .title)
+        try container.encode(id, forKey: .id)
+        try container.encodeIfPresent(ancientAuthor, forKey: .ancientAuthor)
+        try container.encode(project, forKey: .project)
+        try container.encodeIfPresent(String(chapterNumber ?? 0), forKey: .chapterNumber)
+        try container.encodeIfPresent(chapterName, forKey: .chapterName)
+        try container.encodeIfPresent(genre, forKey: .genre)
+        try container.encodeIfPresent(material, forKey: .material)
+        try container.encodeIfPresent(period, forKey: .period)
+        try container.encodeIfPresent(provenience, forKey: .provenience)
+        try container.encodeIfPresent(primaryPublication, forKey: .primaryPublication)
+        try container.encodeIfPresent(museumNumber, forKey: .museumNumber)
+        try container.encodeIfPresent(publicationHistory, forKey: .publicationHistory)
+        try container.encodeIfPresent(credits, forKey: .credits)
+    }
+}
+
 extension OraccCatalogEntry: CustomStringConvertible {
     public var description: String {
         return """
@@ -111,3 +132,5 @@ extension OraccCatalogEntry: CustomStringConvertible {
         """
     }
 }
+
+

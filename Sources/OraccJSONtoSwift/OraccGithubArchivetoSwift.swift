@@ -208,32 +208,10 @@ public class OraccGithubToSwiftInterface: OraccInterface {
     */
     
     public func loadText(_ key: String, inCatalogue catalogue: OraccCatalog) throws -> OraccTextEdition {
-        let itemPath = catalogue.project + "/corpusjson/" + key + ".json"
-        let textURL = resourceURL.appendingPathComponent(itemPath)
-        var text: OraccTextEdition? = nil
-        
-        
-        if fileManager.fileExists(atPath: textURL.path) {
-            do {
-                text = try loadText(textURL)
-            } catch {
-                throw error
-            }
-        } else {
-            let archiveName = catalogue.project.replacingOccurrences(of: "/", with: "-") + ".zip"
-            let archiveURL = resourceURL.appendingPathComponent(archiveName)
-            do {
-                let itemURL = try decompressItem(itemPath, inArchive: archiveURL)
-                text = try loadText(itemURL)
-            } catch {
-                throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: error.localizedDescription)
-            }
-        }
-        
-        if let result = text {
-            return result
-        } else {            
-            throw InterfaceError.TextError.notAvailable
+        do {
+            return try loadTextFromLocalFile(project: catalogue.project, key: key)
+        } catch {
+            throw error
         }
     }
     
@@ -267,6 +245,50 @@ public class OraccGithubToSwiftInterface: OraccInterface {
             throw InterfaceError.GlossaryError.notAvailable
         }
     }
+    
+    public func loadText(_ textEntry: OraccCatalogEntry) throws -> OraccTextEdition {
+        do {
+            return try loadTextFromLocalFile(project: textEntry.project, key: textEntry.id)
+        } catch {
+            throw error
+        }
+    }
+    
+    private func loadTextFromLocalFile(project: String, key: String) throws -> OraccTextEdition {
+        let itemPath = project + "/corpusjson/" + key + ".json"
+        let textURL = resourceURL.appendingPathComponent(itemPath)
+        var text: OraccTextEdition? = nil
+        let location: URL
+        
+        
+        if fileManager.fileExists(atPath: textURL.path) {
+            do {
+                text = try loadText(textURL)
+                location = textURL
+            } catch {
+                throw error
+            }
+        } else {
+            let archiveName = project.replacingOccurrences(of: "/", with: "-") + ".zip"
+            let archiveURL = resourceURL.appendingPathComponent(archiveName)
+            do {
+                let itemURL = try decompressItem(itemPath, inArchive: archiveURL)
+                text = try loadText(itemURL)
+                location = itemURL
+            } catch {
+                throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: error.localizedDescription)
+            }
+        }
+        
+        if var result = text {
+            result.loadedFrom = location
+            return result
+        } else {
+            throw InterfaceError.TextError.notAvailable
+        }
+    }
+    
+    
     
     /** Changes the directory where archives are downloaded to another one specified by the user, if required. The default value is the user's temporary directory.
      - Parameter url: A URL object representing the desired resource path
