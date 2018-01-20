@@ -38,11 +38,20 @@ extension WordForm: Decodable {
         let delimiter = try container.decodeIfPresent(String.self, forKey: .delim)
         
         // Try and get translation fields
-        let guideWord = try container.decodeIfPresent(String.self, forKey: .gw)
+        var guideWord = try container.decodeIfPresent(String.self, forKey: .gw)
         let citationForm = try container.decodeIfPresent(String.self, forKey: .cf)
-        let sense = try container.decodeIfPresent(String.self, forKey: .sense)
+        var sense = try container.decodeIfPresent(String.self, forKey: .sense)
         let partOfSpeech = try container.decodeIfPresent(String.self, forKey: .pos)
         let effectivePartOfSpeech = try container.decodeIfPresent(String.self, forKey: .epos)
+        
+        // If a proper name, reassign guideWord and Sense fields to the proper name
+        if let gw = guideWord {
+            if gw == "1" {
+                guideWord = citationForm
+                sense = citationForm
+            }
+        }
+        
         
         let translation = Translation(guideWord: guideWord, citationForm: citationForm, sense: sense, partOfSpeech: partOfSpeech, effectivePartOfSpeech: effectivePartOfSpeech)
         
