@@ -159,14 +159,16 @@ let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont
             case .l(let lemma):
                 switch lemma.wordForm.language {
                 case .Akkadian(_):
-                    let attrStr: NSAttributedString
+                    let attrStr: NSMutableAttributedString
                     if let norm = lemma.wordForm.normalisation {
-                        attrStr = NSAttributedString(
+                        var translationAttrs = lemma.getExtendedAttributes()
+                        translationAttrs[.font] = font.getItalicFont()
+                        attrStr = NSMutableAttributedString(
                             string: "\(norm) ",
-                            attributes: italicFormatting
+                            attributes: translationAttrs
                         )
                     } else {
-                        attrStr = NSAttributedString(
+                        attrStr = NSMutableAttributedString(
                             string: "x ",
                             attributes: editorialFormatting
                         )

@@ -126,8 +126,17 @@ extension OraccCatalogEntry: CustomStringConvertible {
     public var description: String {
         return """
         
-        \(displayName) \(title)\t [\(id)]
+        \(displayName)
+        \(title)
         \(ancientAuthor ?? "")
+        \(chapter)
+        \(id)
+        \(genre ?? "")
+        \(material ?? "")
+        \(period ?? "")
+        \(provenience ?? "")
+        \(primaryPublication ?? "")
+        \(publicationHistory ?? "")
         
         """
     }

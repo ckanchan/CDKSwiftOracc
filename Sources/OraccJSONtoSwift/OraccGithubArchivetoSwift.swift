@@ -216,8 +216,23 @@ public class OraccGithubToSwiftInterface: OraccInterface {
     }
     
     public func loadGlossary(_ glossary: OraccGlossaryType, inCatalogue catalogue: OraccCatalog) throws -> OraccGlossary {
-        
-        let itemPath = catalogue.project + "/" + glossary.jsonName
+        do {
+            return try loadGlossary(glossary, project: catalogue.project)
+        } catch {
+            throw error
+        }
+    }
+    
+    public func loadGlossary(_ glossary: OraccGlossaryType, catalogueEntry: OraccCatalogEntry) throws -> OraccGlossary {
+        do {
+            return try loadGlossary(glossary, project: catalogueEntry.project)
+        } catch {
+            throw error
+        }
+    }
+    
+    func loadGlossary(_ glossary: OraccGlossaryType, project: String) throws -> OraccGlossary {
+        let itemPath = project + "/" + glossary.jsonName
         let glossaryURL = resourceURL.appendingPathComponent(itemPath)
         var glossary: OraccGlossary? = nil
         
@@ -229,7 +244,7 @@ public class OraccGithubToSwiftInterface: OraccInterface {
                 throw error
             }
         } else {
-            let archiveName = catalogue.project.replacingOccurrences(of: "/", with: "-") + ".zip"
+            let archiveName = project.replacingOccurrences(of: "/", with: "-") + ".zip"
             let archiveURL = resourceURL.appendingPathComponent(archiveName)
             do {
                 let itemURL = try decompressItem(itemPath, inArchive: archiveURL)

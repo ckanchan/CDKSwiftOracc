@@ -28,6 +28,8 @@ public protocol OraccInterface {
     func loadText(_ textEntry: OraccCatalogEntry) throws -> OraccTextEdition
     
     func loadGlossary(_ glossary: OraccGlossaryType, inCatalogue catalogue: OraccCatalog) throws -> OraccGlossary
+    
+    func loadGlossary(_ glossary: OraccGlossaryType, catalogueEntry: OraccCatalogEntry) throws -> OraccGlossary
 }
 
 extension OraccInterface {

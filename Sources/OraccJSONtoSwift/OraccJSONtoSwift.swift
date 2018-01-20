@@ -16,6 +16,10 @@ public class OraccToSwiftInterface: OraccInterface {
         throw InterfaceError.Unimplemented("Oracc doesn't provide glossaries right now")
     }
     
+    public func loadGlossary(_ glossary: OraccGlossaryType, catalogueEntry: OraccCatalogEntry) throws -> OraccGlossary {
+        throw InterfaceError.Unimplemented("Oracc doesn't provide glossaries right now")
+    }
+    
     
     public let decoder = JSONDecoder()
     lazy public var oraccProjects: [OraccProjectEntry] = {
