@@ -65,6 +65,16 @@ public enum Determinative: String {
     case pre, post
 }
 
+/// Preservation status of a sign
+public enum Preservation: String {
+    case preserved, damaged, missing
+}
+
+/// Break information - needs refactoring
+public enum BreakPosition {
+    case start, end
+}
+
 
 /// Base structure for representing cuneiform signs (graphemes) decoded from the grapheme description language. Enables sign-by-sign cuneiform and transliteration functionality.
 
@@ -77,6 +87,12 @@ public struct GraphemeDescription {
     
     /// True if the sign is a logogram. Useful for formatting purposes.
     public let isLogogram: Bool
+    
+    /// Sign preservation
+    public let preservation: Preservation
+    
+    /// If broken, whether it's at the start or the end
+    public let breakPosition: BreakPosition?
     
     /// If a determinative, what role it plays (usually 'semantic'), and position it occupies
     public let isDeterminative: Determinative?
@@ -107,6 +123,7 @@ extension GraphemeDescription: Decodable {
         
         case role = "role"
         
+        case preservation = "break"
         case determinative = "det"
         case position = "pos"
         
@@ -114,6 +131,8 @@ extension GraphemeDescription: Decodable {
         case gdl = "gdl"
         case sequence = "seq"
         case delim = "delim"
+        
+        case breakStart, breakEnd
     }
     
     public init(from decoder: Decoder) throws {
@@ -164,6 +183,25 @@ extension GraphemeDescription: Decodable {
             cuneiformSign = CuneiformSign.null
         }
         
+        // Get preservation quality
+        let preservation: Preservation
+        if let breakDescription = try container.decodeIfPresent(String.self, forKey: .preservation) {
+            preservation = Preservation(rawValue: breakDescription) ?? .preserved
+        } else {
+            preservation = .preserved
+        }
+        
+        // Get sign break position
+        let breakPosition: BreakPosition?
+        if container.contains(.breakStart) {
+            breakPosition = .start
+        } else if container.contains(.breakEnd) {
+            breakPosition = .end
+        } else {
+            breakPosition = nil
+        }
+        
+        
         // Check if grapheme is a logogram
         let isLogogram: Bool
         if let role = try container.decodeIfPresent(String.self, forKey: .role) {
@@ -189,10 +227,20 @@ extension GraphemeDescription: Decodable {
         let sequence = try container.decodeIfPresent([GraphemeDescription].self, forKey: .sequence)
         let gdl = try container.decodeIfPresent([GraphemeDescription].self, forKey: .gdl)
         
-        let delimiter = try container.decodeIfPresent(String.self, forKey: .delim)
+        let delimiter: String?
+        
+        if let decodedDelimiter = try container.decodeIfPresent(String.self, forKey: .delim) {
+            if decodedDelimiter == "--" {
+                delimiter = "—"
+            } else {
+                delimiter = decodedDelimiter
+            }
+        } else {
+            delimiter = nil
+        }
         
         // Init
-        self.init(graphemeUTF8: graphemeUTF8, sign: cuneiformSign, isLogogram: isLogogram, isDeterminative: determinative, group: group, gdl: gdl, sequence: sequence, delim: delimiter)
+        self.init(graphemeUTF8: graphemeUTF8, sign: cuneiformSign, isLogogram: isLogogram, preservation: preservation, breakPosition: breakPosition, isDeterminative: determinative, group: group, gdl: gdl, sequence: sequence, delim: delimiter)
     }
 }
 

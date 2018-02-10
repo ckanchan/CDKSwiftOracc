@@ -262,8 +262,17 @@ public class OraccGithubToSwiftInterface: OraccInterface {
     }
     
     public func loadText(_ textEntry: OraccCatalogEntry) throws -> OraccTextEdition {
+        let project: String
+        
+        // Ugly hack for CAMS
+        if textEntry.project.contains("Geography of Knowledge") {
+            project = "cams/gkab"
+        } else {
+            project = textEntry.project
+        }
+        
         do {
-            return try loadTextFromLocalFile(project: textEntry.project, key: textEntry.id)
+            return try loadTextFromLocalFile(project: project, key: textEntry.id)
         } catch {
             throw error
         }

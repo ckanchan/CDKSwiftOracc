@@ -40,6 +40,7 @@ public struct OraccCatalogEntry {
     public let primaryPublication: String?
     public let museumNumber: String?
     public let publicationHistory: String?
+    public let notes: String?
     
     ///Copyright and editorial information
     public let credits: String?
@@ -47,6 +48,7 @@ public struct OraccCatalogEntry {
 
 extension OraccCatalogEntry: Decodable {
     private enum CodingKeys: String, CodingKey {
+        case designation
         case displayName = "display_name"
         case title
         case popular_name
@@ -63,11 +65,13 @@ extension OraccCatalogEntry: Decodable {
         case museumNumber = "museum_no"
         case publicationHistory = "publication_history"
         case credits
+        case notes
         
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let designation = try container.decode(String.self, forKey: .designation)
         let displayName = try container.decodeIfPresent(String.self, forKey: .displayName)
         let title = try container.decodeIfPresent(String.self, forKey: .title)
         let popularName = try container.decodeIfPresent(String.self, forKey: .popular_name)
@@ -87,13 +91,14 @@ extension OraccCatalogEntry: Decodable {
         let museumNumber = try container.decodeIfPresent(String.self, forKey: .museumNumber)
         let publicationHistory = try container.decodeIfPresent(String.self, forKey: .publicationHistory)
         let credits = try container.decodeIfPresent(String.self, forKey: .credits)
+        let notes = try container.decodeIfPresent(String.self, forKey: .notes)
         
         let chapterNumber: Int? = {
             guard let chapterNumStr = chapterNumStr else {return nil}
             return Int(String(chapterNumStr.split(separator: " ").last!))!
         }()
         
-        self.init(displayName: displayName ?? "no friendly name", title: title ?? popularName ?? "no title", id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: chapterNumber, chapterName: chapterName, genre: genre, material: material, period: period, provenience: provenience, primaryPublication: primaryPublication, museumNumber: museumNumber, publicationHistory: publicationHistory, credits: credits)
+        self.init(displayName: displayName ?? "no friendly name", title: title ?? popularName ?? designation, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: chapterNumber, chapterName: chapterName, genre: genre, material: material, period: period, provenience: provenience, primaryPublication: primaryPublication, museumNumber: museumNumber, publicationHistory: publicationHistory, notes: notes, credits: credits)
         
         
         

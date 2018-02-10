@@ -9,10 +9,11 @@ import Foundation
 
 #if os(macOS)
     import Cocoa
-let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]
+    
+    let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]
     
     
-    /// Formats strings and text using Assyriological conventions. Available for iOS only.
+    /// Formats strings and text using Assyriological conventions.
     public extension OraccTextEdition {
         
         /// Returns a string formatted with Akkadian normalisation.
@@ -54,8 +55,7 @@ let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont
             //Formatting attributes
             let italicFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: font.getItalicFont()]
             let superscriptFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.superscript: 1]
-            
-            
+            let damagedFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: font.getItalicFont(), NSAttributedStringKey.foregroundColor: NSColor.gray]
             
             //Determinatives
             if let determinative = isDeterminative {
@@ -78,27 +78,53 @@ let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont
                 
                 str.append(syllable)
                 str.append(delim)
-            } else if let group = group {
-                
-                //Recursing
-                
+            } else if let group = group { //Recursing
                 group.forEach{str.append($0.transliteratedAttributedString(withFont: font))}
             } else if let gdl = gdl {
                 gdl.forEach{str.append($0.transliteratedAttributedString(withFont: font))}
             } else if let sequence = sequence {
                 sequence.forEach{str.append($0.transliteratedAttributedString(withFont: font))}
             } else {
+                switch breakPosition {
+                case .start?:
+                    switch self.preservation {
+                    case .missing:
+                        let startBreak = NSAttributedString(string: "[", attributes: noFormatting)
+                        str.append(startBreak)
+                    default:
+                        break
+                    }
+                default:
+                    break
+                }
+                
+                
                 switch self.sign {
                 case .value(let syllable): // Syllabographic
                     let akkSyllable: NSAttributedString
-                    if syllable == "x" {
-                        akkSyllable = NSAttributedString(string: syllable, attributes: noFormatting) // Formats broken signs
-                    } else {
-                        akkSyllable = NSAttributedString(
-                            string: syllable,
-                            attributes: italicFormatting)
+                
+                    
+                    switch self.preservation {
+                    case .damaged:
+                        let startBreak = NSAttributedString(string: "⸢", attributes: noFormatting)
+                        str.append(startBreak)
+                        akkSyllable = NSAttributedString(string: syllable,
+                                                         attributes: damagedFormatting)
+                        str.append(akkSyllable)
+                        let endBreak = NSAttributedString(string: "⸣", attributes: noFormatting)
+                        str.append(endBreak)
+                    case .missing:
+                        akkSyllable = NSAttributedString(string: syllable,
+                                                         attributes: damagedFormatting)
+                        str.append(akkSyllable)
+                    case .preserved:
+                        akkSyllable = NSAttributedString(string: syllable,
+                                                         attributes: italicFormatting)
+                        str.append(akkSyllable)
                     }
-                    str.append(akkSyllable)
+                    
+                    
+                    
                     let delimiter = NSAttributedString(
                         string: delim ?? " ",
                         attributes: noFormatting
@@ -143,6 +169,18 @@ let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont
                 }
             }
             
+            switch breakPosition {
+            case .end?:
+                switch self.preservation {
+                case .missing:
+                    let endBreak = NSAttributedString(string: "]", attributes: noFormatting)
+                    str.append(endBreak)
+                default:
+                    break
+                }
+            default:
+                break
+            } 
             return str
         }
     }
@@ -151,7 +189,6 @@ let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont
         func normalisedAttributedString(withFont font: NSFont) -> NSAttributedString {
             
             let str: NSMutableAttributedString = NSMutableAttributedString(string: "")
-            let italicFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: font.getItalicFont()]
             let editorialFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.regular)]
             let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.bold)]
             

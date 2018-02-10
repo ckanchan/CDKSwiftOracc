@@ -43,7 +43,7 @@ public struct OraccCDLNode {
     
     public struct Discontinuity {
         enum DiscontinuityType: String {
-            case bottom, column, edge, excised, left, nonw, nonx, obverse, object, linestart = "line-start", punct, right, reverse, surface, top
+            case bottom, cellStart = "cell-start", cellEnd = "cell-end", column, edge, excised, fieldStart = "field-start", left, nonw, nonx, obverse, object, linestart = "line-start", punct, right, reverse, surface, tablet, top
         }
         let type: DiscontinuityType
         let label: String?
