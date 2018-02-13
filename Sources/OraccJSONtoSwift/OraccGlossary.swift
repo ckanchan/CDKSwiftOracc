@@ -29,6 +29,12 @@ public class OraccGlossary: Decodable {
     public let project: String
     public let lang: String
     public let entries: [GlossaryEntry]
+    
+    init(project: String, lang: String, entries: [GlossaryEntry]) {
+        self.project = project
+        self.lang = lang
+        self.entries = entries
+    }
 }
 
 
