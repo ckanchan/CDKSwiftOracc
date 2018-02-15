@@ -25,18 +25,43 @@ public enum OraccGlossaryType: String {
 }
 
 /// Class representing an Oracc glossary
-public class OraccGlossary: Decodable {
+public final class OraccGlossary {
     public let project: String
     public let lang: String
     public let entries: [GlossaryEntry]
+    private let instances: [String: [XISReference]]
     
-    init(project: String, lang: String, entries: [GlossaryEntry]) {
+    public func instancesOf(_ entry: GlossaryEntry) -> [XISReference] {
+        return self.instances[entry.xisKey]!
+    }
+    
+    init(project: String, lang: String, entries: [GlossaryEntry], instances: [String: [XISReference]]) {
         self.project = project
         self.lang = lang
         self.entries = entries
+        self.instances = instances
     }
 }
 
+extension OraccGlossary: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case project, lang, entries, instances
+    }
+    
+    public convenience init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let project = try container.decode(String.self, forKey: .project)
+        let lang = try container.decode(String.self, forKey: .lang)
+        let entries = try container.decode([GlossaryEntry].self, forKey: .entries)
+        let instances = try container.decode([String: [String]].self, forKey: .instances)
+        
+        let xisInstances = instances.mapValues {
+            return $0.map { return XISReference(withReference: $0)! }
+        }
+        
+        self.init(project: project, lang: lang, entries: entries, instances: xisInstances)
+    }
+}
 
 /// An Oracc glossary entry
 public struct GlossaryEntry: Decodable, CustomStringConvertible {
@@ -117,6 +142,9 @@ public struct GlossaryEntry: Decodable, CustomStringConvertible {
     /// Unique ID for entry
     public let id: String
     
+    /// Index key allowing lookup of references
+    let xisKey: String
+    
     /// Main heading for entry, formatted as `entry[translation]POS`
     public let headWord: String
     
@@ -149,6 +177,7 @@ public struct GlossaryEntry: Decodable, CustomStringConvertible {
         case guideWord = "gw"
         case partOfSpeech = "pos"
         case instanceCount = "icount"
+        case xisKey = "xis"
         case forms, norms, senses, id
     }
     
@@ -162,3 +191,5 @@ public struct GlossaryEntry: Decodable, CustomStringConvertible {
         return str
     }
 }
+
+

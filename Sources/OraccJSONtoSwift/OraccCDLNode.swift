@@ -21,7 +21,10 @@ public struct OraccCDLNode {
         /// Detailed wordform information
         let wordForm: WordForm
         
-        var transliteration: String {
+        /// Reference for glossary lookup
+        public let reference: String
+        
+        public var transliteration: String {
             var str = ""
             for grapheme in self.wordForm.graphemeDescriptions {
                 str.append(grapheme.transliteration)
@@ -93,6 +96,7 @@ extension OraccCDLNode: Decodable {
         case node = "node"
         case linkbase = "linkbase"
         case label = "label"
+        case reference = "ref"
     }
     
     public init(from decoder: Decoder) throws {
@@ -111,7 +115,11 @@ extension OraccCDLNode: Decodable {
                 let frag = try container.decode(String.self, forKey: .fragment)
                 let inst = try container.decodeIfPresent(String.self, forKey: .instanceTranslation)
                 let f = try container.decode(WordForm.self, forKey: .wordForm)
-                let l = OraccCDLNode.Lemma(fragment: frag, instanceTranslation: inst, wordForm: f)
+                let ref = try container.decode(String.self, forKey: .reference)
+                
+               
+                
+                let l = OraccCDLNode.Lemma(fragment: frag, instanceTranslation: inst, wordForm: f, reference: ref)
                 self = OraccCDLNode(lemma: l)
                 
             case "c":
