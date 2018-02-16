@@ -29,7 +29,7 @@ public final class OraccGlossary {
     public let project: String
     public let lang: String
     public let entries: [GlossaryEntry]
-    private let instances: [String: [XISReference]]
+    public let instances: [String: [XISReference]]
     
     public func instancesOf(_ entry: GlossaryEntry) -> [XISReference] {
         return self.instances[entry.xisKey]!
@@ -41,13 +41,13 @@ public final class OraccGlossary {
         self.entries = entries
         self.instances = instances
     }
-}
-
-extension OraccGlossary: Decodable {
+    
     enum CodingKeys: String, CodingKey {
         case project, lang, entries, instances
     }
-    
+}
+
+extension OraccGlossary: Decodable {
     public convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let project = try container.decode(String.self, forKey: .project)
@@ -63,12 +63,27 @@ extension OraccGlossary: Decodable {
     }
 }
 
+
+extension OraccGlossary: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(project, forKey: .project)
+        try container.encode(lang, forKey: .lang)
+        try container.encode(entries, forKey: .entries)
+        
+        let encodableInstances = instances.mapValues{$0.map{$0.description}}
+        try container.encode(encodableInstances, forKey: .instances)
+    }
+}
+
+
+
 /// An Oracc glossary entry
-public struct GlossaryEntry: Decodable, CustomStringConvertible {
+public struct GlossaryEntry: Codable, CustomStringConvertible {
     
     // MARK :- Helper types
     /// Encodes information about individual spellings for a given headword.
-    public struct Form: Decodable {
+    public struct Form: Codable {
         
         /// Spelling of a lemma, given in transliteration. Not given for forms of type "normform"
         public let spelling: String?
@@ -96,7 +111,7 @@ public struct GlossaryEntry: Decodable, CustomStringConvertible {
     }
     
     /// Encodes information about the normalisations of spellings made by translators and editors.
-    public struct Norm: Decodable, CustomStringConvertible {
+    public struct Norm: Codable, CustomStringConvertible {
         
         public let id: String
         public let normalisation: String
@@ -115,7 +130,7 @@ public struct GlossaryEntry: Decodable, CustomStringConvertible {
         }
     }
     
-    public struct Sense: Decodable {
+    public struct Sense: Codable {
         public let id: String
         public let headWord: String
         public let meaning: String
@@ -131,7 +146,7 @@ public struct GlossaryEntry: Decodable, CustomStringConvertible {
         }
     }
     
-    public struct Signature: Decodable {
+    public struct Signature: Codable {
         public let signature: String
         
         enum CodingKeys: String, CodingKey {
