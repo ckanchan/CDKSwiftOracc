@@ -158,7 +158,7 @@ public struct GlossaryEntry: Codable, CustomStringConvertible {
     public let id: String
     
     /// Index key allowing lookup of references
-    let xisKey: String
+    public let xisKey: String
     
     /// Main heading for entry, formatted as `entry[translation]POS`
     public let headWord: String
@@ -204,6 +204,21 @@ public struct GlossaryEntry: Codable, CustomStringConvertible {
         }
         
         return str
+    }
+    
+    public init(id: String, xisKey: String, headWord: String, citationForm: String, guideWord: String?, partOfSpeech: String?, instanceCount: String, forms: [Form]?, norms: [Norm]?, senses: [Sense]?){
+        
+        self.id = id
+        self.xisKey = xisKey
+        self.headWord = headWord
+        self.citationForm = citationForm
+        self.guideWord = guideWord
+        self.partOfSpeech = partOfSpeech
+        self.instanceCount = instanceCount
+        self.forms = forms
+        self.norms = norms
+        self.senses = senses
+        
     }
 }
 

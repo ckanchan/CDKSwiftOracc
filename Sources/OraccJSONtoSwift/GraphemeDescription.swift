@@ -39,7 +39,6 @@ public enum CuneiformSign {
     }
 }
 
-
 extension CuneiformSign.Modifier {
     static func modifierFromString(_ s: String) -> CuneiformSign.Modifier? {
         switch s {
@@ -59,6 +58,8 @@ extension CuneiformSign.Modifier {
         }
     }
 }
+
+
 
 /// Position of a determinative
 public enum Determinative: String {
@@ -244,6 +245,91 @@ extension GraphemeDescription: Decodable {
     }
 }
 
+extension GraphemeDescription: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(graphemeUTF8, forKey: .graphemeUTF8)
+        
+        switch self.sign {
+        case .value(let signValue):
+            try container.encode(signValue, forKey: .signValue)
+        case .name(let signName):
+            try container.encode(signName, forKey: .signName)
+        case .number(_):
+        //TODO: - Implement numbers
+            break
+        case .formVariant(let form, let base, let modifier):
+            
+            try container.encode(form, forKey: .form)
+            var formDictionary = [String: String]()
+            formDictionary["b"] = base
+            
+            if !modifier.isEmpty {
+                for modifier in modifier {
+                    switch modifier {
+                    case .Allograph(let a):
+                        formDictionary["a"] = a
+                    case .FormVariant(let f):
+                        formDictionary["f"] = f
+                    default:
+                        break
+                    }
+                }
+            }
+            
+            try container.encode(formDictionary, forKey: .modifiers)
+        case .null:
+            break
+        }
+        
+        switch self.preservation {
+        case .preserved:
+            break
+        case .damaged:
+            try container.encode(preservation.rawValue, forKey: .preservation)
+        case .missing:
+            try container.encode(preservation.rawValue, forKey: .preservation)
+        }
+        
+        // Breakposition not implemented yet
+        
+        if isLogogram {
+            try container.encode("logo", forKey: .role)
+        }
+        
+        if let determinative = self.isDeterminative {
+            try container.encode("semantic", forKey: .determinative)
+            try container.encode(determinative.rawValue, forKey: .position)
+        }
+        
+        if let group = self.group {
+            try container.encode(group, forKey: .group)
+        }
+        
+        if let seq = self.sequence {
+            try container.encode(seq, forKey: .sequence)
+        }
+        
+        if let gdl = self.gdl {
+            try container.encode(gdl, forKey: .gdl)
+        }
+        
+        if let delimiter = self.delim {
+            if delimiter == "—" {
+                try container.encode("--", forKey: .delim)
+            } else {
+                try container.encode(delimiter, forKey: .delim)
+            }
+        }
+        
+    }
+}
+
+
+
+
+
+
 public extension GraphemeDescription {
     
     /// A computed property that returns cuneiform.
@@ -305,66 +391,4 @@ public extension GraphemeDescription {
         return str
     }
 }
-
-
-
-
-//// MARK :- Text generation extension
-//public extension GraphemeDescription {
-//    /// A computed property that returns cuneiform
-//    public var cuneiform: String {
-//        var str = ""
-//        if let gdl = gdl {
-//            for grapheme in gdl {
-//                str.append(grapheme.cuneiform)
-//            }
-//        } else if let seq = seq {
-//            for grapheme in seq {
-//                str.append(grapheme.cuneiform)
-//            }
-//        } else if let utf8 = graphemeUTF8 {
-//            str.append(utf8)
-//        } else {
-//            str.append("")
-//        }
-//
-//        return str
-//    }
-//
-//    /// A computed property that returns sign transliteration
-//    public var transliteration: String {
-//        var str = ""
-//        if let gdl = gdl {
-//            for grapheme in gdl {
-//                str.append(grapheme.transliteration)
-//            }
-//        } else if let seq = seq {
-//            for grapheme in seq {
-//                str.append(grapheme.transliteration)
-//            }
-//        } else if let group = group {
-//            for grapheme in group {
-//                str.append(grapheme.transliteration)
-//            }
-//        } else if let v = v {
-//            let delimiter = delim ?? " "
-//            str.append(v)
-//            str.append(delimiter)
-//        } else if let s = s {
-//            let delimiter = delim ?? " "
-//            str.append(s)
-//            str.append(delimiter)
-//        } else if let form = form {
-//            let delimiter = delim ?? " "
-//            str.append(form)
-//            str.append(delimiter)
-//        }
-//
-//        else {
-//            str.append(" ")
-//        }
-//
-//        return str
-//    }
-//}
 
