@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct OraccTextEdition: Decodable {
+public struct OraccTextEdition: Codable {
     public let type: String
     public let project: String
     public var loadedFrom: URL? = nil
@@ -65,6 +65,12 @@ public struct OraccTextEdition: Decodable {
         return str
     }
 }
+
+
+
+
+
+
 
 #if os(macOS)
 public extension OraccTextEdition {

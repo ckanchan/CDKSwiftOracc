@@ -261,16 +261,16 @@ extension GraphemeDescription: Encodable {
         case .formVariant(let form, let base, let modifier):
             
             try container.encode(form, forKey: .form)
-            var formDictionary = [String: String]()
-            formDictionary["b"] = base
+            var formDictionary = [[String: String]]()
+            formDictionary.append(["b": base])
             
             if !modifier.isEmpty {
                 for modifier in modifier {
                     switch modifier {
                     case .Allograph(let a):
-                        formDictionary["a"] = a
+                        formDictionary.append(["a": a])
                     case .FormVariant(let f):
-                        formDictionary["f"] = f
+                        formDictionary.append(["f": f])
                     default:
                         break
                     }

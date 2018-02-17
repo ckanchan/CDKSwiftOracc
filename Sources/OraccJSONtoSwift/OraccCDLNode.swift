@@ -52,8 +52,8 @@ public struct OraccCDLNode {
         let label: String?
     }
     
-    public struct Linkset: Decodable {
-        struct Link: Decodable {
+    public struct Linkset: Codable {
+        struct Link: Codable {
             let type: String
             let xlink_title: String
         }
@@ -133,16 +133,47 @@ extension OraccCDLNode: Decodable {
                 let error: Error = "Error!" as! Error
                 throw error
             }
-        } else {
+        }
+        else {
             let linkbase = try container.decodeIfPresent([Linkset].self, forKey: .linkbase)
             
             if let linksets = linkbase {
                 self = OraccCDLNode.init(linkbase: linksets)
                 
             } else {
-                let error: Error = "Error!" as! Error
-                throw error
+                throw InterfaceError.JSONError.unableToDecode(swiftError: "error: \(node ?? "unknown")")
             }
+        }
+    }
+}
+
+extension OraccCDLNode: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        switch self.node {
+        case .l(let lemma):
+            try container.encode("l", forKey: .node)
+            try container.encode(lemma.fragment, forKey: .fragment)
+            try container.encodeIfPresent(lemma.instanceTranslation, forKey: .instanceTranslation)
+            try container.encodeIfPresent(lemma.wordForm, forKey: .wordForm)
+            try container.encode(lemma.reference, forKey: .reference)
+            
+        case .c(let chunk):
+            try container.encode("c", forKey: .node)
+            try container.encode(chunk.type.rawValue, forKey: .type)
+            try container.encode(chunk.cdl, forKey: .cdl)
+            
+        case .d(let d):
+            try container.encode("d", forKey: .node)
+            try container.encode(d.type.rawValue, forKey: .type)
+            try container.encodeIfPresent(d.label, forKey: .label)
+            
+        case .linkbase(let linkSet):
+            try container.encodeIfPresent(linkSet, forKey: .linkbase)
+            
+            
+            break
         }
     }
 }
@@ -313,3 +344,5 @@ public extension OraccCDLNode { //Text analysis functions
         return types
     }
 }
+
+

@@ -60,3 +60,32 @@ extension WordForm: Decodable {
         self.init(language: language, form: form, graphemeDescriptions: graphemeDescriptions, normalisation: normalisation, translation: translation, delimiter: delimiter)
     }
 }
+
+extension WordForm: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        let lang: String
+        switch language {
+        case .Akkadian(let dialect):
+            lang = dialect.rawValue
+        case .Sumerian(let dialect):
+            lang = dialect.rawValue
+        case .Hittite:
+            lang = "hit"
+        case .Other(let o):
+            lang = o
+        }
+        
+        try container.encode(lang, forKey: .lang)
+        try container.encode(form, forKey: .form)
+        try container.encode(graphemeDescriptions, forKey: .gdl)
+        try container.encodeIfPresent(normalisation, forKey: .norm)
+        try container.encodeIfPresent(delimiter, forKey: .delim)
+        try container.encodeIfPresent(translation.guideWord, forKey: .gw)
+        try container.encodeIfPresent(translation.citationForm, forKey: .cf)
+        try container.encodeIfPresent(translation.sense, forKey: .sense)
+        try container.encodeIfPresent(translation.partOfSpeech, forKey: .pos)
+        try container.encodeIfPresent(translation.effectivePartOfSpeech, forKey: .epos)
+        
+    }
+}
