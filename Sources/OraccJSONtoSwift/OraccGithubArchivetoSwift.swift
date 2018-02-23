@@ -292,11 +292,9 @@ public class OraccGithubToSwiftInterface: OraccInterface {
             let archiveName = project.replacingOccurrences(of: "/", with: "-") + ".zip"
             let archiveURL = resourceURL.appendingPathComponent(archiveName)
             do {
-                let itemURL = try decompressItem(itemPath, inArchive: archiveURL)
                 let itemData = try makeDataFromArchive(itemPath, inArchive: archiveURL)
                 text = try decoder.decode(OraccTextEdition.self, from: itemData)
-               // text = try loadText(itemURL)
-                location = itemURL
+                location = archiveURL
             } catch {
                 throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: error.localizedDescription)
             }

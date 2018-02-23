@@ -10,9 +10,6 @@ let package = Package(
         .library(
             name: "OraccJSONtoSwift",
             targets: ["OraccJSONtoSwift"]),
-        .library(
-            name: "OraccGithubDownloader",
-            targets: ["OraccJSONtoSwift"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
