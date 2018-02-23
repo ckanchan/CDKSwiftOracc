@@ -44,6 +44,10 @@ public struct OraccCatalogEntry {
     
     ///Copyright and editorial information
     public let credits: String?
+    
+    public static func initFromSaved(id: String, displayName: String, ancientAuthor: String?, title: String, project: String) -> OraccCatalogEntry {
+        return OraccCatalogEntry(displayName: displayName, title: title, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: nil, chapterName: nil, genre: nil, material: nil, period: nil, provenience: nil, primaryPublication: nil, museumNumber: nil, publicationHistory: nil, notes: nil, credits: nil)
+    }
 }
 
 extension OraccCatalogEntry: Decodable {

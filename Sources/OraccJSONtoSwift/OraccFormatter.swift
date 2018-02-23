@@ -68,7 +68,6 @@ extension OraccCDLNode.Lemma {
         attributes[.oraccSense] = self.wordForm.translation.sense ?? ""
         attributes[.partOfSpeech] = self.wordForm.translation.partOfSpeech
         attributes[.effectivePartOfSpeech] = self.wordForm.translation.effectivePartOfSpeech
-        attributes[.oraccLanguage] = self.wordForm.language
         attributes[.writtenForm] = self.fragment
         attributes[.instanceTranslation] = self.instanceTranslation
         

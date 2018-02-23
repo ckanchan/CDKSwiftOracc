@@ -7,6 +7,10 @@
 
 import Foundation
 
+public enum InterfaceType {
+    case Github, Oracc
+}
+
 /**
  Protocol adopted by framework interface objects. Exposes a public API for selecting Oracc catalogues, querying the texts within, and getting output from them.
  */
@@ -33,6 +37,7 @@ public protocol OraccInterface {
 }
 
 extension OraccInterface {
+    
     /**
      Fetches and decodes an array of all projects hosted on Oracc.
      - Returns: An array of `OraccProjectEntry` where each entry represents an Oracc project.
@@ -40,7 +45,8 @@ extension OraccInterface {
      */
     
     public func getOraccProjects() throws -> [OraccProjectEntry]{
-        let listData = try! Data(contentsOf: URL(string: "http://oracc.museum.upenn.edu/projectlist.json")!)
+        guard let listData = try? Data(contentsOf: URL(string: "http://oracc.museum.upenn.edu/projectlist.json")!) else {throw InterfaceError.cannotSetResourceURL}
+        
         do {
             let projectList = try decoder.decode(OraccProjectList.self, from: listData)
             return projectList.projects

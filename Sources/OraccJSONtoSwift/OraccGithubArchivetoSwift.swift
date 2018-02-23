@@ -12,7 +12,6 @@ import ZIPFoundation
 // Class that connects to Github and manages the decoding of texts from archives hosted there.
 
 public class OraccGithubToSwiftInterface: OraccInterface {
-
     
     //MARK:- Helper type
     
@@ -41,15 +40,19 @@ public class OraccGithubToSwiftInterface: OraccInterface {
     
     // Oracc directory properties
     
-    /// Array of all projects hosted on Oracc
+    /// Array of all projects hosted on Oracc. Returns an empty array if it can't reach the website.
     lazy public var oraccProjects: [OraccProjectEntry] = {
-        return try! self.getOraccProjects()
+        if let result = try? self.getOraccProjects() {
+            return result
+        } else {
+            return []
+        }
     }()
     
     /// Dictionary of Oracc projects keyed to their Github archive download URLs.
-    lazy var keyedProjectList: [OraccProjectEntry: URL] = {
-        let archiveList = try! getArchiveList()
-        return try! loadKeyedProjectList(archiveList)
+    lazy var keyedProjectList: [OraccProjectEntry: URL]? = {
+        guard let archiveList = try? getArchiveList() else {return nil}
+        return try? loadKeyedProjectList(archiveList)
     }()
     
     
@@ -79,6 +82,7 @@ public class OraccGithubToSwiftInterface: OraccInterface {
         do {
             let archiveList = try getArchiveList()
             var keyedProjectList = [OraccProjectEntry: URL]()
+            
             
             for archive in archiveList {
                 if let project = oraccProjects.first(where: {$0.githubKey == archive.name}) {
@@ -110,30 +114,6 @@ public class OraccGithubToSwiftInterface: OraccInterface {
             throw InterfaceError.ArchiveError.unableToWriteArchiveToFile
         }
     }
-
-    func unzipArchive(at url: URL, volume: OraccProjectEntry) throws -> OraccCatalog {
-        let destinationPath = resourceURL.appendingPathComponent(volume.pathname)
-        if fileManager.fileExists(atPath: destinationPath.path) {
-            try! fileManager.removeItem(at: destinationPath)
-        }
-        
-        do {
-            try fileManager.unzipItem(at: url, to: resourceURL)
-            let paths  = try fileManager.contentsOfDirectory(at: destinationPath, includingPropertiesForKeys: nil, options: .skipsSubdirectoryDescendants)
-            if let catalogueURL = paths.first(where: {$0.lastPathComponent == "catalogue.json"}) {
-                let catalogueData = try Data(contentsOf: catalogueURL)
-                do {
-                    return try decoder.decode(OraccCatalog.self, from: catalogueData)
-                } catch {
-                    throw InterfaceError.JSONError.unableToDecode(swiftError: error.localizedDescription)
-                }
-            } else {
-                throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: "No catalogue file found")
-            }
-        } catch {
-            throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: error.localizedDescription)
-        }
-    }
     
     func decompressItem(_ itemPath: String, inArchive archiveURL: URL) throws -> URL {
         guard let archive = Archive(url: archiveURL, accessMode: .read) else {
@@ -156,6 +136,7 @@ public class OraccGithubToSwiftInterface: OraccInterface {
     
     // MARK: - Public API
     public lazy var availableVolumes: [OraccProjectEntry] = {
+        guard let keyedProjectList = self.keyedProjectList else {return []}
         return Array(keyedProjectList.keys)
     }()
 
@@ -331,6 +312,7 @@ public class OraccGithubToSwiftInterface: OraccInterface {
     public func clearCaches() throws {
         do {
             try fileManager.removeItem(at: resourceURL)
+            try fileManager.createDirectory(at: resourceURL, withIntermediateDirectories: true, attributes: nil)
         } catch {
             throw error
         }
