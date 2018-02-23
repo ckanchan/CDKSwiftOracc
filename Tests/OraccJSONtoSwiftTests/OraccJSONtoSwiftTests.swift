@@ -76,7 +76,6 @@ class OraccGithubtoSwiftTests: XCTestCase {
         var interface: OraccGithubToSwiftInterface
         var project: OraccProjectEntry?
         var url: URL
-        var catalogue: OraccCatalog
         
         
         
@@ -92,14 +91,6 @@ class OraccGithubtoSwiftTests: XCTestCase {
         }
         
         XCTAssertTrue(fileManager.fileExists(atPath: url.path), "Zip archive successfully downloaded")
-        
-        do {
-            catalogue = try interface.unzipArchive(at: url, volume: project!)
-        } catch {
-            throw error
-        }
-        
-        XCTAssertTrue(catalogue.members.contains(where: {$0.key == "P224485"}))
         
     }
     

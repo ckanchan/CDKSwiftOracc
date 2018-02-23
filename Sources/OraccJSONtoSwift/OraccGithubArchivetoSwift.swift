@@ -133,6 +133,22 @@ public class OraccGithubToSwiftInterface: OraccInterface {
         
     }
     
+    func makeDataFromArchive(_ itemPath: String, inArchive archiveURL: URL) throws -> Data {
+        guard let archive = Archive(url: archiveURL, accessMode: .read) else {throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: "error")}
+        
+        guard let item = archive[itemPath] else {throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: "File does not exist in archive")}
+        
+        var itemData = Data()
+        
+        do {
+            _ = try archive.extract(item, consumer: {data in itemData.append(data)})
+            
+            return itemData
+        } catch {
+            throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: "Unable to read data")
+        }
+    }
+    
     
     // MARK: - Public API
     public lazy var availableVolumes: [OraccProjectEntry] = {
@@ -170,8 +186,7 @@ public class OraccGithubToSwiftInterface: OraccInterface {
                 catalogue = try decoder.decode(OraccCatalog.self, from: data)
             } else {
                 let localArchiveURL = try downloadJSONArchive(volume)
-                let catalogueURL = try decompressItem(cataloguePath, inArchive: localArchiveURL)
-                data = try Data(contentsOf: catalogueURL)
+                let data = try makeDataFromArchive(cataloguePath, inArchive: localArchiveURL)
                 catalogue = try decoder.decode(OraccCatalog.self, from: data)
             }
             return catalogue
@@ -278,7 +293,9 @@ public class OraccGithubToSwiftInterface: OraccInterface {
             let archiveURL = resourceURL.appendingPathComponent(archiveName)
             do {
                 let itemURL = try decompressItem(itemPath, inArchive: archiveURL)
-                text = try loadText(itemURL)
+                let itemData = try makeDataFromArchive(itemPath, inArchive: archiveURL)
+                text = try decoder.decode(OraccTextEdition.self, from: itemData)
+               // text = try loadText(itemURL)
                 location = itemURL
             } catch {
                 throw InterfaceError.ArchiveError.errorReadingArchive(swiftError: error.localizedDescription)
