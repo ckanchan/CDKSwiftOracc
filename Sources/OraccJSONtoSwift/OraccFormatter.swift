@@ -356,7 +356,7 @@ let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringK
                     let obv = NSAttributedString(string: "Obverse: \n", attributes: editorialBoldFormatting)
                     str.append(obv)
                 case .linestart:
-                    let ln = NSAttributedString(string: "\n\(discontinuity.label!) ", attributes: editorialFormatting)
+                    let ln = NSAttributedString(string: "\n\(discontinuity.label ?? "") ", attributes: editorialFormatting)
                     str.append(ln)
                 case .reverse:
                     let rev = NSAttributedString(string: "\n\n\n Reverse: \n", attributes: editorialBoldFormatting)
@@ -394,7 +394,7 @@ let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringK
                     let obv = NSAttributedString(string: "Obverse: \n", attributes: editorialBoldFormatting)
                     str.append(obv)
                 case .linestart:
-                    let ln = NSAttributedString(string: "\n\(discontinuity.label!) ", attributes: editorialFormatting)
+                    let ln = NSAttributedString(string: "\n\(discontinuity.label ?? "") ", attributes: editorialFormatting)
                     str.append(ln)
                 case .reverse:
                     let rev = NSAttributedString(string: "\n\n\n Reverse: \n", attributes: editorialBoldFormatting)
@@ -433,7 +433,7 @@ let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringK
                     let obv = NSAttributedString(string: "Obverse: \n", attributes: editorialBoldFormatting)
                     str.append(obv)
                 case .linestart:
-                    let ln = NSAttributedString(string: "\n\(discontinuity.label!) ", attributes: editorialFormatting)
+                    let ln = NSAttributedString(string: "\n\(discontinuity.label ?? "") ", attributes: editorialFormatting)
                     str.append(ln)
                 case .reverse:
                     let rev = NSAttributedString(string: "\n\n\n Reverse: \n", attributes: editorialBoldFormatting)

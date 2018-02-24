@@ -198,7 +198,7 @@ public extension OraccCDLNode { //Text analysis functions
             case .obverse:
                 str.append("Obverse: \n")
             case .linestart:
-                str.append("\n\(discontinuity.label!) ")
+                str.append("\n\(discontinuity.label ?? "") ")
             case .reverse:
                 str.append("\nReverse: \n")
             default:
@@ -226,7 +226,7 @@ public extension OraccCDLNode { //Text analysis functions
             case .obverse:
                 str.append("Obverse: \n")
             case .linestart:
-                str.append("\n\(discontinuity.label!) ")
+                str.append("\n\(discontinuity.label ?? "") ")
             case .reverse:
                 str.append("\n Reverse: \n")
             default:
@@ -262,7 +262,7 @@ public extension OraccCDLNode { //Text analysis functions
             case .obverse:
                 str.append("Obverse: \n")
             case .linestart:
-                str.append("\n\(discontinuity.label!) ")
+                str.append("\n\(discontinuity.label ?? "") ")
             case .reverse:
                 str.append("Reverse: \n")
             default:
@@ -294,7 +294,7 @@ public extension OraccCDLNode { //Text analysis functions
             case .obverse:
                 str.append("Obverse: \n")
             case .linestart:
-                str.append("\n\(discontinuity.label!) ")
+                str.append("\n\(discontinuity.label ?? "") ")
             case .reverse:
                 str.append("\n\nReverse:")
             default:

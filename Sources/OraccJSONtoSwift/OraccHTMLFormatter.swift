@@ -134,7 +134,7 @@ extension OraccCDLNode {
                 str.append("<b>Obverse: </b><br>")
                 
             case .linestart:
-                str.append("<br>\(discontinuity.label!) ")
+                str.append("<br>\(discontinuity.label ?? "") ")
             case .reverse:
                 str.append("<br><br><br><b>Reverse:</b> <br>")
             default:

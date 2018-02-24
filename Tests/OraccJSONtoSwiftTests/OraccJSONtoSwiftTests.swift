@@ -195,8 +195,7 @@ class OraccGithubtoSwiftTests: XCTestCase {
         ("testAvailableVolumesAPI", testAvailableVolumesAPI),
         ("testLoadCatalogueAPI", testLoadCatalogueAPI),
         ("testLoadTextAPI", testLoadTextAPI),
-        ("measureTextLoad", measureTextLoad),
-        ("testLLDecode", testLLDecode)
+        ("measureTextLoad", measureTextLoad)
         
     ]
 }
