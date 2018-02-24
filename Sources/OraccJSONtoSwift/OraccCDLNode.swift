@@ -97,6 +97,7 @@ extension OraccCDLNode: Decodable {
         case linkbase = "linkbase"
         case label = "label"
         case reference = "ref"
+        case choices
     }
     
     public init(from decoder: Decoder) throws {
@@ -121,6 +122,10 @@ extension OraccCDLNode: Decodable {
                 
                 let l = OraccCDLNode.Lemma(fragment: frag, instanceTranslation: inst, wordForm: f, reference: ref)
                 self = OraccCDLNode(lemma: l)
+                
+            case "ll":
+                let choices = try container.decode([OraccCDLNode].self, forKey: .choices)
+                self = choices.first!
                 
             case "c":
                 let type = try container.decode(String.self, forKey: .type)

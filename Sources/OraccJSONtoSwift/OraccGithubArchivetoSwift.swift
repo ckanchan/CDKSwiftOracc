@@ -36,7 +36,7 @@ public class OraccGithubToSwiftInterface: OraccInterface {
     
     // File management properties
     let fileManager: FileManager
-    var resourceURL: URL
+    private(set) public var resourceURL: URL
     
     // Oracc directory properties
     

@@ -8,6 +8,7 @@ class OraccGithubtoSwiftTests: XCTestCase {
     struct SampleProjectData {
         let RIAo = OraccProjectEntry(pathname: "riao", abbrev: "RIAo", name: "Royal Inscriptions of Assyria online", blurb: "This project intends to present annotated editions of the entire corpus of Assyrian royal inscriptions, texts that were published in RIMA 1-3 and RINAP 1 and 3-4. This rich, open-access corpus has been made available through the kind permission of Kirk Grayson and Grant Frame and with funding provided by the <a href=\" https://www.humboldt-foundation.de/web/home.html\">Alexander von Humboldt Foundation</a>.  RIAo is based at <a href=\"http://www.en.ag.geschichte.uni-muenchen.de/chairs/chair_radner/index.html\">LMU Munich</a> (Historisches Seminar, Alte Geschichte) and is managed by Jamie Novotny and Karen Radner. Kirk Grayson, Nathan Morello, and Jamie Novotny are the primary content contributors.")
         let SAA13 = OraccProjectEntry(pathname: "saao/saa13", abbrev: "SAAo/SAA13", name: "Letters from Assyrian and Babylonian Priests to Kings Esarhaddon and Assurbanipal", blurb: "The text editions from the book S. W. Cole and P. Machinist, Letters from Assyrian and Babylonian Priests to Kings Esarhaddon and Assurbanipal (State Archives of Assyria, 13), 1998 (reprint 2014). <a href=\"http://www.eisenbrauns.com/item/COLLETTER\">Buy the book</a> from Eisenbrauns.")
+        let SAA05 = OraccProjectEntry(pathname: "saao/saa05", abbrev: "SAAo/SAA05", name: "Test", blurb: "test")
     }
 
     override func tearDown() {
@@ -194,7 +195,8 @@ class OraccGithubtoSwiftTests: XCTestCase {
         ("testAvailableVolumesAPI", testAvailableVolumesAPI),
         ("testLoadCatalogueAPI", testLoadCatalogueAPI),
         ("testLoadTextAPI", testLoadTextAPI),
-        ("measureTextLoad", measureTextLoad)
+        ("measureTextLoad", measureTextLoad),
+        ("testLLDecode", testLLDecode)
         
     ]
 }
