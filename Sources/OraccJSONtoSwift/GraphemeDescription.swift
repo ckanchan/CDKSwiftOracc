@@ -109,6 +109,19 @@ public struct GraphemeDescription {
     
     /// If defined, a string that separates this character from the next one.
     public let delim: String?
+    
+    public init(graphemeUTF8: String?, sign: CuneiformSign, isLogogram: Bool, preservation: Preservation = Preservation.preserved, breakPosition: BreakPosition?, isDeterminative: Determinative?, group: [GraphemeDescription]?, gdl: [GraphemeDescription]?, sequence: [GraphemeDescription]?, delimiter: String?) {
+        self.graphemeUTF8 = graphemeUTF8
+        self.sign = sign
+        self.isLogogram = isLogogram
+        self.preservation = preservation
+        self.breakPosition = breakPosition
+        self.isDeterminative = isDeterminative
+        self.group = group
+        self.gdl = gdl
+        self.sequence = sequence
+        self.delim = delimiter
+    }
 }
 
 extension GraphemeDescription: Decodable {
@@ -241,7 +254,7 @@ extension GraphemeDescription: Decodable {
         }
         
         // Init
-        self.init(graphemeUTF8: graphemeUTF8, sign: cuneiformSign, isLogogram: isLogogram, preservation: preservation, breakPosition: breakPosition, isDeterminative: determinative, group: group, gdl: gdl, sequence: sequence, delim: delimiter)
+        self.init(graphemeUTF8: graphemeUTF8, sign: cuneiformSign, isLogogram: isLogogram, preservation: preservation, breakPosition: breakPosition, isDeterminative: determinative, group: group, gdl: gdl, sequence: sequence, delimiter: delimiter)
     }
 }
 

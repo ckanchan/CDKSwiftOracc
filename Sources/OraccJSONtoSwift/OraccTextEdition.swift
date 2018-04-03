@@ -64,6 +64,11 @@ public struct OraccTextEdition: Codable {
         
         return str
     }
+    
+    public static func createNewText(nodes: [OraccCDLNode] = []) -> OraccTextEdition {
+        let edition = OraccTextEdition(type: "modern", project: "none", loadedFrom: nil, cdl: nodes, textid: "n/a")
+        return edition
+    }
 }
 
 

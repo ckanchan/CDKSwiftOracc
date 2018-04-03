@@ -10,16 +10,24 @@ import Foundation
 public struct OraccCDLNode {
     
     /// A single unit of meaning, in cuneiform and translated forms. Summary information is included in the top-level properties; more detailed information can be accessed under the Form property and its Translation and GraphemeDescription fields.
-    public struct Lemma {
+    public struct Lemma: Equatable, Hashable {
+        public var hashValue: Int {
+            return reference.hashValue
+        }
+        
+        public static func ==(lhs: OraccCDLNode.Lemma, rhs: OraccCDLNode.Lemma) -> Bool {
+            return lhs.hashValue == rhs.hashValue
+        }
+        
         
         /// Transliteration with diacritical marks.
-        let fragment: String
+        public let fragment: String
         
         /// String key containing normalisation[translation]partofspeech
-        let instanceTranslation: String?
+        public let instanceTranslation: String?
         
         /// Detailed wordform information
-        let wordForm: WordForm
+        public let wordForm: WordForm
         
         /// Reference for glossary lookup
         public let reference: String
@@ -30,6 +38,13 @@ public struct OraccCDLNode {
                 str.append(grapheme.transliteration)
             }
             return str
+        }
+        
+        public init(fragment: String, instanceTranslation: String?, wordForm: WordForm, reference: String) {
+            self.fragment = fragment
+            self.instanceTranslation = instanceTranslation
+            self.wordForm = wordForm
+            self.reference = reference
         }
 
     
@@ -67,19 +82,19 @@ public struct OraccCDLNode {
     }
     
     public let node: CDLNode
-    init(lemma l: Lemma) {
+    public init(lemma l: Lemma) {
         self.node = CDLNode.l(l)
     }
     
-    init(chunk c: Chunk) {
+    public init(chunk c: Chunk) {
         self.node = CDLNode.c(c)
     }
     
-    init(discontinuity d: Discontinuity) {
+    public init(discontinuity d: Discontinuity) {
         self.node = CDLNode.d(d)
     }
     
-    init(linkbase lb: [Linkset]){
+    public init(linkbase lb: [Linkset]){
         self.node = CDLNode.linkbase(lb)
     }
 }

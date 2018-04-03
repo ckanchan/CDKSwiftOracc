@@ -45,6 +45,10 @@ public extension NSAttributedStringKey {
     public static var instanceTranslation: NSAttributedStringKey {
         return self.init("instanceTranslation")
     }
+    
+    public static var reference: NSAttributedStringKey {
+        return self.init("reference")
+    }
 }
 
 // Adds keys that support the encoding of GDL grapheme data into attributed strings
@@ -70,6 +74,7 @@ extension OraccCDLNode.Lemma {
         attributes[.effectivePartOfSpeech] = self.wordForm.translation.effectivePartOfSpeech
         attributes[.writtenForm] = self.fragment
         attributes[.instanceTranslation] = self.instanceTranslation
+        attributes[.reference] = self.reference
         
         return attributes
     }

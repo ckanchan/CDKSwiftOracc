@@ -9,19 +9,38 @@ import Foundation
 
 public struct WordForm {
     public struct Translation: Decodable {
-        let guideWord: String?
-        let citationForm: String?
-        let sense: String?
-        let partOfSpeech: String?
-        let effectivePartOfSpeech: String?
+        public let guideWord: String?
+        public let citationForm: String?
+        public let sense: String?
+        public let partOfSpeech: String?
+        public let effectivePartOfSpeech: String?
+        
+        public init(guideWord: String?, citationForm: String?, sense: String?, partOfSpeech: String?, effectivePartOfSpeech: String?) {
+            self.guideWord = guideWord
+            self.citationForm = citationForm
+            self.sense = sense
+            self.partOfSpeech = partOfSpeech
+            self.effectivePartOfSpeech = effectivePartOfSpeech
+        }
     }
     
-    let language: Language
-    let form: String
-    let graphemeDescriptions: [GraphemeDescription]
-    let normalisation: String?
-    let translation: Translation
-    let delimiter: String?
+    public let language: Language
+    public let form: String
+    public let graphemeDescriptions: [GraphemeDescription]
+    public let normalisation: String?
+    public let translation: Translation
+    public let delimiter: String?
+    
+    public init(language: Language, form: String, graphemeDescriptions: [GraphemeDescription], normalisation: String?, translation: Translation, delimiter: String?){
+        self.language = language
+        self.form = form
+        self.graphemeDescriptions = graphemeDescriptions
+        self.normalisation = normalisation
+        self.translation = translation
+        self.delimiter = delimiter
+    }
+    
+    
 }
 
 extension WordForm: Decodable {
