@@ -1,6 +1,6 @@
 import XCTest
-@testable import OraccJSONtoSwift
+@testable import CDKSwiftOracc
 
-class OraccJSONtoSwiftTests: XCTestCase {
+class CDKSwiftOraccTests: XCTestCase {
     static var allTests: [(String, () throws -> Void)] = []
 }
