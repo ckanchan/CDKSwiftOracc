@@ -24,16 +24,3 @@ public let project: String
 ```swift
 public let members: [String: OraccCatalogEntry]
 ```
-
-### `keys`
-
-```swift
-public lazy var keys: [String] =
-```
-
-## Methods
-### `sortBySAANum()`
-
-```swift
-public mutating func sortBySAANum()
-```

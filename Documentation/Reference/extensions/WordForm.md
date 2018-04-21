@@ -1,13 +1,6 @@
 **EXTENSION**
 
-# `OraccCatalogEntry`
-
-## Properties
-### `description`
-
-```swift
-public var description: String
-```
+# `WordForm`
 
 ## Methods
 ### `init(from:)`
