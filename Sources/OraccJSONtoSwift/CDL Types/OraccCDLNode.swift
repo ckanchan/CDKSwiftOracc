@@ -7,6 +7,10 @@
 
 import Foundation
 
+public enum OraccCDLDecodingError: Error {
+    case unableToDecode(String)
+}
+
 public struct OraccCDLNode {
     
     /// A single unit of meaning, in cuneiform and translated forms. Summary information is included in the top-level properties; more detailed information can be accessed under the Form property and its Translation and GraphemeDescription fields.
@@ -161,7 +165,7 @@ extension OraccCDLNode: Decodable {
                 self = OraccCDLNode.init(linkbase: linksets)
                 
             } else {
-                throw InterfaceError.JSONError.unableToDecode(swiftError: "error: \(node ?? "unknown")")
+                throw OraccCDLDecodingError.unableToDecode("at node: \(node ?? "unknown node")")
             }
         }
     }
