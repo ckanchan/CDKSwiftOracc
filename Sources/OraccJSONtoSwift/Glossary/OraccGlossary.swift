@@ -18,10 +18,6 @@ public enum OraccGlossaryType: String {
     case placeNames = "gloss-qpn-x-places"
     case templeNames = "gloss-qpn-x-temple"
     case waterBodyNames = "gloss-qpn-x-waters"
-    
-    var jsonName: String {
-        return "\(self.rawValue).json"
-    }
 }
 
 /// Class representing an Oracc glossary
