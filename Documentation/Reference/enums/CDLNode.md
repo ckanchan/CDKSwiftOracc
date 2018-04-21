@@ -6,6 +6,8 @@
 public enum CDLNode
 ```
 
+> Base element of a cuneiform document: a `Chunk` representing a section of text, which contains further `Chunk`s, `Discontinuity` or `Lemma`
+
 ## Cases
 ### `l`
 

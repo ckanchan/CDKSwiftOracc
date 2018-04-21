@@ -1,19 +1,12 @@
 **EXTENSION**
 
-# `OraccCatalogEntry`
-
-## Properties
-### `description`
-
-```swift
-public var description: String
-```
+# `OraccGlossary`
 
 ## Methods
 ### `init(from:)`
 
 ```swift
-public init(from decoder: Decoder) throws
+public convenience init(from decoder: Decoder) throws
 ```
 
 #### Parameters

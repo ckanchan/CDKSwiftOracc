@@ -1,141 +1,102 @@
 //
 //  OraccCDLNode.swift
-//  OraccJSONtoSwift
+//  CDKSwiftOracc: Cuneiform Documents for Swift
+//  Copyright (C) 2018 Chaitanya Kanchan
 //
-//  Created by Chaitanya Kanchan on 01/01/2018.
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
 //
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 import Foundation
 
-/// Base structure for representing cuneiform signs (graphemes) decoded from the grapheme description language. Enables sign-by-sign cuneiform and transliteration functionality.
-
-public struct GraphemeDescription: Decodable {
-    /// Cuneiform glyph in UTF-8
-    public let gdl_utf8: String?
-    
-    /// These seem to represent sign values. Not sure why they're keyed differently
-    public let v: String?
-    public let s: String?
-    public let form: String?
-    
-    /// If a logogram, the role it plays in the text.
-    public let role: String?
-    
-    /// If a logogram consists of multiple graphemes, it seems to be represented by this
-    public let group: [GraphemeDescription]?
-    
-    /// This seems to represent subelements in a name
-    public let gdl: [GraphemeDescription]?
-    
-    /// Some kind of container for further elements
-    public let seq: [GraphemeDescription]?
-    
-    /// If defined, a string that separates this character from the next one.
-    public let delim: String?
-    
-    /// A computed property that returns cuneiform
-    public var cuneiform: String {
-        var str = ""
-        if let gdl = gdl {
-            for grapheme in gdl {
-                str.append(grapheme.cuneiform)
-            }
-        } else if let seq = seq {
-            for grapheme in seq {
-                str.append(grapheme.cuneiform)
-            }
-        } else if let utf8 = gdl_utf8 {
-            str.append(utf8)
-        } else {
-            str.append("")
-        }
-        
-        return str
-    }
-    
-    /// A computed property that returns sign transliteration
-    public var transliteration: String {
-        var str = ""
-        if let gdl = gdl {
-            for grapheme in gdl {
-                str.append(grapheme.transliteration)
-            }
-        } else if let seq = seq {
-            for grapheme in seq {
-                str.append(grapheme.transliteration)
-            }
-        } else if let group = group {
-            for grapheme in group {
-                str.append(grapheme.transliteration)
-            }
-        } else if let v = v {
-            let delimiter = delim ?? " "
-            str.append(v)
-            str.append(delimiter)
-        } else if let s = s {
-            let delimiter = delim ?? " "
-            str.append(s)
-            str.append(delimiter)
-        } else if let form = form {
-            let delimiter = delim ?? " "
-            str.append(form)
-            str.append(delimiter)
-        }
-        
-        else {
-            str.append(" ")
-        }
-        
-        return str
-    }
+public enum OraccCDLDecodingError: Error {
+    case unableToDecode(String)
 }
 
+
+/// A single node in an Oracc CDL nested representation of a cuneiform document. Wraps a single `CDLNode` property.
 public struct OraccCDLNode {
-    public struct Lemma {
-        let frag: String
-        let inst: String?
-        struct f: Decodable {
-            let lang: String?
-            let form: String
-            let gdl: [GraphemeDescription]
-            let sense: String?
-            let norm: String?
+    
+    /// A single unit of meaning, in cuneiform and translated forms. Summary information is included in the top-level properties; more detailed information can be accessed under the Form property and its Translation and GraphemeDescription fields.
+    public struct Lemma: Equatable, Hashable {
+        public var hashValue: Int {
+            return reference.hashValue
         }
-        let f: f
         
-        var transliteration: String {
+        public static func ==(lhs: OraccCDLNode.Lemma, rhs: OraccCDLNode.Lemma) -> Bool {
+            return lhs.hashValue == rhs.hashValue
+        }
+        
+        
+        /// Transliteration with diacritical marks.
+        public let fragment: String
+        
+        /// String key containing normalisation[translation]partofspeech
+        public let instanceTranslation: String?
+        
+        /// Detailed wordform information
+        public let wordForm: WordForm
+        
+        /// Reference for glossary lookup
+        public let reference: String
+        
+        public var transliteration: String {
             var str = ""
-            for grapheme in self.f.gdl {
+            for grapheme in self.wordForm.graphemeDescriptions {
                 str.append(grapheme.transliteration)
             }
             return str
         }
+        
+        public init(fragment: String, instanceTranslation: String?, wordForm: WordForm, reference: String) {
+            self.fragment = fragment
+            self.instanceTranslation = instanceTranslation
+            self.wordForm = wordForm
+            self.reference = reference
+        }
+
+    
     }
     
+    /// A 'chunk' of a cuneiform document, as interpreted by an editor. Contains an array of `OraccCDLNode`.
     public struct Chunk {
-        enum Chunktype: String {
+        public enum Chunktype: String {
             case sentence, text, phrase, discourse
         }
         
-        let type: Chunktype
-        let cdl: [OraccCDLNode]
+        public let type: Chunktype
+        public let cdl: [OraccCDLNode]
     }
     
+    /// Represents breaks on the tablet, whether line-breaks or physical damage
     public struct Discontinuity {
-        enum DiscontinuityType: String {
-            case bottom, column, edge, excised, left, nonw, nonx, obverse, object, linestart = "line-start", punct, right, reverse, surface, top
+        public enum DiscontinuityType: String {
+            case bottom, cellStart = "cell-start", cellEnd = "cell-end", column, edge, envelope, excised, fieldStart = "field-start", left, nonw, nonx, obverse, object, linestart = "line-start", punct, right, reverse, surface, tablet, top
         }
-        let type: DiscontinuityType
-        let label: String?
+        
+        public let type: DiscontinuityType
+        public let label: String?
     }
     
-    public struct Linkset: Decodable {
-        struct Link: Decodable {
+    /// Unknown usage...
+    public struct Linkset: Codable {
+        struct Link: Codable {
             let type: String
             let xlink_title: String
         }
     }
     
+    /// Base element of a cuneiform document: a `Chunk` representing a section of text, which contains further `Chunk`s, `Discontinuity` or `Lemma`
     public enum CDLNode {
         case l(Lemma)
         case c(Chunk)
@@ -144,30 +105,28 @@ public struct OraccCDLNode {
     }
     
     public let node: CDLNode
-    
-    
-    init(lemma l: Lemma) {
+    public init(lemma l: Lemma) {
         self.node = CDLNode.l(l)
     }
     
-    init(chunk c: Chunk) {
+    public init(chunk c: Chunk) {
         self.node = CDLNode.c(c)
     }
     
-    init(discontinuity d: Discontinuity) {
+    public init(discontinuity d: Discontinuity) {
         self.node = CDLNode.d(d)
     }
     
-    init(linkbase lb: [Linkset]){
+    public init(linkbase lb: [Linkset]){
         self.node = CDLNode.linkbase(lb)
     }
 }
 
 extension OraccCDLNode: Decodable {
     enum CodingKeys: String, CodingKey {
-        case frag = "frag"
-        case inst = "inst"
-        case f = "f"
+        case fragment = "frag"
+        case instanceTranslation = "inst"
+        case wordForm = "f"
         case sense = "sense"
         case norm = "norm"
         case type = "type"
@@ -175,6 +134,8 @@ extension OraccCDLNode: Decodable {
         case node = "node"
         case linkbase = "linkbase"
         case label = "label"
+        case reference = "ref"
+        case choices
     }
     
     public init(from decoder: Decoder) throws {
@@ -190,11 +151,19 @@ extension OraccCDLNode: Decodable {
                 self = OraccCDLNode(discontinuity: d)
                 
             case "l":
-                let frag = try container.decode(String.self, forKey: .frag)
-                let inst = try container.decodeIfPresent(String.self, forKey: .inst)
-                let f = try container.decode(OraccCDLNode.Lemma.f.self, forKey: .f)
-                let l = OraccCDLNode.Lemma(frag: frag, inst: inst, f: f)
+                let frag = try container.decode(String.self, forKey: .fragment)
+                let inst = try container.decodeIfPresent(String.self, forKey: .instanceTranslation)
+                let f = try container.decode(WordForm.self, forKey: .wordForm)
+                let ref = try container.decode(String.self, forKey: .reference)
+                
+               
+                
+                let l = OraccCDLNode.Lemma(fragment: frag, instanceTranslation: inst, wordForm: f, reference: ref)
                 self = OraccCDLNode(lemma: l)
+                
+            case "ll":
+                let choices = try container.decode([OraccCDLNode].self, forKey: .choices)
+                self = choices.first!
                 
             case "c":
                 let type = try container.decode(String.self, forKey: .type)
@@ -207,22 +176,53 @@ extension OraccCDLNode: Decodable {
                 let error: Error = "Error!" as! Error
                 throw error
             }
-        } else {
+        }
+        else {
             let linkbase = try container.decodeIfPresent([Linkset].self, forKey: .linkbase)
             
             if let linksets = linkbase {
                 self = OraccCDLNode.init(linkbase: linksets)
                 
             } else {
-                let error: Error = "Error!" as! Error
-                throw error
+                throw OraccCDLDecodingError.unableToDecode("at node: \(node ?? "unknown node")")
             }
         }
     }
 }
 
-extension OraccCDLNode { //Text analysis functions
-    func transliterated() -> String {
+extension OraccCDLNode: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        switch self.node {
+        case .l(let lemma):
+            try container.encode("l", forKey: .node)
+            try container.encode(lemma.fragment, forKey: .fragment)
+            try container.encodeIfPresent(lemma.instanceTranslation, forKey: .instanceTranslation)
+            try container.encodeIfPresent(lemma.wordForm, forKey: .wordForm)
+            try container.encode(lemma.reference, forKey: .reference)
+            
+        case .c(let chunk):
+            try container.encode("c", forKey: .node)
+            try container.encode(chunk.type.rawValue, forKey: .type)
+            try container.encode(chunk.cdl, forKey: .cdl)
+            
+        case .d(let d):
+            try container.encode("d", forKey: .node)
+            try container.encode(d.type.rawValue, forKey: .type)
+            try container.encodeIfPresent(d.label, forKey: .label)
+            
+        case .linkbase(let linkSet):
+            try container.encodeIfPresent(linkSet, forKey: .linkbase)
+            
+            
+            break
+        }
+    }
+}
+
+public extension OraccCDLNode { //Text analysis functions
+    public func transliterated() -> String {
         var str = ""
         switch self.node {
         case .l(let lemma):
@@ -236,7 +236,7 @@ extension OraccCDLNode { //Text analysis functions
             case .obverse:
                 str.append("Obverse: \n")
             case .linestart:
-                str.append("\n\(discontinuity.label!) ")
+                str.append("\n\(discontinuity.label ?? "") ")
             case .reverse:
                 str.append("\nReverse: \n")
             default:
@@ -253,7 +253,7 @@ extension OraccCDLNode { //Text analysis functions
         
         switch self.node {
         case .l(let lemma):
-            str.append(lemma.f.norm ?? "[x]")
+            str.append(lemma.wordForm.normalisation ?? "[x]")
             str.append(" ")
         case .c(let chunk):
             for node in chunk.cdl {
@@ -264,7 +264,7 @@ extension OraccCDLNode { //Text analysis functions
             case .obverse:
                 str.append("Obverse: \n")
             case .linestart:
-                str.append("\n\(discontinuity.label!) ")
+                str.append("\n\(discontinuity.label ?? "") ")
             case .reverse:
                 str.append("\n Reverse: \n")
             default:
@@ -288,7 +288,7 @@ extension OraccCDLNode { //Text analysis functions
             break
             
         case .l(let lemma):
-            str.append(lemma.f.sense ?? "[?]")
+            str.append(lemma.wordForm.translation.sense ?? "[?]")
             str.append(" ")
             
         case .c(let chunk):
@@ -300,7 +300,7 @@ extension OraccCDLNode { //Text analysis functions
             case .obverse:
                 str.append("Obverse: \n")
             case .linestart:
-                str.append("\n\(discontinuity.label!) ")
+                str.append("\n\(discontinuity.label ?? "") ")
             case .reverse:
                 str.append("Reverse: \n")
             default:
@@ -318,13 +318,13 @@ extension OraccCDLNode { //Text analysis functions
             break
             
         case .l(let lemma):
-            for entry in lemma.f.gdl {
+            for entry in lemma.wordForm.graphemeDescriptions {
                 str.append(entry.cuneiform)
             }
             str.append(" ")
             
         case .c(let chunk):
-            for node in chunk.cdl{
+            for node in chunk.cdl {
                 str.append(node.cuneiform())
             }
         case .d(let discontinuity):
@@ -332,7 +332,7 @@ extension OraccCDLNode { //Text analysis functions
             case .obverse:
                 str.append("Obverse: \n")
             case .linestart:
-                str.append("\n\(discontinuity.label!) ")
+                str.append("\n\(discontinuity.label ?? "") ")
             case .reverse:
                 str.append("\n\nReverse:")
             default:
@@ -387,3 +387,5 @@ extension OraccCDLNode { //Text analysis functions
         return types
     }
 }
+
+
