@@ -1,10 +1,3 @@
-//
-//  OraccTextEdition.swift
-//  OraccJSONtoSwift
-//
-//  Created by Chaitanya Kanchan on 01/01/2018.
-//
-
 import Foundation
 
 public struct OraccTextEdition: Codable {

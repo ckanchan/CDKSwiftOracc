@@ -11,6 +11,8 @@ public enum OraccCDLDecodingError: Error {
     case unableToDecode(String)
 }
 
+
+/// A single node in an Oracc CDL nested representation of a cuneiform document. Wraps a single `CDLNode` property.
 public struct OraccCDLNode {
     
     /// A single unit of meaning, in cuneiform and translated forms. Summary information is included in the top-level properties; more detailed information can be accessed under the Form property and its Translation and GraphemeDescription fields.
@@ -54,23 +56,27 @@ public struct OraccCDLNode {
     
     }
     
+    /// A 'chunk' of a cuneiform document, as interpreted by an editor. Contains an array of `OraccCDLNode`.
     public struct Chunk {
-        enum Chunktype: String {
+        public enum Chunktype: String {
             case sentence, text, phrase, discourse
         }
         
-        let type: Chunktype
+        public let type: Chunktype
         public let cdl: [OraccCDLNode]
     }
     
+    /// Represents breaks on the tablet, whether line-breaks or physical damage
     public struct Discontinuity {
-        enum DiscontinuityType: String {
+        public enum DiscontinuityType: String {
             case bottom, cellStart = "cell-start", cellEnd = "cell-end", column, edge, envelope, excised, fieldStart = "field-start", left, nonw, nonx, obverse, object, linestart = "line-start", punct, right, reverse, surface, tablet, top
         }
-        let type: DiscontinuityType
-        let label: String?
+        
+        public let type: DiscontinuityType
+        public let label: String?
     }
     
+    /// Unknown usage...
     public struct Linkset: Codable {
         struct Link: Codable {
             let type: String
@@ -78,6 +84,7 @@ public struct OraccCDLNode {
         }
     }
     
+    /// Base element of a cuneiform document: a `Chunk` representing a section of text, which contains further `Chunk`s, `Discontinuity` or `Lemma`
     public enum CDLNode {
         case l(Lemma)
         case c(Chunk)

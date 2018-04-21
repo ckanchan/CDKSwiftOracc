@@ -1,10 +1,3 @@
-//
-//  OraccHTMLFormatter.swift
-//  OraccJSONtoSwift
-//
-//  Created by Chaitanya Kanchan on 14/02/2018.
-//
-
 import Foundation
 
 public extension OraccTextEdition {

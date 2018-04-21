@@ -7,9 +7,9 @@
 
 import Foundation
 
-/// Datatype enumerating a specific reading of a cuneiform sign.
+/// Datatype enumerating a localized reading of a cuneiform sign from a tablet.
 
-public enum CuneiformSign {
+public enum CuneiformSignReading {
     
     /// Sign read with syllabic value.
     case value(String)
@@ -28,7 +28,7 @@ public enum CuneiformSign {
     
     case formVariant(form: String, base: String, modifier: [Modifier])
     
-    /// Debug value, shouldn't appear under normal circumstances and shouldn't be used directly.
+    /// Debug value; shouldn't appear under normal circumstances and shouldn't be used directly.
     case null
     
     /// Various kinds of cuneiform sign graphical variations.
@@ -40,20 +40,22 @@ public enum CuneiformSign {
     }
 }
 
-extension CuneiformSign.Modifier {
-    static func modifierFromString(_ s: String) -> CuneiformSign.Modifier? {
+extension CuneiformSignReading.Modifier {
+    
+    /// Returns `CuneiformSign.Modifier` for validly encoded GDL modifiers; returns `nil` if modifier can't be found
+    static func modifierFromString(_ s: String) -> CuneiformSignReading.Modifier? {
         switch s {
-        case "c": return CuneiformSign.Modifier.curved
-        case "f": return CuneiformSign.Modifier.flat
-        case "g": return CuneiformSign.Modifier.gunu
-        case "s": return CuneiformSign.Modifier.šešig
-        case "t": return CuneiformSign.Modifier.tenu
-        case "n": return CuneiformSign.Modifier.nutillu
-        case "z": return CuneiformSign.Modifier.zidatenu
-        case "k": return CuneiformSign.Modifier.kabatenu
-        case "r": return CuneiformSign.Modifier.verticallyReflected
-        case "h": return CuneiformSign.Modifier.horizontallyReflected
-        case "v": return CuneiformSign.Modifier.variant
+        case "c": return CuneiformSignReading.Modifier.curved
+        case "f": return CuneiformSignReading.Modifier.flat
+        case "g": return CuneiformSignReading.Modifier.gunu
+        case "s": return CuneiformSignReading.Modifier.šešig
+        case "t": return CuneiformSignReading.Modifier.tenu
+        case "n": return CuneiformSignReading.Modifier.nutillu
+        case "z": return CuneiformSignReading.Modifier.zidatenu
+        case "k": return CuneiformSignReading.Modifier.kabatenu
+        case "r": return CuneiformSignReading.Modifier.verticallyReflected
+        case "h": return CuneiformSignReading.Modifier.horizontallyReflected
+        case "v": return CuneiformSignReading.Modifier.variant
             
         default: return nil
         }
@@ -78,16 +80,16 @@ public enum BreakPosition {
 }
 
 
-/// Base structure for representing cuneiform signs (graphemes) decoded from the grapheme description language. Enables sign-by-sign cuneiform and transliteration functionality. This is a simplified implementation of the GDL specification, which can be found [here](https://github.com/oracc/oracc/blob/master/doc/ns/gdl/1.0/gdl.xdf)
+/// Base structure for representing cuneiform signs (graphemes) decoded from the grapheme description language. Enables sign-by-sign cuneiform and transliteration functionality. Simplified implementation of the GDL specification, found [here](https://github.com/oracc/oracc/blob/master/doc/ns/gdl/1.0/gdl.xdf)
 
 public struct GraphemeDescription {
     /// Cuneiform glyph in UTF-8
     public let graphemeUTF8: String?
     
-    /// Graphical description of the sign.
-    public let sign: CuneiformSign
+    /// Sign reading metadata
+    public let sign: CuneiformSignReading
     
-    /// True if the sign is a logogram. Useful for formatting purposes.
+    /// True if the sign is a logogram; used for formatting purposes.
     public let isLogogram: Bool
     
     /// Sign preservation
@@ -102,7 +104,7 @@ public struct GraphemeDescription {
     /// If a logogram consists of multiple graphemes, it seems to be represented by this
     public let group: [GraphemeDescription]?
     
-    /// This seems to represent subelements in a name
+    /// Seems to represent subelements in a name
     public let gdl: [GraphemeDescription]?
     
     /// Some kind of container for further elements
@@ -111,7 +113,8 @@ public struct GraphemeDescription {
     /// If defined, a string that separates this character from the next one.
     public let delim: String?
     
-    public init(graphemeUTF8: String?, sign: CuneiformSign, isLogogram: Bool, preservation: Preservation = Preservation.preserved, breakPosition: BreakPosition?, isDeterminative: Determinative?, group: [GraphemeDescription]?, gdl: [GraphemeDescription]?, sequence: [GraphemeDescription]?, delimiter: String?) {
+    /// Creates a single grapheme description containing the Unicode cuneiform, sign metadata and delimiter information for formatting
+    public init(graphemeUTF8: String?, sign: CuneiformSignReading, isLogogram: Bool, preservation: Preservation = Preservation.preserved, breakPosition: BreakPosition?, isDeterminative: Determinative?, group: [GraphemeDescription]?, gdl: [GraphemeDescription]?, sequence: [GraphemeDescription]?, delimiter: String?) {
         self.graphemeUTF8 = graphemeUTF8
         self.sign = sign
         self.isLogogram = isLogogram
@@ -156,13 +159,13 @@ extension GraphemeDescription: Decodable {
         let graphemeUTF8 = try container.decodeIfPresent(String.self, forKey: .graphemeUTF8)
         
         //Decoding sign type
-        let cuneiformSign: CuneiformSign
+        let cuneiformSign: CuneiformSignReading
         if let namedSign = try container.decodeIfPresent(String.self, forKey: .signName){
             // Make a simple logographically read sign
-            cuneiformSign = CuneiformSign.name(namedSign)
+            cuneiformSign = CuneiformSignReading.name(namedSign)
         } else if let signValue = try container.decodeIfPresent(String.self, forKey: .signValue) {
             // Make a simple syllabically read sign
-            cuneiformSign = CuneiformSign.value(signValue)
+            cuneiformSign = CuneiformSignReading.value(signValue)
         } else if let form = try container.decodeIfPresent(String.self, forKey: .form) {
             // More complex readings associated with the 'form' field.
             
@@ -175,14 +178,14 @@ extension GraphemeDescription: Decodable {
                 }
                 
                 let base = modifiers["b"] ?? "x"
-                var mods = [CuneiformSign.Modifier]()
+                var mods = [CuneiformSignReading.Modifier]()
 
                 if let formVariant = modifiers["f"] {
                     mods.append(.FormVariant(formVariant))
                 }
                 
                 if let modifier = modifiers["m"] {
-                    if let modifierType = CuneiformSign.Modifier.modifierFromString(modifier) {
+                    if let modifierType = CuneiformSignReading.Modifier.modifierFromString(modifier) {
                         mods.append(modifierType)
                     }
                 }
@@ -190,12 +193,12 @@ extension GraphemeDescription: Decodable {
                 if let allograph = modifiers["a"] {
                     mods.append(.Allograph(allograph))
                 }
-                cuneiformSign = CuneiformSign.formVariant(form: form, base: base, modifier: mods)
+                cuneiformSign = CuneiformSignReading.formVariant(form: form, base: base, modifier: mods)
             } else {
-                cuneiformSign = CuneiformSign.formVariant(form: form, base: form, modifier: [])
+                cuneiformSign = CuneiformSignReading.formVariant(form: form, base: form, modifier: [])
             }
         } else {
-            cuneiformSign = CuneiformSign.null
+            cuneiformSign = CuneiformSignReading.null
         }
         
         // Get preservation quality

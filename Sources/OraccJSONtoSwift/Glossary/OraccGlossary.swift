@@ -1,10 +1,3 @@
-//
-//  OraccGlossary.swift
-//  OraccJSONtoSwift
-//
-//  Created by Chaitanya Kanchan on 07/01/2018.
-//
-
 import Foundation
 
 /// Enumeration for Oracc glossary categories

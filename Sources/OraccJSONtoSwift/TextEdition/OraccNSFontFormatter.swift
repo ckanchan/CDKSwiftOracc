@@ -1,10 +1,3 @@
-//
-//  OraccNSFontFormatter.swift
-//  OraccJSONtoSwift
-//
-//  Created by Chaitanya Kanchan on 09/01/2018.
-//
-
 import Foundation
 
 #if os(macOS)

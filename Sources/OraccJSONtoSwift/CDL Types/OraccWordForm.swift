@@ -1,10 +1,3 @@
-//
-//  OraccWordForm.swift
-//  OraccJSONtoSwift
-//
-//  Created by Chaitanya Kanchan on 08/01/2018.
-//
-
 import Foundation
 
 public struct WordForm {

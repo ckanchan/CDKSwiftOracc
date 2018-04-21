@@ -1,10 +1,3 @@
-//
-//  XISReference.swift
-//  OraccJSONtoSwift
-//
-//  Created by Chaitanya Kanchan on 15/02/2018.
-//
-
 import Foundation
 
 public struct XISReference: CustomStringConvertible {

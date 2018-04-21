@@ -1,10 +1,3 @@
-//
-//  OraccFormatter.swift
-//  OraccJSONtoSwift
-//
-//  Created by Chaitanya Kanchan on 07/01/2018.
-//
-
 import Foundation
 
 
@@ -80,7 +73,7 @@ extension OraccCDLNode.Lemma {
     }
 }
 
-extension CuneiformSign {
+extension CuneiformSignReading {
     public func getExtendedAttributes() -> [NSAttributedStringKey: Any] {
         var attributes = [NSAttributedStringKey:Any]()
         let signValue: String
