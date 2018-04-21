@@ -1,3 +1,21 @@
+//
+//  OraccNSFormatter.swift
+//  CDKSwiftOracc: Cuneiform Documents for Swift
+//  Copyright (C) 2018 Chaitanya Kanchan
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import Foundation
 
 #if os(macOS)
@@ -7,7 +25,8 @@ import Foundation
     
     
     /// Formats strings and text using Assyriological conventions.
-    public extension OraccTextEdition {
+@available(OSX 10.11, *)
+public extension OraccTextEdition {
         
         /// Returns a string formatted with Akkadian normalisation.
         public func formattedNormalisation(withFont font: NSFont) -> NSAttributedString {
@@ -178,7 +197,8 @@ import Foundation
         }
     }
     
-    extension OraccCDLNode {
+@available(OSX 10.11, *)
+extension OraccCDLNode {
         func normalisedAttributedString(withFont font: NSFont) -> NSAttributedString {
             
             let str: NSMutableAttributedString = NSMutableAttributedString(string: "")

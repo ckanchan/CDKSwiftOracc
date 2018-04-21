@@ -1,4 +1,5 @@
-# OraccJSONtoSwift
+# CDKSwiftOracc
+Cuneiform documents for Swift.
 
 ## WARNINGS
 This package is in alpha and is deficient in important ways:
