@@ -1,5 +1,13 @@
 # OraccJSONtoSwift
 
+## WARNINGS
+This package is in alpha and is deficient in important ways:
+- Not yet able to decode cuneiform numbers
+- Formatting across broken and half-broken signs is messy
+- HTML output is simplistic, using inline HTML style tags, and needs to be updated to allow CSS styling.
+
+
+## Introduction
 This package is a Swift implementation of the Open Richly Annotated Cuneiform Corpus ("Oracc")  schemas for encoding cuneiform texts. In particular, it seeks to provide:
 - Easy to use Swift types to work with signs, words, texts and glossaries
 - Codable types compatible with Oracc JSON open data

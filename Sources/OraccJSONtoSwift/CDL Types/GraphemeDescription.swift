@@ -7,7 +7,8 @@
 
 import Foundation
 
-/// Datatype enumerating a specific reading of a cuneiform sign. This is a simplified implementation of the GDL specification
+/// Datatype enumerating a specific reading of a cuneiform sign.
+
 public enum CuneiformSign {
     
     /// Sign read with syllabic value.
@@ -77,7 +78,7 @@ public enum BreakPosition {
 }
 
 
-/// Base structure for representing cuneiform signs (graphemes) decoded from the grapheme description language. Enables sign-by-sign cuneiform and transliteration functionality.
+/// Base structure for representing cuneiform signs (graphemes) decoded from the grapheme description language. Enables sign-by-sign cuneiform and transliteration functionality. This is a simplified implementation of the GDL specification, which can be found [here](https://github.com/oracc/oracc/blob/master/doc/ns/gdl/1.0/gdl.xdf)
 
 public struct GraphemeDescription {
     /// Cuneiform glyph in UTF-8
