@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Datatype enumerating a specific reading of a cuneiform sign.
+/// Datatype enumerating a specific reading of a cuneiform sign. This is a simplified implementation of the GDL specification
 public enum CuneiformSign {
     
     /// Sign read with syllabic value.
