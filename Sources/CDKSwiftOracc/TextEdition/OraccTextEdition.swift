@@ -96,7 +96,7 @@ public extension OraccTextEdition {
         var translation: String = ""
         
         do {
-            guard let url = self.url else { return nil}
+            guard let url = self.url else { return nil }
             let xml = try XMLDocument(contentsOf: url, options: XMLNode.Options.documentTidyHTML)
             let nodes = try xml.nodes(forXPath: "//*/td[3]/p/span")
             nodes.forEach{
@@ -115,6 +115,10 @@ public extension OraccTextEdition {
 #endif
 
 #if os(iOS)
+
+enum ScrapeError {
+    case NoDataAtURL
+}
 
     /// An object that provides a single method to scrape an Oracc translation for a text directly from HTML using the event-based parser which is the only one available on iOS.
     class OraccTranslationScraper: NSObject, XMLParserDelegate {
@@ -166,9 +170,9 @@ public extension OraccTextEdition {
     public extension OraccTextEdition {
         
         /// Asynchronously scrapes a text translation from the Oracc webpage using an event-based parser, then calls the supplied completion handler. You will need to check manually whether the copyright notice and license are included in the scraped text. If the copyright notice and license are not included, you *must* include this manually.
-        /// - Parameters: _
+        /// - Throws: `ScrapeError.NoDataAtURL` if the URL could not be reached.
         public func scrapeTranslation(_ completion: @escaping (String) -> Void) throws {
-            guard let url = self.url else { throw InterfaceError.TextError.notAvailable }
+            guard let url = self.url else { throw ScrapeError.NoDataAtURL }
             let scraper = OraccTranslationScraper(withURL: url, completion: completion)
             scraper.scrape()
         }
