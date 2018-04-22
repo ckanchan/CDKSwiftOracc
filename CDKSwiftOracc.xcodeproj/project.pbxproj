@@ -1,0 +1,536 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		"CDKSwiftOracc::CDKSwiftOraccPackageTests::ProductTarget" /* CDKSwiftOraccPackageTests */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = OBJ_59 /* Build configuration list for PBXAggregateTarget "CDKSwiftOraccPackageTests" */;
+			buildPhases = (
+			);
+			dependencies = (
+				OBJ_62 /* PBXTargetDependency */,
+			);
+			name = CDKSwiftOraccPackageTests;
+			productName = CDKSwiftOraccPackageTests;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		OBJ_38 /* GraphemeDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* GraphemeDescription.swift */; };
+		OBJ_39 /* OraccCDLNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* OraccCDLNode.swift */; };
+		OBJ_40 /* OraccWordForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* OraccWordForm.swift */; };
+		OBJ_41 /* OraccCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* OraccCatalog.swift */; };
+		OBJ_42 /* OraccCatalogueEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* OraccCatalogueEntry.swift */; };
+		OBJ_43 /* OraccGlossary.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* OraccGlossary.swift */; };
+		OBJ_44 /* OraccLanguages.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* OraccLanguages.swift */; };
+		OBJ_45 /* XISReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_19 /* XISReference.swift */; };
+		OBJ_46 /* OraccFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_21 /* OraccFormatter.swift */; };
+		OBJ_47 /* OraccHTMLFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_22 /* OraccHTMLFormatter.swift */; };
+		OBJ_48 /* OraccNSFontFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_23 /* OraccNSFontFormatter.swift */; };
+		OBJ_49 /* OraccTextEdition.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_24 /* OraccTextEdition.swift */; };
+		OBJ_50 /* TextEditionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_25 /* TextEditionExtensions.swift */; };
+		OBJ_57 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
+		OBJ_68 /* CDKSwiftOraccTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_28 /* CDKSwiftOraccTests.swift */; };
+		OBJ_70 /* CDKSwiftOracc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "CDKSwiftOracc::CDKSwiftOracc::Product" /* CDKSwiftOracc.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		54A22DFA208BA03900B1E923 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "CDKSwiftOracc::CDKSwiftOracc";
+			remoteInfo = CDKSwiftOracc;
+		};
+		54A22DFB208BA03A00B1E923 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "CDKSwiftOracc::CDKSwiftOraccTests";
+			remoteInfo = CDKSwiftOraccTests;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		"CDKSwiftOracc::CDKSwiftOracc::Product" /* CDKSwiftOracc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CDKSwiftOracc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"CDKSwiftOracc::CDKSwiftOraccTests::Product" /* CDKSwiftOraccTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = CDKSwiftOraccTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_10 /* GraphemeDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphemeDescription.swift; sourceTree = "<group>"; };
+		OBJ_11 /* OraccCDLNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OraccCDLNode.swift; sourceTree = "<group>"; };
+		OBJ_12 /* OraccWordForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OraccWordForm.swift; sourceTree = "<group>"; };
+		OBJ_14 /* OraccCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OraccCatalog.swift; sourceTree = "<group>"; };
+		OBJ_15 /* OraccCatalogueEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OraccCatalogueEntry.swift; sourceTree = "<group>"; };
+		OBJ_17 /* OraccGlossary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OraccGlossary.swift; sourceTree = "<group>"; };
+		OBJ_18 /* OraccLanguages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OraccLanguages.swift; sourceTree = "<group>"; };
+		OBJ_19 /* XISReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XISReference.swift; sourceTree = "<group>"; };
+		OBJ_21 /* OraccFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OraccFormatter.swift; sourceTree = "<group>"; };
+		OBJ_22 /* OraccHTMLFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OraccHTMLFormatter.swift; sourceTree = "<group>"; };
+		OBJ_23 /* OraccNSFontFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OraccNSFontFormatter.swift; sourceTree = "<group>"; };
+		OBJ_24 /* OraccTextEdition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OraccTextEdition.swift; sourceTree = "<group>"; };
+		OBJ_25 /* TextEditionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditionExtensions.swift; sourceTree = "<group>"; };
+		OBJ_28 /* CDKSwiftOraccTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDKSwiftOraccTests.swift; sourceTree = "<group>"; };
+		OBJ_29 /* Documentation */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Documentation; sourceTree = SOURCE_ROOT; };
+		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		OBJ_51 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_69 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_70 /* CDKSwiftOracc.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		OBJ_13 /* Catalog */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_14 /* OraccCatalog.swift */,
+				OBJ_15 /* OraccCatalogueEntry.swift */,
+			);
+			path = Catalog;
+			sourceTree = "<group>";
+		};
+		OBJ_16 /* Glossary */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_17 /* OraccGlossary.swift */,
+				OBJ_18 /* OraccLanguages.swift */,
+				OBJ_19 /* XISReference.swift */,
+			);
+			path = Glossary;
+			sourceTree = "<group>";
+		};
+		OBJ_20 /* TextEdition */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_21 /* OraccFormatter.swift */,
+				OBJ_22 /* OraccHTMLFormatter.swift */,
+				OBJ_23 /* OraccNSFontFormatter.swift */,
+				OBJ_24 /* OraccTextEdition.swift */,
+				OBJ_25 /* TextEditionExtensions.swift */,
+			);
+			path = TextEdition;
+			sourceTree = "<group>";
+		};
+		OBJ_26 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_27 /* CDKSwiftOraccTests */,
+			);
+			name = Tests;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_27 /* CDKSwiftOraccTests */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_28 /* CDKSwiftOraccTests.swift */,
+			);
+			name = CDKSwiftOraccTests;
+			path = Tests/CDKSwiftOraccTests;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_30 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				"CDKSwiftOracc::CDKSwiftOracc::Product" /* CDKSwiftOracc.framework */,
+				"CDKSwiftOracc::CDKSwiftOraccTests::Product" /* CDKSwiftOraccTests.xctest */,
+			);
+			name = Products;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		OBJ_5 /*  */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_6 /* Package.swift */,
+				OBJ_7 /* Sources */,
+				OBJ_26 /* Tests */,
+				OBJ_29 /* Documentation */,
+				OBJ_30 /* Products */,
+			);
+			name = "";
+			sourceTree = "<group>";
+		};
+		OBJ_7 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_8 /* CDKSwiftOracc */,
+			);
+			name = Sources;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_8 /* CDKSwiftOracc */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_9 /* CDL Types */,
+				OBJ_13 /* Catalog */,
+				OBJ_16 /* Glossary */,
+				OBJ_20 /* TextEdition */,
+			);
+			name = CDKSwiftOracc;
+			path = Sources/CDKSwiftOracc;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_9 /* CDL Types */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_10 /* GraphemeDescription.swift */,
+				OBJ_11 /* OraccCDLNode.swift */,
+				OBJ_12 /* OraccWordForm.swift */,
+			);
+			path = "CDL Types";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		"CDKSwiftOracc::CDKSwiftOracc" /* CDKSwiftOracc */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_34 /* Build configuration list for PBXNativeTarget "CDKSwiftOracc" */;
+			buildPhases = (
+				OBJ_37 /* Sources */,
+				OBJ_51 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CDKSwiftOracc;
+			productName = CDKSwiftOracc;
+			productReference = "CDKSwiftOracc::CDKSwiftOracc::Product" /* CDKSwiftOracc.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		"CDKSwiftOracc::CDKSwiftOraccTests" /* CDKSwiftOraccTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_64 /* Build configuration list for PBXNativeTarget "CDKSwiftOraccTests" */;
+			buildPhases = (
+				OBJ_67 /* Sources */,
+				OBJ_69 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				OBJ_71 /* PBXTargetDependency */,
+			);
+			name = CDKSwiftOraccTests;
+			productName = CDKSwiftOraccTests;
+			productReference = "CDKSwiftOracc::CDKSwiftOraccTests::Product" /* CDKSwiftOraccTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		"CDKSwiftOracc::SwiftPMPackageDescription" /* CDKSwiftOraccPackageDescription */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_53 /* Build configuration list for PBXNativeTarget "CDKSwiftOraccPackageDescription" */;
+			buildPhases = (
+				OBJ_56 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CDKSwiftOraccPackageDescription;
+			productName = CDKSwiftOraccPackageDescription;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		OBJ_1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 9999;
+			};
+			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "CDKSwiftOracc" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = OBJ_5 /*  */;
+			productRefGroup = OBJ_30 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				"CDKSwiftOracc::CDKSwiftOracc" /* CDKSwiftOracc */,
+				"CDKSwiftOracc::SwiftPMPackageDescription" /* CDKSwiftOraccPackageDescription */,
+				"CDKSwiftOracc::CDKSwiftOraccPackageTests::ProductTarget" /* CDKSwiftOraccPackageTests */,
+				"CDKSwiftOracc::CDKSwiftOraccTests" /* CDKSwiftOraccTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		OBJ_37 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_38 /* GraphemeDescription.swift in Sources */,
+				OBJ_39 /* OraccCDLNode.swift in Sources */,
+				OBJ_40 /* OraccWordForm.swift in Sources */,
+				OBJ_41 /* OraccCatalog.swift in Sources */,
+				OBJ_42 /* OraccCatalogueEntry.swift in Sources */,
+				OBJ_43 /* OraccGlossary.swift in Sources */,
+				OBJ_44 /* OraccLanguages.swift in Sources */,
+				OBJ_45 /* XISReference.swift in Sources */,
+				OBJ_46 /* OraccFormatter.swift in Sources */,
+				OBJ_47 /* OraccHTMLFormatter.swift in Sources */,
+				OBJ_48 /* OraccNSFontFormatter.swift in Sources */,
+				OBJ_49 /* OraccTextEdition.swift in Sources */,
+				OBJ_50 /* TextEditionExtensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_56 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_57 /* Package.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_67 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_68 /* CDKSwiftOraccTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		OBJ_62 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "CDKSwiftOracc::CDKSwiftOraccTests" /* CDKSwiftOraccTests */;
+			targetProxy = 54A22DFB208BA03A00B1E923 /* PBXContainerItemProxy */;
+		};
+		OBJ_71 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "CDKSwiftOracc::CDKSwiftOracc" /* CDKSwiftOracc */;
+			targetProxy = 54A22DFA208BA03900B1E923 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		OBJ_3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-DXcode";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_PACKAGE;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				USE_HEADERMAP = NO;
+			};
+			name = Debug;
+		};
+		OBJ_35 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = CDKSwiftOracc.xcodeproj/CDKSwiftOracc_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = CDKSwiftOracc;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGET_NAME = CDKSwiftOracc;
+			};
+			name = Debug;
+		};
+		OBJ_36 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = CDKSwiftOracc.xcodeproj/CDKSwiftOracc_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = CDKSwiftOracc;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGET_NAME = CDKSwiftOracc;
+			};
+			name = Release;
+		};
+		OBJ_4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_OPTIMIZATION_LEVEL = s;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				OTHER_SWIFT_FLAGS = "-DXcode";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_PACKAGE;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				USE_HEADERMAP = NO;
+			};
+			name = Release;
+		};
+		OBJ_54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				LD = /usr/bin/true;
+				OTHER_SWIFT_FLAGS = "-swift-version 4 -I $(TOOLCHAIN_DIR)/usr/lib/swift/pm/4 -target x86_64-apple-macosx10.10 -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		OBJ_55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				LD = /usr/bin/true;
+				OTHER_SWIFT_FLAGS = "-swift-version 4 -I $(TOOLCHAIN_DIR)/usr/lib/swift/pm/4 -target x86_64-apple-macosx10.10 -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
+		OBJ_60 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		OBJ_61 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		OBJ_65 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = CDKSwiftOracc.xcodeproj/CDKSwiftOraccTests_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/../Frameworks @loader_path/Frameworks";
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				SWIFT_VERSION = 4.0;
+				TARGET_NAME = CDKSwiftOraccTests;
+			};
+			name = Debug;
+		};
+		OBJ_66 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = CDKSwiftOracc.xcodeproj/CDKSwiftOraccTests_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/../Frameworks @loader_path/Frameworks";
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				SWIFT_VERSION = 4.0;
+				TARGET_NAME = CDKSwiftOraccTests;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		OBJ_2 /* Build configuration list for PBXProject "CDKSwiftOracc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_3 /* Debug */,
+				OBJ_4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_34 /* Build configuration list for PBXNativeTarget "CDKSwiftOracc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_35 /* Debug */,
+				OBJ_36 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_53 /* Build configuration list for PBXNativeTarget "CDKSwiftOraccPackageDescription" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_54 /* Debug */,
+				OBJ_55 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_59 /* Build configuration list for PBXAggregateTarget "CDKSwiftOraccPackageTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_60 /* Debug */,
+				OBJ_61 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_64 /* Build configuration list for PBXNativeTarget "CDKSwiftOraccTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_65 /* Debug */,
+				OBJ_66 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = OBJ_1 /* Project object */;
+}

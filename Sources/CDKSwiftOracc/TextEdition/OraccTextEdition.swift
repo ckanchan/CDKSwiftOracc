@@ -91,8 +91,8 @@ public struct OraccTextEdition: Codable {
 #if os(macOS)
 public extension OraccTextEdition {
     
-    /// Tries to scrape translation from Oracc HTML. A bit hackish. Returns nil if a translation can't be formed.
-    public var scrapeTranslation: String? {
+    /// Tries to scrape translation from Oracc HTML using the XML tree-based parser. A bit hackish. Returns nil if a translation can't be formed. If you use this method you *must* include the copyright and license for the text manually.
+    public func scrapeTranslation() -> String? {
         var translation: String = ""
         
         do {
@@ -115,6 +115,8 @@ public extension OraccTextEdition {
 #endif
 
 #if os(iOS)
+
+    /// An object that provides a single method to scrape an Oracc translation for a text directly from HTML using the event-based parser which is the only one available on iOS.
     class OraccTranslationScraper: NSObject, XMLParserDelegate {
         let parser: XMLParser
         var insideTranslation = false
@@ -162,12 +164,16 @@ public extension OraccTextEdition {
     }
 
     public extension OraccTextEdition {
+        
+        /// Asynchronously scrapes a text translation from the Oracc webpage using an event-based parser, then calls the supplied completion handler. You will need to check manually whether the copyright notice and license are included in the scraped text. If the copyright notice and license are not included, you *must* include this manually.
+        /// - Parameters: _
         public func scrapeTranslation(_ completion: @escaping (String) -> Void) throws {
             guard let url = self.url else { throw InterfaceError.TextError.notAvailable }
             let scraper = OraccTranslationScraper(withURL: url, completion: completion)
             scraper.scrape()
         }
     }
+
 #endif
 
 // Debugging extensions
