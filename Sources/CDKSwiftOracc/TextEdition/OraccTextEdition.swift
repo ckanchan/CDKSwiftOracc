@@ -116,7 +116,7 @@ public extension OraccTextEdition {
 
 #if os(iOS)
 
-enum ScrapeError {
+enum ScrapeError: Error {
     case NoDataAtURL
 }
 
