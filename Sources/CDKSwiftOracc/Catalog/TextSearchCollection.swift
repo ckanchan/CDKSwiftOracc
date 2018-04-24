@@ -28,6 +28,12 @@ public struct TextSearchCollection: TextSet {
     
     let searchIDs: [String]
     
+    public init(searchTerm: String, members: [String: OraccCatalogEntry], searchIDs: [String]) {
+        self.searchTerm = searchTerm
+        self.members = members
+        self.searchIDs = searchIDs
+    }
+    
 }
 
 

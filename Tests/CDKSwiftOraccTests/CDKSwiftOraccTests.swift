@@ -89,7 +89,7 @@ class CDKSwiftOraccTests: XCTestCase {
         let glossary = try decoder.decode(OraccGlossary.self, from: glossaryData)
         let results = glossary.searchResults(citationForm: "akālu", inCatalogue: catalogue)
         
-        XCTAssertNotNil(results)
+        XCTAssertNotNil(results, "Failed to get results")
         
     }
     
