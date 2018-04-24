@@ -20,5 +20,22 @@ import XCTest
 @testable import CDKSwiftOracc
 
 class CDKSwiftOraccTests: XCTestCase {
-    static var allTests: [(String, () throws -> Void)] = []
+    
+    func testCatalogDecode() throws {
+        guard let data = catalogueString.data(using: .utf8) else {
+            XCTFail("Unable to generate data from string")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        
+        let catalogue = try decoder.decode(OraccCatalog.self, from: data)
+        XCTAssert(catalogue.source.absoluteString == "http://oracc.org/saao/saa01", "Catalogue source is unexpected")
+        
+    }
+    
+    
+    static var allTests = [
+        ("testCatalogDecode", testCatalogDecode)
+    ]
 }
