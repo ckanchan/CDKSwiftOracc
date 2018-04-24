@@ -71,6 +71,28 @@ class CDKSwiftOraccTests: XCTestCase {
         }
     }
     
+    func testSearchResultInterface() throws {
+        guard let data = catalogueString.data(using: .utf8) else {
+            XCTFail("Unable to generate data from string")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        
+        let catalogue = try decoder.decode(OraccCatalog.self, from: data)
+        
+        guard let glossaryData = glossaryString.data(using: .utf8) else {
+            XCTFail("Unable to generate data from string")
+            return
+        }
+        
+        let glossary = try decoder.decode(OraccGlossary.self, from: glossaryData)
+        let results = glossary.searchResults(citationForm: "akālu", inCatalogue: catalogue)
+        
+        XCTAssertNotNil(results)
+        
+    }
+    
     
     
     static var allTests = [

@@ -69,6 +69,30 @@ public final class OraccGlossary {
         }
     }
     
+    /// Returns a set of texts containing the search term
+    /// - Parameter citationForm: the CDA citation form of the search term
+    /// - Parameter inCatalogue: the catalogue in which to perform the search, which must correspond to the catalogue from which the glossary is derived
+    /// - Returns: `TextSearchCollection`, which conforms to the same interface as an OraccCatalog and thus can be used to display and look up results.
+    
+    public func searchResults(citationForm: String, inCatalogue catalogue: OraccCatalog) -> TextSearchCollection? {
+        guard catalogue.project == self.project else { return nil }
+        guard let entry = self.lookUp(citationForm: citationForm) else {return nil}
+        let instances = self.instancesOf(entry)
+        let searchIDs = instances.map{$0.reference}
+        
+        var resultSet = [String: OraccCatalogEntry]()
+        
+        for instance in instances {
+            let id = instance.cdliID
+            guard let result = catalogue.members[id] else { continue }
+            
+            resultSet[id] = result
+        }
+        
+        
+        return TextSearchCollection(searchTerm: citationForm, members: resultSet, searchIDs: searchIDs)
+    }
+    
     
     
     init(project: String, lang: String, entries: [GlossaryEntry], instances: [String: [XISReference]]) {
@@ -121,8 +145,6 @@ extension OraccGlossary: Encodable {
         try container.encode(encodableInstances, forKey: .instances)
     }
 }
-
-
 
 /// An Oracc glossary entry
 public struct GlossaryEntry: Codable, CustomStringConvertible {

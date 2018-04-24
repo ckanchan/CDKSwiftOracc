@@ -1,5 +1,5 @@
 //
-//  OraccCatalog.swift
+//  TextSearchCollection.swift
 //  CDKSwiftOracc: Cuneiform Documents for Swift
 //  Copyright (C) 2018 Chaitanya Kanchan
 //
@@ -18,14 +18,16 @@
 
 import Foundation
 
-public struct OraccCatalog: Decodable, TextSet {
-    public let source: URL
-    public let project: String
-    public let members: [String: OraccCatalogEntry]
-    
+public struct TextSearchCollection: TextSet {
     public var title: String {
-        return project
+        return "Search: \(searchTerm)"
     }
+    
+    public var searchTerm: String
+    public var members: [String : OraccCatalogEntry]
+    
+    let searchIDs: [String]
+    
 }
 
 

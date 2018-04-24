@@ -1,5 +1,5 @@
 //
-//  OraccCatalog.swift
+//  TextSetProtocol.swift
 //  CDKSwiftOracc: Cuneiform Documents for Swift
 //  Copyright (C) 2018 Chaitanya Kanchan
 //
@@ -18,14 +18,8 @@
 
 import Foundation
 
-public struct OraccCatalog: Decodable, TextSet {
-    public let source: URL
-    public let project: String
-    public let members: [String: OraccCatalogEntry]
-    
-    public var title: String {
-        return project
-    }
+
+public protocol TextSet {
+    var title: String { get }
+    var members: [String: OraccCatalogEntry] { get }
 }
-
-
