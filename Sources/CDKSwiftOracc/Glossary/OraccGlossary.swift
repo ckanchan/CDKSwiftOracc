@@ -36,7 +36,10 @@ public final class OraccGlossary {
     public let project: String
     public let lang: String
     public let entries: [GlossaryEntry]
+    
+    /// Dictionary of XISReference paths to instances of a glossary entry in the corpus, keyed by the XISKey property. Use `instancesOf(_ entry: GlossaryEntry)` to access.
     public let instances: [String: [XISReference]]
+    
     
     public func instancesOf(_ entry: GlossaryEntry) -> [XISReference] {
         return self.instances[entry.xisKey]!
