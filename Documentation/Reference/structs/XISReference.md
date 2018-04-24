@@ -6,6 +6,8 @@
 public struct XISReference: CustomStringConvertible
 ```
 
+> A path reference to a specific instance of a glossary lemma. Indexed by a XISKey string.
+
 ## Properties
 ### `description`
 

@@ -2,15 +2,6 @@
 
 # `OraccTextEdition`
 
-## Properties
-### `scrapeTranslation`
-
-```swift
-public var scrapeTranslation: String?
-```
-
-> Tries to scrape translation from Oracc HTML. A bit hackish. Returns nil if a translation can't be formed.
-
 ## Methods
 ### `formattedNormalisation(withFont:)`
 
@@ -49,7 +40,18 @@ public func formattedTransliteration(withFont font: NSFont) -> NSAttributedStrin
 
 > Returns a formatted transliteration.
 
+### `scrapeTranslation()`
+
+```swift
+public func scrapeTranslation() -> String?
+```
+
+> Tries to scrape translation from Oracc HTML using the XML tree-based parser. A bit hackish. Returns nil if a translation can't be formed. If you use this method you *must* include the copyright and license for the text manually.
+
 ### `scrapeTranslation(_:)`
+
+> Asynchronously scrapes a text translation from the Oracc webpage using an event-based parser, then calls the supplied completion handler. You will need to check manually whether the copyright notice and license are included in the scraped text. If the copyright notice and license are not included, you *must* include this manually.
+> - Throws: `ScrapeError.NoDataAtURL` if the URL could not be reached.
 
 ### `flattenNodes()`
 
