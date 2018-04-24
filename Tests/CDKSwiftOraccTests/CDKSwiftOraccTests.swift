@@ -34,8 +34,50 @@ class CDKSwiftOraccTests: XCTestCase {
         
     }
     
+    func testGlossaryDecode() throws {
+        guard let data = glossaryString.data(using: .utf8) else {
+            XCTFail("Unable to generate data from string")
+            return
+        }
+        let decoder = JSONDecoder()
+        let glossary = try decoder.decode(OraccGlossary.self, from: data)
+        XCTAssert(glossary.lang == Language.AkkadianDialect.NeoAssyrian.rawValue, "Glossary did not decode successfully")
+    }
+    
+    func testIndexedLookup() throws {
+        guard let data = glossaryString.data(using: .utf8) else {
+            XCTFail("Unable to generate data from string")
+            return
+        }
+        let decoder = JSONDecoder()
+        let glossary = try decoder.decode(OraccGlossary.self, from: data)
+        XCTAssert(glossary.lang == Language.AkkadianDialect.NeoAssyrian.rawValue, "Glossary did not decode successfully")
+        
+        measure {
+            _ = glossary.lookUp("šarru")
+        }
+    }
+    
+    func testDirectLookup() throws {
+        guard let data = glossaryString.data(using: .utf8) else {
+            XCTFail("Unable to generate data from string")
+            return
+        }
+        let decoder = JSONDecoder()
+        let glossary = try decoder.decode(OraccGlossary.self, from: data)
+        XCTAssert(glossary.lang == Language.AkkadianDialect.NeoAssyrian.rawValue, "Glossary did not decode successfully")
+        measure {
+            _ = glossary.entries.first(where: {$0.citationForm == "šarru"})
+        }
+    }
+    
+    
     
     static var allTests = [
-        ("testCatalogDecode", testCatalogDecode)
+        ("testCatalogDecode", testCatalogDecode),
+        ("testGlossaryDecode", testGlossaryDecode),
+        ("testIndexedLookup", testIndexedLookup),
+        ("testDirectLookup", testDirectLookup)
+        
     ]
 }

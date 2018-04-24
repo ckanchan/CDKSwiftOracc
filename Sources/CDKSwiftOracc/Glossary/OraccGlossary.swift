@@ -40,16 +40,35 @@ public final class OraccGlossary {
     /// Dictionary of XISReference paths to instances of a glossary entry in the corpus, keyed by the XISKey property. Use `instancesOf(_ entry: GlossaryEntry)` to access.
     public let instances: [String: [XISReference]]
     
-    
+    /// Look up paths to instances of a specific glossary entry
+    /// - Parameter entry: A 'GlossaryEntry' struct, which can be looked up directly in the `OraccGlossary.entries` array or through one of the lookup methods.
     public func instancesOf(_ entry: GlossaryEntry) -> [XISReference] {
         return self.instances[entry.xisKey]!
     }
+    
+    public func lookUp(_ citationForm: String) -> GlossaryEntry? {
+        guard let idx = citationFormIndex[citationForm] else { return nil }
+        return self.entries[idx]
+    }
+    
+    
+    let citationFormIndex: [String: Int]
     
     init(project: String, lang: String, entries: [GlossaryEntry], instances: [String: [XISReference]]) {
         self.project = project
         self.lang = lang
         self.entries = entries
         self.instances = instances
+        
+        self.citationFormIndex = {
+            var index: [String: Int] = [:]
+            
+            for (idx, entry) in entries.enumerated() {
+                index[entry.citationForm] = idx
+            }
+            
+            return index
+        }()
     }
     
     enum CodingKeys: String, CodingKey {
@@ -141,6 +160,7 @@ public struct GlossaryEntry: Codable, CustomStringConvertible {
     }
     
     public struct Sense: Codable {
+        
         public let id: String
         public let headWord: String
         public let meaning: String
@@ -231,5 +251,3 @@ public struct GlossaryEntry: Codable, CustomStringConvertible {
         
     }
 }
-
-
