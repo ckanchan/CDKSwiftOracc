@@ -54,7 +54,7 @@ class CDKSwiftOraccTests: XCTestCase {
         XCTAssert(glossary.lang == Language.AkkadianDialect.NeoAssyrian.rawValue, "Glossary did not decode successfully")
         
         measure {
-            _ = glossary.lookUp("šarru")
+            _ = glossary.lookUp(citationForm: "šarru")
         }
     }
     

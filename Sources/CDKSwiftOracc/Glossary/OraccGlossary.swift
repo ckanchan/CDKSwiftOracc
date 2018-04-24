@@ -40,19 +40,36 @@ public final class OraccGlossary {
     /// Dictionary of XISReference paths to instances of a glossary entry in the corpus, keyed by the XISKey property. Use `instancesOf(_ entry: GlossaryEntry)` to access.
     public let instances: [String: [XISReference]]
     
+    /// Dictionary of array indexes in `self.entries` keyed to citationForm. Not to be used directly.
+    
+    let citationFormIndex: [String: Int]
+    
     /// Look up paths to instances of a specific glossary entry
     /// - Parameter entry: A 'GlossaryEntry' struct, which can be looked up directly in the `OraccGlossary.entries` array or through one of the lookup methods.
     public func instancesOf(_ entry: GlossaryEntry) -> [XISReference] {
         return self.instances[entry.xisKey]!
     }
     
-    public func lookUp(_ citationForm: String) -> GlossaryEntry? {
+    /// Gets the full entry for a specific citation form
+    /// - Parameter citationForm: the CDA conventional form of the Akkadian lemma.
+    public func lookUp(citationForm: String) -> GlossaryEntry? {
         guard let idx = citationFormIndex[citationForm] else { return nil }
         return self.entries[idx]
     }
     
+    /// Gets a full entry for a text edition lemma, if present.
+    /// - Parameter node: any OraccCDLNode within an OraccTextEdition.
+    /// - Returns: `GlossaryEntry` if a valid lemma, `nil` if otherwise
+    func lookUp(node: OraccCDLNode) -> GlossaryEntry? {
+        if case let OraccCDLNode.CDLNode.l(lemma) = node.node {
+            guard let cf = lemma.wordForm.translation.citationForm else { return nil }
+            return self.lookUp(citationForm: cf)
+        } else {
+            return nil
+        }
+    }
     
-    let citationFormIndex: [String: Int]
+    
     
     init(project: String, lang: String, entries: [GlossaryEntry], instances: [String: [XISReference]]) {
         self.project = project
