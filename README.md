@@ -1,5 +1,5 @@
 # CDKSwiftOracc
-Cuneiform documents for Swift.
+Cuneiform documents for Swift. [![Build Status](https://travis-ci.org/ckanchan/CDKSwiftOracc.svg?branch=master)](https://travis-ci.org/ckanchan/CDKSwiftOracc)
 
 ## WARNINGS
 This package is in alpha and is deficient in important ways:
