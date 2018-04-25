@@ -46,8 +46,10 @@ public extension OraccTextEdition {
         let str = self.html5Normalisation()
         
         let html = """
-                    <html>
+                    <!doctype html>
+                    <html lang="en">
                         <head>
+                            <meta charset="utf8">
                             <title>\(self.textid)</title>
                             <link rel="stylesheet" type="text/css" href="textedition.css" media="screen" />
                         </head>
@@ -191,6 +193,7 @@ extension OraccCDLNode {
 
     func normalisedHTML5() -> String {
         var str = ""
+        let damaged = "<span class=\"damaged\">x</span>"
         
         switch self.node {
         case .l(let lemma):
@@ -200,12 +203,13 @@ extension OraccCDLNode {
                 if let norm = lemma.wordForm.normalisation {
                     let citationForm = lemma.wordForm.translation.citationForm ?? ""
                     let guideWord = lemma.wordForm.translation.guideWord ?? ""
-                    let tooltip = "tooltip=\"\(citationForm): \(guideWord)\""
+                    let tooltip = "title=\"\(citationForm): \(guideWord)\""
+                    let dataToggle = "data-toggle=\"tooltip\""
                     
-                    lemmaString = "<span class=\"Akkadian\" data-cf=\"\(citationForm)\" data-gw=\"\(guideWord)\"\(tooltip)>\(norm) </span>"
+                    lemmaString = "<span class=\"Akkadian\" \(dataToggle) data-cf=\"\(citationForm)\" data-gw=\"\(guideWord)\"\(tooltip)>\(norm) </span>"
                     
                 } else {
-                    lemmaString = "x "
+                    lemmaString = damaged
                 }
                 
                 str.append(lemmaString)
@@ -215,12 +219,12 @@ extension OraccCDLNode {
                 if let norm = lemma.wordForm.normalisation {
                     let citationForm = lemma.wordForm.translation.citationForm ?? ""
                     let guideWord = lemma.wordForm.translation.guideWord ?? ""
-                    let tooltip = "tooltip=\"\(citationForm): \(guideWord)\""
+                    let tooltip = "title=\"\(citationForm): \(guideWord)\""
                     
                     lemmaString = "<span class=\"Sumerian\" data-cf=\"\(citationForm)\" data-gw=\"\(guideWord)\"\(tooltip)>\(norm) </span>"
                     
                 } else {
-                    lemmaString = "x "
+                    lemmaString = damaged
                 }
                 
                 str.append(lemmaString)
