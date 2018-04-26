@@ -22,6 +22,10 @@ import Foundation
 public enum OraccGlossaryType: String {
     case akkadian = "gloss-akk"
     case neoAssyrian = "gloss-akk-x-neoass"
+    case neoBabylonian = "gloss-akk-x-neobab"
+    case standardBabylonian = "gloss-akk-x-stdbab"
+    
+    case allProperNames = "gloss-qpn"
     case divineNames = "gloss-qpn-x-divine"
     case ethnicNames = "gloss-qpn-x-ethnic"
     case monthNames = "gloss-qpn-x-months"
