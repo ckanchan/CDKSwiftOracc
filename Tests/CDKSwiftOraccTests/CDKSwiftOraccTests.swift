@@ -130,7 +130,7 @@ class CDKSwiftOraccTextEditionTests: XCTestCase {
         XCTAssert(textEdition.textid == "P334176", "Text did not decode successfully")
         
         for node in textEdition {
-            print(node)
+            print(node, separator: " ")
         }
     }
     

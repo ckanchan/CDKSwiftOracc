@@ -28,7 +28,7 @@ public enum OraccCDLDecodingError: Error {
 public struct OraccCDLNode {
     
     /// A single unit of meaning, in cuneiform and translated forms. Summary information is included in the top-level properties; more detailed information can be accessed under the Form property and its Translation and GraphemeDescription fields.
-    public struct Lemma: Equatable, Hashable {
+    public struct Lemma: Equatable, Hashable, CustomStringConvertible {
         public var hashValue: Int {
             return reference.hashValue
         }
@@ -37,6 +37,9 @@ public struct OraccCDLNode {
             return lhs.hashValue == rhs.hashValue
         }
         
+        public var description: String {
+            return self.wordForm.form + " " + (self.wordForm.translation.sense ?? "")
+        }
         
         /// Transliteration with diacritical marks.
         public let fragment: String
@@ -69,23 +72,34 @@ public struct OraccCDLNode {
     }
     
     /// A 'chunk' of a cuneiform document, as interpreted by an editor. Contains an array of `OraccCDLNode`.
-    public struct Chunk {
+    public struct Chunk: CustomStringConvertible {
         public enum Chunktype: String {
             case sentence, text, phrase, discourse
         }
         
         public let type: Chunktype
         public let cdl: [OraccCDLNode]
+        
+        public var description: String {
+            return self.type.rawValue
+        }
     }
     
     /// Represents breaks on the tablet, whether line-breaks or physical damage
-    public struct Discontinuity {
+    public struct Discontinuity: CustomStringConvertible {
         public enum DiscontinuityType: String {
-            case bottom, cellStart = "cell-start", cellEnd = "cell-end", column, edge, envelope, excised, fieldStart = "field-start", left, nonw, nonx, obverse, object, linestart = "line-start", punct, right, reverse, surface, tablet, top
+            case bottom, broken = "nonx", cellStart = "cell-start", cellEnd = "cell-end", column, edge, envelope, excised, fieldStart = "field-start", left, obverse, object, linestart = "line-start", punct, right, reverse, surface, tablet, top, uninscribed = "nonw"
+            
+            //case nonx
+            //case nonw
         }
         
         public let type: DiscontinuityType
         public let label: String?
+        
+        public var description: String {
+            return self.type.rawValue + " " + (self.label ?? "")
+        }
     }
     
     /// Unknown usage...
@@ -388,4 +402,17 @@ public extension OraccCDLNode { //Text analysis functions
     }
 }
 
-
+extension OraccCDLNode.CDLNode: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .l(let lemma):
+            return "Lemma: \(lemma)"
+        case .c(let chunk):
+            return "Chunk: \(chunk)"
+        case .d(let discontinuity):
+            return discontinuity.description
+        case .linkbase(_):
+            return ""
+        }
+    }
+}
