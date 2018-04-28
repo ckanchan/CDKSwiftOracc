@@ -118,6 +118,22 @@ class CDKSwiftOraccTextEditionTests: XCTestCase {
         XCTAssert(textEdition.textid == "P334176", "Text did not decode successfully")
     }
     
+    func testSequence() throws {
+        guard let data = P334176.data(using: .utf8) else {
+            XCTFail("Unable to generate data from string")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        
+        let textEdition = try decoder.decode(OraccTextEdition.self, from: data)
+        XCTAssert(textEdition.textid == "P334176", "Text did not decode successfully")
+        
+        for node in textEdition {
+            print(node)
+        }
+    }
+    
     func testHTML5Output() throws {
         guard let data = P334176.data(using: .utf8) else {
             XCTFail("Unable to generate data from string")

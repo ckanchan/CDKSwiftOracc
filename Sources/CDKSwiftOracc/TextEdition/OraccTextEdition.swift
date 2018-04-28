@@ -82,6 +82,52 @@ public struct OraccTextEdition: Codable {
     }
 }
 
+extension OraccTextEdition: Sequence {
+    public func makeIterator() -> OraccTextEdition.Iterator {
+        return OraccTextEdition.Iterator(nodeArray: self.cdl)
+    }
+    
+    public class Iterator: IteratorProtocol {
+        indirect enum State {
+            case flat(Int)
+            case nested(Iterator)
+        }
+        
+        var state: State = .flat(0)
+        let nodeArray: [OraccCDLNode]
+        
+        public func next() -> OraccCDLNode.CDLNode? {
+            switch self.state {
+            case .flat(let idx):
+                guard self.nodeArray.count > idx else {return nil}
+                
+                let node = nodeArray[idx]
+                switch node.node {
+                case .l(_):
+                    self.state = .flat(idx + 1)
+                    return node.node
+                case .c(let chunk):
+                    self.state = .nested(OraccTextEdition.Iterator(nodeArray: chunk.cdl))
+                    return node.node
+                case .d(_):
+                    self.state = .flat(idx + 1)
+                    return node.node
+                case .linkbase(_):
+                    return nil
+                }
+                
+            case .nested(let iterator):
+                return iterator.next()
+            }
+        }
+    
+    
+        init(nodeArray: [OraccCDLNode]) {
+            self.state = .flat(0)
+            self.nodeArray = nodeArray
+        }
+    }
+}
 
 
 
