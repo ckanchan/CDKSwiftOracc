@@ -90,4 +90,17 @@ public extension Language {
     public init(withCode code: String) {
         self = Language.init(withInlineCode: code) ?? Language.init(withProtocolCode: code) ?? Language.Other(code)
     }
+
+    var protocolCode: String {
+        switch self {
+        case .Akkadian(let dialect):
+            return dialect.rawValue
+        case .Sumerian(let dialect):
+            return dialect.rawValue
+        case .Hittite:
+            return "hit"
+        case .Other(let str):
+            return str
+        }
+    }
 }
