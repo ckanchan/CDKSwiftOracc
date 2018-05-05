@@ -98,7 +98,7 @@ public struct OraccCDLNode {
         public let label: String?
         
         public var description: String {
-            return self.type.rawValue + " " + (self.label ?? "")
+            return "\(self.type) \(self.label ?? "")"
         }
     }
     

@@ -104,7 +104,7 @@ extension CuneiformSignReading {
         case .name(let name):
             signValue = name
         case .number(let number):
-            signValue = number
+            signValue = String(number.value)
         case .formVariant(_, let base, let modifier):
             signValue = base
             modifiers = modifier.description

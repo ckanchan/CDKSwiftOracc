@@ -1,3 +1,5 @@
+//Copyright Simo Parpola and the Neo-Assyrian Text Corpus Project, 1987. Lemmatised by Mikko Luukko, 2009-11, as part of the AHRC-funded research project “Mechanisms of Communication in an Ancient Empire: The Correspondence between the King of Assyria and his Magnates in the 8th Century BC” (AH/F016581/1; University College London). The annotated edition is released under the Creative Commons Attribution Share-Alike license 3.0.
+
 let P334176 = """
 {
 "type": "cdl",

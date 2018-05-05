@@ -155,7 +155,7 @@ public extension OraccTextEdition {
                     
                 case .number(let number):
                     let num = NSAttributedString(
-                        string: number,
+                        string: String(number.value),
                         attributes: noFormatting)
                     str.append(num)
                     let delimiter = NSAttributedString(

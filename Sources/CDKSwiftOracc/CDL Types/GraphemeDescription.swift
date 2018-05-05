@@ -30,7 +30,7 @@ public enum CuneiformSignReading {
     case name(String)
     
     /// Sexagesimal number
-    case number(String)
+    case number(value: Float, sexagesimal: String)
     
     /** Complex sign form variant
      - Parameter form: simple text representation of the complex sign.
@@ -146,6 +146,7 @@ extension GraphemeDescription: Decodable {
         
         case signValue = "v"
         case signName = "s"
+        case sexagesimal = "sexified"
         
         
         case form = "form"
@@ -181,8 +182,20 @@ extension GraphemeDescription: Decodable {
         } else if let form = try container.decodeIfPresent(String.self, forKey: .form) {
             // More complex readings associated with the 'form' field.
             
+            // If 'sexified' field present, encode as a number
+            if let sexified = try container.decodeIfPresent(String.self, forKey: .sexagesimal) {
+                let value: Float
+                if let form = try container.decodeIfPresent(String.self, forKey: .form) {
+                    if let formNumber = Float(form) {
+                        value = formNumber
+                    } else {value = -1}
+                } else {value = -1}
+                
+                cuneiformSign = CuneiformSignReading.number(value: value, sexagesimal: sexified)
+            }
+            
             // If a cuneiform sign with modifiers, create annotated sign
-            if let modifiersArray = try container.decodeIfPresent([[String: String]].self, forKey: .modifiers) {
+            else if let modifiersArray = try container.decodeIfPresent([[String: String]].self, forKey: .modifiers) {
                 
                 var modifiers = [String:String]()
                 for modifier in modifiersArray {
@@ -407,7 +420,7 @@ public extension GraphemeDescription {
             case .name(let name):
                 signStr.append(name)
             case .number(let number):
-                signStr.append(number)
+                signStr.append(String(number.value))
             case .formVariant(_, let base, _):
                 signStr.append(base)
             case .null:

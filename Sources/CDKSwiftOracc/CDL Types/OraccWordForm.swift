@@ -64,7 +64,7 @@ extension WordForm: Decodable {
         let lang = try container.decodeIfPresent(String.self, forKey: .lang)
         let form = try container.decode(String.self, forKey: .form)
         let graphemeDescriptions = try container.decode([GraphemeDescription].self, forKey: .gdl)
-        let normalisation = try container.decodeIfPresent(String.self, forKey: .norm)
+        var normalisation = try container.decodeIfPresent(String.self, forKey: .norm)
         let delimiter = try container.decodeIfPresent(String.self, forKey: .delim)
         
         // Try and get translation fields
@@ -79,6 +79,28 @@ extension WordForm: Decodable {
             if gw == "1" {
                 guideWord = citationForm
                 sense = citationForm
+            }
+        }
+        
+        // If a number, reassign guideWord, sense and normalisation fields to the numerical value
+        // TODO :- Ugly and duplicitous pattern matching needs fixing.
+        if let number = graphemeDescriptions.first(where: {switch $0.sign {
+        case .number:
+            return true
+        default:
+            return false
+            }}) {
+            if case let CuneiformSignReading.number(value, sexagesimal) = number.sign {
+                let valueAsString: String
+                if let integer = Int.init(exactly: value) {
+                    valueAsString = String(integer)
+                } else {
+                    valueAsString = String(value)
+                }
+                
+                normalisation = valueAsString
+                sense = valueAsString
+                guideWord = sexagesimal
             }
         }
         
