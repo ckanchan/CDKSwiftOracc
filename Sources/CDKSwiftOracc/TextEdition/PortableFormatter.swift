@@ -44,7 +44,7 @@ public struct TextEditionFormatting: OptionSet {
 
 
 extension OraccTextEdition {
-    func portableNormalisedString() -> NSAttributedString {
+    public func portableNormalisedString() -> NSAttributedString {
         let str = NSMutableAttributedString(string: "")
         for node in self.cdl {
             str.append(node.portableNormalisedString())
@@ -52,7 +52,7 @@ extension OraccTextEdition {
         return NSAttributedString(attributedString: str)
     }
     
-    func portableTransliteratedString() -> NSAttributedString {
+    public func portableTransliteratedString() -> NSAttributedString {
         let str = NSMutableAttributedString(string: "")
         for node in self.cdl {
             str.append(node.portableTransliteratedString())
@@ -153,7 +153,7 @@ extension OraccCDLNode {
 
 
 extension GraphemeDescription {
-    public func portableTransliteratedAttributedString() -> NSAttributedString {
+     func portableTransliteratedAttributedString() -> NSAttributedString {
         let italicFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.italic])]
         let superscriptFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.superscript])]
         
@@ -329,7 +329,7 @@ extension NSAttributedString {
 import AppKit.NSFont
 extension NSFont {
     
-    func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
+    public func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
         let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]
         let italicFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: self.getItalicFont()]
         let superscriptFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.superscript: 1]
@@ -349,7 +349,7 @@ extension NSFont {
 import UIKit.UIFont
 
 extension UIFont {
-    func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
+    public func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
         let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
         let italicFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: self.getItalicFont()]
         let superscriptFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.baselineOffset: 10,
