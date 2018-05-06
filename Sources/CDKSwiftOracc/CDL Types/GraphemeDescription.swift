@@ -19,6 +19,18 @@
 
 import Foundation
 
+extension Float {
+    /// Supports encoding, decoding and formatting for sexagesimal numbers
+    var asString: String {
+        if let wholeInt = Int.init(exactly: self) {
+            return String(wholeInt)
+        } else {
+            return String(self)
+        }
+    }
+}
+
+
 /// Datatype enumerating a localized reading of a cuneiform sign from a tablet.
 
 public enum CuneiformSignReading {
@@ -92,6 +104,28 @@ public enum Preservation {
 }
 
 
+/// Presents a single interface to any signs that are comprised of subsigns, whilst preserving the 'group|gdl|seq' metadata
+public enum Components {
+    /// If a logogram consists of multiple graphemes, it seems to be represented by this
+    case group([GraphemeDescription])
+    
+    /// Seems to represent subelements in a name
+    case gdl([GraphemeDescription])
+    
+    /// Some kind of container for further elements
+    case sequence([GraphemeDescription])
+    
+    var items: [GraphemeDescription] {
+        switch self {
+        case .group(let items):
+            return items
+        case .gdl(let items):
+            return items
+        case .sequence(let items):
+            return items
+        }
+    }
+}
 
 
 
@@ -113,29 +147,21 @@ public struct GraphemeDescription {
     
     /// If a determinative, what role it plays (usually 'semantic'), and position it occupies
     public let isDeterminative: Determinative?
-
-    /// If a logogram consists of multiple graphemes, it seems to be represented by this
-    public let group: [GraphemeDescription]?
     
-    /// Seems to represent subelements in a name
-    public let gdl: [GraphemeDescription]?
-    
-    /// Some kind of container for further elements
-    public let sequence: [GraphemeDescription]?
+    /// Present if the sign contains subunits
+    public let components: Components?
     
     /// If defined, a string that separates this character from the next one.
     public let delim: String?
     
     /// Creates a single grapheme description containing the Unicode cuneiform, sign metadata and delimiter information for formatting
-    public init(graphemeUTF8: String?, sign: CuneiformSignReading, isLogogram: Bool, preservation: Preservation = Preservation.preserved, isDeterminative: Determinative?, group: [GraphemeDescription]?, gdl: [GraphemeDescription]?, sequence: [GraphemeDescription]?, delimiter: String?) {
+    public init(graphemeUTF8: String?, sign: CuneiformSignReading, isLogogram: Bool, preservation: Preservation = Preservation.preserved, isDeterminative: Determinative?, components: Components?, delimiter: String?) {
         self.graphemeUTF8 = graphemeUTF8
         self.sign = sign
         self.isLogogram = isLogogram
         self.preservation = preservation
         self.isDeterminative = isDeterminative
-        self.group = group
-        self.gdl = gdl
-        self.sequence = sequence
+        self.components = components
         self.delim = delimiter
     }
 }
@@ -310,8 +336,21 @@ extension GraphemeDescription: Decodable {
             delimiter = nil
         }
         
+        let components: Components?
+        
+        if let group = group {
+            components = Components.group(group)
+        } else if let sequence = sequence {
+            components = Components.sequence(sequence)
+        } else if let gdl = gdl {
+            components = Components.gdl(gdl)
+        } else {
+            components = nil
+        }
+        
+        
         // Init
-        self.init(graphemeUTF8: graphemeUTF8, sign: cuneiformSign, isLogogram: isLogogram, preservation: preservation, isDeterminative: determinative, group: group, gdl: gdl, sequence: sequence, delimiter: delimiter)
+        self.init(graphemeUTF8: graphemeUTF8, sign: cuneiformSign, isLogogram: isLogogram, preservation: preservation, isDeterminative: determinative, components: components, delimiter: delimiter)
     }
 }
 
@@ -325,9 +364,9 @@ extension GraphemeDescription: Encodable {
             try container.encode(signValue, forKey: .signValue)
         case .name(let signName):
             try container.encode(signName, forKey: .signName)
-        case .number(_):
-        //TODO: - Implement numbers
-            break
+        case .number(let number):
+            try container.encode(number.value.asString, forKey: .form)
+            try container.encode(number.sexagesimal, forKey: .sexagesimal)
         case .formVariant(let form, let base, let modifier):
             
             try container.encode(form, forKey: .form)
@@ -382,17 +421,28 @@ extension GraphemeDescription: Encodable {
             try container.encode(determinative.rawValue, forKey: .position)
         }
         
-        if let group = self.group {
-            try container.encode(group, forKey: .group)
+        if let components = self.components {
+            switch components {
+            case .gdl(let gdl):
+                try container.encode(gdl, forKey: .gdl)
+            case .group(let group):
+                try container.encode(group, forKey: .group)
+            case .sequence(let seq):
+                try container.encode(seq, forKey: .sequence)
+            }
         }
         
-        if let seq = self.sequence {
-            try container.encode(seq, forKey: .sequence)
-        }
-        
-        if let gdl = self.gdl {
-            try container.encode(gdl, forKey: .gdl)
-        }
+//        if let group = self.group {
+//            try container.encode(group, forKey: .group)
+//        }
+//
+//        if let seq = self.sequence {
+//            try container.encode(seq, forKey: .sequence)
+//        }
+//
+//        if let gdl = self.gdl {
+//            try container.encode(gdl, forKey: .gdl)
+//        }
         
         if let delimiter = self.delim {
             if delimiter == "—" {
@@ -411,16 +461,8 @@ public extension GraphemeDescription {
     /// A computed property that returns cuneiform.
     public var cuneiform: String {
         var str = ""
-        if let gdl = gdl {
-            for grapheme in gdl {
-                str.append(grapheme.cuneiform)
-            }
-        } else if let sequence = sequence {
-            for grapheme in sequence {
-                str.append(grapheme.cuneiform)
-            }
-        } else if let group = group {
-            for grapheme in group {
+        if let components = components {
+            for grapheme in components.items {
                 str.append(grapheme.cuneiform)
             }
         } else {
@@ -436,12 +478,15 @@ public extension GraphemeDescription {
         //Determinatives
         if let determinative = isDeterminative {
             var syllable = ""
-            if let sequence = sequence {
-                var sequenceGraphemes = ""
-                for grapheme in sequence {
-                    sequenceGraphemes.append(grapheme.transliteration)
+            
+            if let components = components {
+                if case let Components.sequence(sequence) = components {
+                    var sequenceGraphemes = ""
+                    for grapheme in sequence {
+                        sequenceGraphemes.append(grapheme.transliteration)
+                    }
+                    syllable.append(sequenceGraphemes.trimmingCharacters(in: CharacterSet(charactersIn: "{ }")))
                 }
-                syllable.append(sequenceGraphemes.trimmingCharacters(in: CharacterSet(charactersIn: "{ }")))
             }
             
             syllable = "{\(syllable)}"
@@ -456,14 +501,10 @@ public extension GraphemeDescription {
 
             str.append(syllable)
             str.append(delim)
-            
-            
-        } else if let group = group {       //Recursing
-            group.forEach{str.append($0.transliteration)}
-        } else if let gdl = gdl {
-            gdl.forEach{str.append($0.transliteration)}
-        } else if let sequence = sequence {
-               sequence.forEach{str.append($0.transliteration)}
+
+       
+        } else if let components = components {
+            components.items.forEach{str.append($0.transliteration)}
         } else {
             if case let Preservation.damaged(breakPosition) = self.preservation {
                 if case Preservation.BreakPosition.start = breakPosition {
@@ -488,7 +529,7 @@ public extension GraphemeDescription {
                 str.append("\(log)\(delim ?? " ")")
                 
             case .number(let number):
-                str.append("\(String(number.value))\(delim ?? " ")")
+                str.append("\(number.value.asString)\(delim ?? " ")")
                 
             case .formVariant(_, let base, _):
 

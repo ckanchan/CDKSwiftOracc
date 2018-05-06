@@ -1,5 +1,5 @@
 //
-//  OraccFormatter.swift
+//  OraccCDLNode+ExtendedAttributes.swift
 //  CDKSwiftOracc: Cuneiform Documents for Swift
 //  Copyright (C) 2018 Chaitanya Kanchan
 //
@@ -18,63 +18,6 @@
 
 
 import Foundation
-
-
-// Adds keys that support the encoding of Oracc lemmatisation information into attributed strings.
-public extension NSAttributedStringKey {
-    public static var oraccCitationForm: NSAttributedStringKey {
-        return self.init("oraccCitationForm")
-    }
-    
-    public static var oraccGuideWord: NSAttributedStringKey {
-        return self.init("oraccGuideWord")
-    }
-    
-    public static var oraccSense: NSAttributedStringKey {
-        return self.init("oraccSense")
-    }
-    
-    public static var partOfSpeech: NSAttributedStringKey {
-        return self.init("partOfSpeech")
-    }
-    
-    public static var effectivePartOfSpeech: NSAttributedStringKey {
-        return self.init("effectivePartOfSpeech")
-    }
-    
-    public static var oraccLanguage: NSAttributedStringKey {
-        return self.init("oraccLanguage")
-    }
-    
-    public static var writtenForm: NSAttributedStringKey {
-        return self.init("writtenForm")
-    }
-    
-    public static var normalisation: NSAttributedStringKey {
-        return self.init("normalisation")
-    }
-    
-    public static var instanceTranslation: NSAttributedStringKey {
-        return self.init("instanceTranslation")
-    }
-    
-    public static var reference: NSAttributedStringKey {
-        return self.init("reference")
-    }
-}
-
-// Adds keys that support the encoding of GDL grapheme data into attributed strings
-public extension NSAttributedStringKey {
-    public static var signValue: NSAttributedStringKey {
-        return self.init("signValue")
-    }
-    
-    public static var signModifiers: NSAttributedStringKey {
-        return self.init("signModifiers")
-    }
-    
-}
-
 
 extension OraccCDLNode.Lemma {
     public func getExtendedAttributes() -> [NSAttributedStringKey: Any] {
@@ -105,7 +48,7 @@ extension CuneiformSignReading {
         case .name(let name):
             signValue = name
         case .number(let number):
-            signValue = String(number.value)
+            signValue = number.value.asString
         case .formVariant(_, let base, let modifier):
             signValue = base
             modifiers = modifier.description
@@ -118,6 +61,7 @@ extension CuneiformSignReading {
         return attributes
     }
 }
+
 
 
 

@@ -71,9 +71,11 @@ extension GraphemeDescription {
         //Determinatives
         if let determinative = isDeterminative {
             var syllable = ""
-            if let sequence = sequence {
-                for grapheme in sequence {
-                    syllable.append(grapheme.transliteratedHTML5())
+            if let components = components {
+                if case let Components.sequence(sequence) = components {
+                    for grapheme in sequence {
+                        syllable.append(grapheme.transliteratedHTML5())
+                    }
                 }
             }
             
@@ -86,12 +88,8 @@ extension GraphemeDescription {
             }
             
             str.append("<sup>\(syllable)</sup>\(delimiter)")
-        } else if let group = group {
-            group.forEach{str.append($0.transliteratedHTML5())}
-        } else if let gdl = gdl {
-            gdl.forEach{str.append($0.transliteratedHTML5())}
-        } else if let sequence = sequence {
-            sequence.forEach{str.append($0.transliteratedHTML5())}
+        } else if let components = components {
+            components.items.forEach{str.append($0.transliteratedHTML5())}
         } else {
             if case let Preservation.damaged(breakPosition) = self.preservation {
                 if case Preservation.BreakPosition.start = breakPosition {
@@ -117,7 +115,7 @@ extension GraphemeDescription {
                 str.append("\(log)\(delim ?? " ")")
                 
             case .number(let number):
-                str.append("\(number)\(delim ?? " ")")
+                str.append("\(number.value.asString)\(delim ?? " ")")
                 
             case .formVariant(_, let base, _):
                 if self.isLogogram {

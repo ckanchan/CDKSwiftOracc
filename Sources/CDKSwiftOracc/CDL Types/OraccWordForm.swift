@@ -91,15 +91,8 @@ extension WordForm: Decodable {
             return false
             }}) {
             if case let CuneiformSignReading.number(value, sexagesimal) = number.sign {
-                let valueAsString: String
-                if let integer = Int.init(exactly: value) {
-                    valueAsString = String(integer)
-                } else {
-                    valueAsString = String(value)
-                }
-                
-                normalisation = valueAsString
-                sense = valueAsString
+                normalisation = value.asString
+                sense = value.asString
                 guideWord = sexagesimal
             }
         }

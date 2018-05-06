@@ -89,9 +89,6 @@ public enum OraccCDLNode {
     public struct Discontinuity: CustomStringConvertible {
         public enum DiscontinuityType: String {
             case bottom, broken = "nonx", cellStart = "cell-start", cellEnd = "cell-end", column, edge, envelope, excised, fieldStart = "field-start", left, obverse, object, linestart = "line-start", punct, right, reverse, surface, tablet, top, uninscribed = "nonw"
-            
-            //case nonx
-            //case nonw
         }
         
         public let type: DiscontinuityType

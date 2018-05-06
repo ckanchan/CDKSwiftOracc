@@ -1,5 +1,5 @@
 //
-//  PortableFormatter.swift
+//  TextEditionFormatting.swift
 //  CDKSwiftOracc: Cuneiform Documents for Swift
 //  Copyright (C) 2018 Chaitanya Kanchan
 //
@@ -17,7 +17,6 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import Foundation
-
 
 public extension NSAttributedStringKey {
     public static var formatting: NSAttributedStringKey {
@@ -44,18 +43,21 @@ public struct TextEditionFormatting: OptionSet {
 
 
 extension OraccTextEdition {
-    public func portableNormalisedString() -> NSAttributedString {
+    
+    /// Returns a normalisation of the text edition with formatting hints as a platform-independent NSAttributedString
+    public func normalised() -> NSAttributedString {
         let str = NSMutableAttributedString(string: "")
         for node in self.cdl {
-            str.append(node.portableNormalisedString())
+            str.append(node.normalised())
         }
         return NSAttributedString(attributedString: str)
     }
     
-    public func portableTransliteratedString() -> NSAttributedString {
+    /// Returns a transliteration of the text edition with formatting hints as a platform-independent NSAttributedString
+    public func transliterated() -> NSAttributedString {
         let str = NSMutableAttributedString(string: "")
         for node in self.cdl {
-            str.append(node.portableTransliteratedString())
+            str.append(node.transliterated())
         }
         return NSAttributedString(attributedString: str)
     }
@@ -64,7 +66,7 @@ extension OraccTextEdition {
 extension OraccCDLNode {
     
     /// Returns a portable normalised string with platform-independent formatting attributes encoded under the `Formatting` key. These strings can be transformed with the `.render()` function for display.
-    func portableNormalisedString() -> NSAttributedString {
+    func normalised() -> NSAttributedString {
         let str = NSMutableAttributedString(string: "")
         
         switch self {
@@ -88,7 +90,7 @@ extension OraccCDLNode {
             
         case .c(let chunk):
             for node in chunk.cdl {
-                str.append(node.portableNormalisedString())
+                str.append(node.normalised())
             }
             
         case .d(let discontinuity):
@@ -112,7 +114,7 @@ extension OraccCDLNode {
         return NSAttributedString(attributedString: str)
     }
 
-    func portableTransliteratedString() -> NSAttributedString {
+    func transliterated() -> NSAttributedString {
         let str = NSMutableAttributedString(string: "")
         switch self {
         case .l(let lemma):
@@ -120,13 +122,13 @@ extension OraccCDLNode {
                 let sstr = NSMutableAttributedString(string: "")
                 let attribs = lemma.getExtendedAttributes()
                 
-                sstr.append(grapheme.portableTransliteratedAttributedString())
+                sstr.append(grapheme.transliterated())
                 sstr.addAttributes(attribs, range: NSMakeRange(0, sstr.string.count))
                 str.append(sstr)
             }
         case .c(let chunk):
             for node in chunk.cdl {
-                str.append(node.portableTransliteratedString())
+                str.append(node.transliterated())
             }
         case .d(let discontinuity):
             switch discontinuity.type {
@@ -148,24 +150,26 @@ extension OraccCDLNode {
         return str
     }
     
-    
 }
 
 
 extension GraphemeDescription {
-     func portableTransliteratedAttributedString() -> NSAttributedString {
+     func transliterated() -> NSAttributedString {
         let italicFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.italic]).rawValue]
         let superscriptFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.superscript]).rawValue]
         let damagedFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.damaged]).rawValue]
-        
+        let noFormatting = [NSAttributedStringKey.formatting: 0]
         
         let str = NSMutableAttributedString(string: "")
+        
         //Determinatives
         if let determinative = isDeterminative {
             let syllable = NSMutableAttributedString(string: "")
-            if let sequence = sequence {
-                for grapheme in sequence {
-                    syllable.append(grapheme.portableTransliteratedAttributedString())
+            if let components = components {
+                if case let Components.sequence(sequence) = components {
+                    for grapheme in sequence {
+                        syllable.append(grapheme.transliterated())
+                    }
                 }
             }
             
@@ -181,12 +185,9 @@ extension GraphemeDescription {
             
             str.append(syllable)
             str.append(delim)
-        } else if let group = group {       //Recursing
-            group.forEach{str.append($0.portableTransliteratedAttributedString())}
-        } else if let gdl = gdl {
-            gdl.forEach{str.append($0.portableTransliteratedAttributedString())}
-        } else if let sequence = sequence {
-            sequence.forEach{str.append($0.portableTransliteratedAttributedString())}
+            
+        } else if let components = components {
+            components.items.forEach{str.append($0.transliterated())}
         } else {
             if case let Preservation.damaged(breakPosition) = self.preservation {
                 if case Preservation.BreakPosition.start = breakPosition {
@@ -194,7 +195,7 @@ extension GraphemeDescription {
                     str.append(startBreak)
                 }
             }
-
+        
             
             switch self.sign {
             case .value(let syllable): // Syllabographic
@@ -241,7 +242,7 @@ extension GraphemeDescription {
                 
             case .number(let number):
                 let num = NSAttributedString(
-                    string: String(number.value),
+                    string: number.value.asString,
                     attributes: noFormatting)
                 str.append(num)
                 let delimiter = NSAttributedString(
@@ -306,7 +307,8 @@ extension OraccTextEdition {
 
 
 extension NSAttributedString {
-    /// An attempt was made to provide a platform agnostic interface to rendering an NSAttributedString
+    /// A platform agnostic interface to rendering an NSAttributedString.
+    /// - Parameter prefs : An `OraccTextEdition.FormattingPreferences` object filled with the requisited keys for formatting.
     public func render(withPreferences prefs: OraccTextEdition.FormattingPreferences) -> NSAttributedString {
         let mutableSelf = NSMutableAttributedString(attributedString: self)
     
@@ -356,6 +358,15 @@ extension NSAttributedString {
 #if os(macOS)
 import AppKit.NSFont
 extension NSFont {
+    func getItalicFont() -> NSFont {
+        let fontDsc = self.fontDescriptor
+        let italicDsc = NSFontDescriptor.SymbolicTraits.italic
+        let italicfntDsc = fontDsc.withSymbolicTraits(italicDsc)
+        let systemFontDsc = NSFont.systemFont(ofSize: self.pointSize).fontDescriptor
+        
+        return NSFont(descriptor: italicfntDsc, size: self.pointSize) ?? NSFont(descriptor: systemFontDsc, size: self.pointSize)!
+    }
+        
     
     public func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
         let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]
@@ -377,6 +388,21 @@ extension NSFont {
 import UIKit.UIFont
 
 extension UIFont {
+        func getItalicFont() -> UIFont {
+            let fontDsc = self.fontDescriptor
+            let italicDsc = UIFontDescriptorSymbolicTraits.traitItalic
+            let italicfntDsc = fontDsc.withSymbolicTraits(italicDsc)
+            if let descriptor = italicfntDsc {
+                return UIFont(descriptor: descriptor, size: self.pointSize)
+            } else {
+                return UIFont.italicSystemFont(ofSize: self.pointSize)
+            }
+        }
+        
+        var reducedFontSize: UIFont {
+            return UIFont(descriptor: self.fontDescriptor, size: self.pointSize / 2)
+        }
+    
     public func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
         let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
         let italicFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: self.getItalicFont()]

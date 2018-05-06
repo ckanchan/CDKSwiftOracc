@@ -156,7 +156,7 @@ class CDKSwiftOraccTextEditionTests: XCTestCase {
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
         let textEdition = try decoder.decode(OraccTextEdition.self, from: data)
-        let portable = textEdition.portableTransliteratedString()
+        let portable = textEdition.transliterated()
         print(textEdition.transliteration)
         
         
@@ -178,6 +178,21 @@ class CDKSwiftOraccTextEditionTests: XCTestCase {
         
         let newDecode = try decoder.decode(OraccTextEdition.self, from: reencoded)
         print(newDecode.transliteration)
+    }
+    
+    func testRINAP4() throws {
+        let url =  URL(string: "https://raw.githubusercontent.com/ckanchan/oraccjsonmirror/master/rinap/rinap4/corpusjson/Q003230.json")!
+        
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        let textEdition = try decoder.decode(OraccTextEdition.self, from: data)
+        let portable = textEdition.transliterated()
+        print(textEdition.transliteration)
+        
+        
+        let formatted = portable.render(withPreferences: NSFont.systemFont(ofSize: NSFont.systemFontSize).makeDefaultPreferences())
+        
+        XCTAssert(textEdition.textid == "Q003230", "Text did not decode successfully")
     }
     
 }
