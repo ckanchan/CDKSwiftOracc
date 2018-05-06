@@ -357,6 +357,8 @@ extension NSAttributedString {
 
 #if os(macOS)
 import AppKit.NSFont
+
+@available(macOS 10.11, *)
 extension NSFont {
     func getItalicFont() -> NSFont {
         let fontDsc = self.fontDescriptor
@@ -366,8 +368,6 @@ extension NSFont {
         
         return NSFont(descriptor: italicfntDsc, size: self.pointSize) ?? NSFont(descriptor: systemFontDsc, size: self.pointSize)!
     }
-        
-    
     public func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
         let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]
         let italicFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: self.getItalicFont()]
@@ -379,9 +379,7 @@ extension NSFont {
         
         return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting, editorialBold: editorialBoldFormatting, italic: italicFormatting, superscript: superscriptFormatting, damaged: damagedFormatting, none: noFormatting)
     }
-    
 }
-
 #endif
 
 #if os(iOS)
