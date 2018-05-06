@@ -181,7 +181,6 @@ extension GraphemeDescription: Decodable {
             cuneiformSign = CuneiformSignReading.value(signValue)
         } else if let form = try container.decodeIfPresent(String.self, forKey: .form) {
             // More complex readings associated with the 'form' field.
-            
             // If 'sexified' field present, encode as a number
             if let sexified = try container.decodeIfPresent(String.self, forKey: .sexagesimal) {
                 let value: Float
@@ -193,12 +192,13 @@ extension GraphemeDescription: Decodable {
                 
                 cuneiformSign = CuneiformSignReading.number(value: value, sexagesimal: sexified)
             }
-            
-            // If a cuneiform sign with modifiers, create annotated sign
+                
+                
+                // If a cuneiform sign with modifiers, create annotated sign
             else if let modifiersArray = try container.decodeIfPresent([[String: String]].self, forKey: .modifiers) {
                 
                 var modifiers = [String:String]()
-                for modifier in modifiersArray {
+            for modifier in modifiersArray {
                     modifiers.merge(modifier, uniquingKeysWith: {(_, new) in new})
                 }
                 
@@ -283,9 +283,20 @@ extension GraphemeDescription: Decodable {
         }
         
         // Recursive calls
-        let group = try container.decodeIfPresent([GraphemeDescription].self, forKey: .group)
-        let sequence = try container.decodeIfPresent([GraphemeDescription].self, forKey: .sequence)
-        let gdl = try container.decodeIfPresent([GraphemeDescription].self, forKey: .gdl)
+        let group: [GraphemeDescription]?
+        let sequence: [GraphemeDescription]?
+        let gdl: [GraphemeDescription]?
+        
+        switch cuneiformSign {
+        case .number:
+            group = nil
+            sequence = nil
+            gdl = nil
+        default:
+            group = try container.decodeIfPresent([GraphemeDescription].self, forKey: .group)
+            sequence = try container.decodeIfPresent([GraphemeDescription].self, forKey: .sequence)
+            gdl = try container.decodeIfPresent([GraphemeDescription].self, forKey: .gdl)
+        }
         
         let delimiter: String?
         
@@ -422,37 +433,83 @@ public extension GraphemeDescription {
     /// A computed property that returns transliteration as an unformatted string.
     public var transliteration: String {
         var str = ""
-        if let gdl = gdl {
-            for grapheme in gdl {
-                str.append(grapheme.transliteration)
+        //Determinatives
+        if let determinative = isDeterminative {
+            var syllable = ""
+            if let sequence = sequence {
+                var sequenceGraphemes = ""
+                for grapheme in sequence {
+                    sequenceGraphemes.append(grapheme.transliteration)
+                }
+                syllable.append(sequenceGraphemes.trimmingCharacters(in: CharacterSet(charactersIn: "{ }")))
             }
+            
+            syllable = "{\(syllable)}"
+            
+            let delim: String
+            switch determinative {
+            case .pre:
+                delim = ""
+            case .post:
+                delim = ""
+            }
+
+            str.append(syllable)
+            str.append(delim)
+            
+            
+        } else if let group = group {       //Recursing
+            group.forEach{str.append($0.transliteration)}
+        } else if let gdl = gdl {
+            gdl.forEach{str.append($0.transliteration)}
         } else if let sequence = sequence {
-            for grapheme in sequence {
-                str.append(grapheme.transliteration)
-            }
-        } else if let group = group {
-            for grapheme in group {
-                str.append(grapheme.transliteration)
-            }
+               sequence.forEach{str.append($0.transliteration)}
         } else {
-            var signStr = ""
-            
-            switch sign {
-            case .value(let v):
-                signStr.append(v)
-            case .name(let name):
-                signStr.append(name)
-            case .number(let number):
-                signStr.append(String(number.value))
-            case .formVariant(_, let base, _):
-                signStr.append(base)
-            case .null:
-                signStr.append("")
+            if case let Preservation.damaged(breakPosition) = self.preservation {
+                if case Preservation.BreakPosition.start = breakPosition {
+                    str.append("[")
+                }
             }
             
-            signStr.append(delim ?? " ")
-            str.append(signStr)
+            
+            switch self.sign {
+            case .value(let syllable): // Syllabographic
+                switch self.preservation {
+                case .damaged:
+                    str.append("⸢\(syllable)⸣")
+                case .missing:
+                    str.append("[\(syllable)]")
+                case .preserved:
+                    str.append(syllable)
+                }
+                str.append(delim ?? " ")
+                
+            case .name(let log): // Logographic
+                str.append("\(log)\(delim ?? " ")")
+                
+            case .number(let number):
+                str.append("\(String(number.value))\(delim ?? " ")")
+                
+            case .formVariant(_, let base, _):
+
+                if self.isLogogram {
+                    str.append("{\(base)}\(delim ?? " ")")
+                } else {
+                    str.append("\(base)\(delim ?? " ")")
+                }
+
+                
+            case .null:
+                break
+            }
         }
+        
+        if case let Preservation.damaged(breakPosition) = self.preservation {
+            if case Preservation.BreakPosition.start = breakPosition {
+                str.append("]")
+            }
+        }
+        
         return str
     }
 }

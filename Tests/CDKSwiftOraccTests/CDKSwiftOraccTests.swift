@@ -157,6 +157,8 @@ class CDKSwiftOraccTextEditionTests: XCTestCase {
         let decoder = JSONDecoder()
         let textEdition = try decoder.decode(OraccTextEdition.self, from: data)
         let portable = textEdition.portableTransliteratedString()
+        print(textEdition.transliteration)
+        
         
         let formatted = portable.render(withPreferences: NSFont.systemFont(ofSize: NSFont.systemFontSize).makeDefaultPreferences())
         
