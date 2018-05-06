@@ -6,11 +6,9 @@
 public enum BreakPosition
 ```
 
-> Break information - needs refactoring
-
 ## Cases
 ### `start`
 
 ```swift
-case start, end
+case start(String), end(String), undefined
 ```

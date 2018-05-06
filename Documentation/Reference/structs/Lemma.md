@@ -3,7 +3,7 @@
 # `Lemma`
 
 ```swift
-public struct Lemma: Equatable, Hashable
+public struct Lemma: Equatable, Hashable, CustomStringConvertible
 ```
 
 > A single unit of meaning, in cuneiform and translated forms. Summary information is included in the top-level properties; more detailed information can be accessed under the Form property and its Translation and GraphemeDescription fields.
@@ -13,6 +13,12 @@ public struct Lemma: Equatable, Hashable
 
 ```swift
 public var hashValue: Int
+```
+
+### `description`
+
+```swift
+public var description: String
 ```
 
 ### `fragment`

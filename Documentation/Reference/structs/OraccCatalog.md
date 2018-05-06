@@ -3,7 +3,7 @@
 # `OraccCatalog`
 
 ```swift
-public struct OraccCatalog: Decodable
+public struct OraccCatalog: Decodable, TextSet
 ```
 
 ## Properties
@@ -23,4 +23,10 @@ public let project: String
 
 ```swift
 public let members: [String: OraccCatalogEntry]
+```
+
+### `title`
+
+```swift
+public var title: String
 ```

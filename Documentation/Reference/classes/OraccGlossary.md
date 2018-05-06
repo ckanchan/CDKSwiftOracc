@@ -81,3 +81,21 @@ public func lookUp(node: OraccCDLNode) -> GlossaryEntry?
 | Name | Description |
 | ---- | ----------- |
 | node | any OraccCDLNode within an OraccTextEdition. |
+
+### `searchResults(citationForm:inCatalogue:)`
+
+```swift
+public func searchResults(citationForm: String, inCatalogue catalogue: OraccCatalog) -> TextSearchCollection?
+```
+
+> Returns a set of texts containing the search term
+> - Parameter citationForm: the CDA citation form of the search term
+> - Parameter inCatalogue: the catalogue in which to perform the search, which must correspond to the catalogue from which the glossary is derived
+> - Returns: `TextSearchCollection`, which conforms to the same interface as an OraccCatalog and thus can be used to display and look up results.
+
+#### Parameters
+
+| Name | Description |
+| ---- | ----------- |
+| citationForm | the CDA citation form of the search term |
+| inCatalogue | the catalogue in which to perform the search, which must correspond to the catalogue from which the glossary is derived |

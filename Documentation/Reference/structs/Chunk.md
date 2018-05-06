@@ -3,7 +3,7 @@
 # `Chunk`
 
 ```swift
-public struct Chunk
+public struct Chunk: CustomStringConvertible
 ```
 
 > A 'chunk' of a cuneiform document, as interpreted by an editor. Contains an array of `OraccCDLNode`.
@@ -19,4 +19,10 @@ public let type: Chunktype
 
 ```swift
 public let cdl: [OraccCDLNode]
+```
+
+### `description`
+
+```swift
+public var description: String
 ```

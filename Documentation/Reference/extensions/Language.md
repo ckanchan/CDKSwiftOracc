@@ -2,6 +2,13 @@
 
 # `Language`
 
+## Properties
+### `protocolCode`
+
+```swift
+var protocolCode: String
+```
+
 ## Methods
 ### `init(withProtocolCode:)`
 

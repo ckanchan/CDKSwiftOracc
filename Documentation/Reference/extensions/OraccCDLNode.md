@@ -2,6 +2,13 @@
 
 # `OraccCDLNode`
 
+## Properties
+### `description`
+
+```swift
+public var description: String
+```
+
 ## Methods
 ### `init(from:)`
 

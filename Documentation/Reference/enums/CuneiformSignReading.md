@@ -28,7 +28,7 @@ case name(String)
 ### `number`
 
 ```swift
-case number(String)
+case number(value: Float, sexagesimal: String)
 ```
 
 > Sexagesimal number

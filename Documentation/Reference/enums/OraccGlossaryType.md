@@ -21,6 +21,24 @@ case akkadian = "gloss-akk"
 case neoAssyrian = "gloss-akk-x-neoass"
 ```
 
+### `neoBabylonian`
+
+```swift
+case neoBabylonian = "gloss-akk-x-neobab"
+```
+
+### `standardBabylonian`
+
+```swift
+case standardBabylonian = "gloss-akk-x-stdbab"
+```
+
+### `allProperNames`
+
+```swift
+case allProperNames = "gloss-qpn"
+```
+
 ### `divineNames`
 
 ```swift

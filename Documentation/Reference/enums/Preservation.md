@@ -3,7 +3,7 @@
 # `Preservation`
 
 ```swift
-public enum Preservation: String
+public enum Preservation
 ```
 
 > Preservation status of a sign
@@ -12,5 +12,17 @@ public enum Preservation: String
 ### `preserved`
 
 ```swift
-case preserved, damaged, missing
+case preserved
+```
+
+### `damaged`
+
+```swift
+case damaged(BreakPosition)
+```
+
+### `missing`
+
+```swift
+case missing
 ```

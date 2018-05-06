@@ -44,18 +44,8 @@ public func encode(to encoder: Encoder) throws
 | ---- | ----------- |
 | encoder | The encoder to write data to. |
 
-### `transliteratedAttributedString(withFont:)`
-
-### `cuneiformAttributedString(withFont:)`
-
-### `transliteratedHTML()`
+### `transliteratedHTML5()`
 
 ```swift
-public func transliteratedHTML() -> String
-```
-
-### `transliteratedAttributedString(withFont:)`
-
-```swift
-public func transliteratedAttributedString(withFont font: NSFont) -> NSAttributedString
+public func transliteratedHTML5() -> String
 ```

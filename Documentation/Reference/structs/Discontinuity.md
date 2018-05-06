@@ -3,7 +3,7 @@
 # `Discontinuity`
 
 ```swift
-public struct Discontinuity
+public struct Discontinuity: CustomStringConvertible
 ```
 
 > Represents breaks on the tablet, whether line-breaks or physical damage
@@ -19,4 +19,10 @@ public let type: DiscontinuityType
 
 ```swift
 public let label: String?
+```
+
+### `description`
+
+```swift
+public var description: String
 ```

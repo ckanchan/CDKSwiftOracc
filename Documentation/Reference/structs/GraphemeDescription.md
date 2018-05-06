@@ -41,14 +41,6 @@ public let preservation: Preservation
 
 > Sign preservation
 
-### `breakPosition`
-
-```swift
-public let breakPosition: BreakPosition?
-```
-
-> If broken, whether it's at the start or the end
-
 ### `isDeterminative`
 
 ```swift
@@ -57,29 +49,13 @@ public let isDeterminative: Determinative?
 
 > If a determinative, what role it plays (usually 'semantic'), and position it occupies
 
-### `group`
+### `components`
 
 ```swift
-public let group: [GraphemeDescription]?
+public let components: Components?
 ```
 
-> If a logogram consists of multiple graphemes, it seems to be represented by this
-
-### `gdl`
-
-```swift
-public let gdl: [GraphemeDescription]?
-```
-
-> Seems to represent subelements in a name
-
-### `sequence`
-
-```swift
-public let sequence: [GraphemeDescription]?
-```
-
-> Some kind of container for further elements
+> Present if the sign contains subunits
 
 ### `delim`
 
@@ -90,10 +66,10 @@ public let delim: String?
 > If defined, a string that separates this character from the next one.
 
 ## Methods
-### `init(graphemeUTF8:sign:isLogogram:preservation:breakPosition:isDeterminative:group:gdl:sequence:delimiter:)`
+### `init(graphemeUTF8:sign:isLogogram:preservation:isDeterminative:components:delimiter:)`
 
 ```swift
-public init(graphemeUTF8: String?, sign: CuneiformSignReading, isLogogram: Bool, preservation: Preservation = Preservation.preserved, breakPosition: BreakPosition?, isDeterminative: Determinative?, group: [GraphemeDescription]?, gdl: [GraphemeDescription]?, sequence: [GraphemeDescription]?, delimiter: String?)
+public init(graphemeUTF8: String?, sign: CuneiformSignReading, isLogogram: Bool, preservation: Preservation = Preservation.preserved, isDeterminative: Determinative?, components: Components?, delimiter: String?)
 ```
 
 > Creates a single grapheme description containing the Unicode cuneiform, sign metadata and delimiter information for formatting
