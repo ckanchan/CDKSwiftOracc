@@ -65,7 +65,7 @@ public final class OraccGlossary {
     /// - Parameter node: any OraccCDLNode within an OraccTextEdition.
     /// - Returns: `GlossaryEntry` if a valid lemma, `nil` if otherwise
     public func lookUp(node: OraccCDLNode) -> GlossaryEntry? {
-        if case let OraccCDLNode.CDLNode.l(lemma) = node.node {
+        if case let OraccCDLNode.l(lemma) = node {
             guard let cf = lemma.wordForm.translation.citationForm else { return nil }
             return self.lookUp(citationForm: cf)
         } else {

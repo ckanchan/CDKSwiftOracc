@@ -93,16 +93,10 @@ extension GraphemeDescription {
         } else if let sequence = sequence {
             sequence.forEach{str.append($0.transliteratedHTML5())}
         } else {
-            switch breakPosition {
-            case .start?:
-                switch self.preservation {
-                case .missing:
+            if case let Preservation.damaged(breakPosition) = self.preservation {
+                if case Preservation.BreakPosition.start = breakPosition {
                     str.append("[")
-                default:
-                    break
                 }
-                
-            default: break
             }
             
             switch self.sign {
@@ -141,15 +135,11 @@ extension GraphemeDescription {
             }
         }
         
-        switch breakPosition {
-        case .end?:
-            switch self.preservation {
-            case .missing:
+        // If the sign is broken, append ']'
+        if case let Preservation.damaged(breakPosition) = self.preservation {
+            if case Preservation.BreakPosition.end = breakPosition {
                 str.append("]")
-            default:
-                break
             }
-        default: break
         }
         
         return str
@@ -161,7 +151,7 @@ extension OraccCDLNode {
     func transliteratedHTML5() -> String {
         var str = ""
         
-        switch self.node {
+        switch self {
         case .l(let lemma):
             for grapheme in lemma.wordForm.graphemeDescriptions {
                 str.append(grapheme.transliteratedHTML5())
@@ -195,7 +185,7 @@ extension OraccCDLNode {
         var str = ""
         let damaged = "<span class=\"damaged\">x</span>"
         
-        switch self.node {
+        switch self {
         case .l(let lemma):
             switch lemma.wordForm.language {
             case .Akkadian(_):

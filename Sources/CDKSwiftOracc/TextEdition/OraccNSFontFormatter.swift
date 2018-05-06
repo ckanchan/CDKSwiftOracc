@@ -97,25 +97,18 @@ public extension OraccTextEdition {
             } else if let sequence = sequence {
                 sequence.forEach{str.append($0.transliteratedAttributedString(withFont: font))}
             } else {
-                switch breakPosition {
-                case .start?:
-                    switch self.preservation {
-                    case .missing:
+                if case let Preservation.damaged(breakPosition) = self.preservation {
+                    if case Preservation.BreakPosition.start = breakPosition {
                         let startBreak = NSAttributedString(string: "[", attributes: noFormatting)
                         str.append(startBreak)
-                    default:
-                        break
                     }
-                default:
-                    break
                 }
                 
                 
                 switch self.sign {
                 case .value(let syllable): // Syllabographic
                     let akkSyllable: NSAttributedString
-                
-                    
+
                     switch self.preservation {
                     case .damaged:
                         let startBreak = NSAttributedString(string: "⸢", attributes: noFormatting)
@@ -181,18 +174,13 @@ public extension OraccTextEdition {
                 }
             }
             
-            switch breakPosition {
-            case .end?:
-                switch self.preservation {
-                case .missing:
+            if case let Preservation.damaged(breakPosition) = self.preservation {
+                if case Preservation.BreakPosition.start = breakPosition {
                     let endBreak = NSAttributedString(string: "]", attributes: noFormatting)
                     str.append(endBreak)
-                default:
-                    break
                 }
-            default:
-                break
-            } 
+            }
+            
             return str
         }
     }
@@ -205,7 +193,7 @@ extension OraccCDLNode {
             let editorialFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.regular)]
             let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.bold)]
             
-            switch self.node {
+            switch self {
             case .l(let lemma):
                 switch lemma.wordForm.language {
                 case .Akkadian(_):
@@ -278,7 +266,7 @@ extension OraccCDLNode {
             let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.bold)]
             
             let str = NSMutableAttributedString(string: "")
-            switch self.node {
+            switch self {
             case .l(let lemma):
                 for grapheme in lemma.wordForm.graphemeDescriptions {
                     str.append(grapheme.transliteratedAttributedString(withFont: font))

@@ -19,6 +19,8 @@
 import XCTest
 @testable import CDKSwiftOracc
 
+import AppKit.NSFont
+
 class CDKSwiftOraccTests: XCTestCase {
     
     func testCatalogDecode() throws {
@@ -118,21 +120,21 @@ class CDKSwiftOraccTextEditionTests: XCTestCase {
         XCTAssert(textEdition.textid == "P334176", "Text did not decode successfully")
     }
     
-    func testSequence() throws {
-        guard let data = P334176.data(using: .utf8) else {
-            XCTFail("Unable to generate data from string")
-            return
-        }
-        
-        let decoder = JSONDecoder()
-        
-        let textEdition = try decoder.decode(OraccTextEdition.self, from: data)
-        XCTAssert(textEdition.textid == "P334176", "Text did not decode successfully")
-        
-        for node in textEdition {
-            print(node, separator: " ")
-        }
-    }
+//    func testSequence() throws {
+//        guard let data = P334176.data(using: .utf8) else {
+//            XCTFail("Unable to generate data from string")
+//            return
+//        }
+//
+//        let decoder = JSONDecoder()
+//
+//        let textEdition = try decoder.decode(OraccTextEdition.self, from: data)
+//        XCTAssert(textEdition.textid == "P334176", "Text did not decode successfully")
+//
+//        for node in textEdition {
+//            print(node, separator: " ")
+//        }
+//    }
     
     func testHTML5Output() throws {
         guard let data = P334176.data(using: .utf8) else {
@@ -154,8 +156,26 @@ class CDKSwiftOraccTextEditionTests: XCTestCase {
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
         let textEdition = try decoder.decode(OraccTextEdition.self, from: data)
-        print(textEdition.transcription)
+        let portable = textEdition.portableTransliteratedString()
+        
+        let formatted = portable.render(withPreferences: NSFont.systemFont(ofSize: NSFont.systemFontSize).makeDefaultPreferences())
+        
         XCTAssert(textEdition.textid == "P224485", "Text did not decode successfully")
+    }
+    
+    func testDecodeEncodeDecode() throws {
+        let url =  URL(string: "https://raw.githubusercontent.com/ckanchan/oraccjsonmirror/master/saao/saa01/corpusjson/P224485.json")!
+        
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        let textEdition = try decoder.decode(OraccTextEdition.self, from: data)
+        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        let reencoded = try encoder.encode(textEdition)
+        
+        let newDecode = try decoder.decode(OraccTextEdition.self, from: reencoded)
+        print(newDecode.transliteration)
     }
     
 }

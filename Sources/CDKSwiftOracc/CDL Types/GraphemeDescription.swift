@@ -75,21 +75,24 @@ extension CuneiformSignReading.Modifier {
 }
 
 
-
 /// Position of a determinative
 public enum Determinative: String {
     case pre, post
 }
 
 /// Preservation status of a sign
-public enum Preservation: String {
-    case preserved, damaged, missing
+public enum Preservation {
+    public enum BreakPosition {
+        case start(String), end(String), undefined
+    }
+    
+    case preserved
+    case damaged(BreakPosition)
+    case missing
 }
 
-/// Break information - needs refactoring
-public enum BreakPosition {
-    case start, end
-}
+
+
 
 
 /// Base structure for representing cuneiform signs (graphemes) decoded from the grapheme description language. Enables sign-by-sign cuneiform and transliteration functionality. Simplified implementation of the GDL specification, found [here](https://github.com/oracc/oracc/blob/master/doc/ns/gdl/1.0/gdl.xdf)
@@ -107,8 +110,6 @@ public struct GraphemeDescription {
     /// Sign preservation
     public let preservation: Preservation
     
-    /// If broken, whether it's at the start or the end
-    public let breakPosition: BreakPosition?
     
     /// If a determinative, what role it plays (usually 'semantic'), and position it occupies
     public let isDeterminative: Determinative?
@@ -126,12 +127,11 @@ public struct GraphemeDescription {
     public let delim: String?
     
     /// Creates a single grapheme description containing the Unicode cuneiform, sign metadata and delimiter information for formatting
-    public init(graphemeUTF8: String?, sign: CuneiformSignReading, isLogogram: Bool, preservation: Preservation = Preservation.preserved, breakPosition: BreakPosition?, isDeterminative: Determinative?, group: [GraphemeDescription]?, gdl: [GraphemeDescription]?, sequence: [GraphemeDescription]?, delimiter: String?) {
+    public init(graphemeUTF8: String?, sign: CuneiformSignReading, isLogogram: Bool, preservation: Preservation = Preservation.preserved, isDeterminative: Determinative?, group: [GraphemeDescription]?, gdl: [GraphemeDescription]?, sequence: [GraphemeDescription]?, delimiter: String?) {
         self.graphemeUTF8 = graphemeUTF8
         self.sign = sign
         self.isLogogram = isLogogram
         self.preservation = preservation
-        self.breakPosition = breakPosition
         self.isDeterminative = isDeterminative
         self.group = group
         self.gdl = gdl
@@ -226,23 +226,40 @@ extension GraphemeDescription: Decodable {
             cuneiformSign = CuneiformSignReading.null
         }
         
+
+        
         // Get preservation quality
         let preservation: Preservation
         if let breakDescription = try container.decodeIfPresent(String.self, forKey: .preservation) {
-            preservation = Preservation(rawValue: breakDescription) ?? .preserved
+            switch breakDescription {
+            case "missing":
+                preservation = .missing
+                
+            case "damaged":
+                // Get sign break position
+                let breakPosition: Preservation.BreakPosition
+                if container.contains(.breakEnd) {
+                    let metadata = try container.decode(String.self, forKey: .breakEnd)
+                    breakPosition = .end(metadata)
+                } else if container.contains(.breakStart) {
+                    let metadata = try container.decode(String.self, forKey: .breakStart)
+                    breakPosition = .start(metadata)
+                } else {
+                    breakPosition = .undefined
+                }
+                
+                preservation = .damaged(breakPosition)
+                
+                
+            default:
+                preservation = .preserved
+            }
+
         } else {
             preservation = .preserved
         }
         
-        // Get sign break position
-        let breakPosition: BreakPosition?
-        if container.contains(.breakStart) {
-            breakPosition = .start
-        } else if container.contains(.breakEnd) {
-            breakPosition = .end
-        } else {
-            breakPosition = nil
-        }
+
         
         
         // Check if grapheme is a logogram
@@ -283,7 +300,7 @@ extension GraphemeDescription: Decodable {
         }
         
         // Init
-        self.init(graphemeUTF8: graphemeUTF8, sign: cuneiformSign, isLogogram: isLogogram, preservation: preservation, breakPosition: breakPosition, isDeterminative: determinative, group: group, gdl: gdl, sequence: sequence, delimiter: delimiter)
+        self.init(graphemeUTF8: graphemeUTF8, sign: cuneiformSign, isLogogram: isLogogram, preservation: preservation, isDeterminative: determinative, group: group, gdl: gdl, sequence: sequence, delimiter: delimiter)
     }
 }
 
@@ -327,10 +344,20 @@ extension GraphemeDescription: Encodable {
         switch self.preservation {
         case .preserved:
             break
-        case .damaged:
-            try container.encode(preservation.rawValue, forKey: .preservation)
+            
+        case .damaged(let breakPosition):
+            switch breakPosition {
+            case .start(let metadata):
+                try container.encode(metadata, forKey: .breakStart)
+            case .end(let metadata):
+                try container.encode(metadata, forKey: .breakEnd)
+            default:
+                break
+            }
+            
+            try container.encode("damaged", forKey: .preservation)
         case .missing:
-            try container.encode(preservation.rawValue, forKey: .preservation)
+            try container.encode("missing", forKey: .preservation)
         }
         
         // Breakposition not implemented yet
@@ -366,10 +393,6 @@ extension GraphemeDescription: Encodable {
         
     }
 }
-
-
-
-
 
 
 public extension GraphemeDescription {

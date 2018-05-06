@@ -67,7 +67,7 @@ extension OraccCDLNode {
     func portableNormalisedString() -> NSAttributedString {
         let str = NSMutableAttributedString(string: "")
         
-        switch self.node {
+        switch self {
         case .l(let lemma):
             let attrStr: NSMutableAttributedString
             if let norm = lemma.wordForm.normalisation {
@@ -114,7 +114,7 @@ extension OraccCDLNode {
 
     func portableTransliteratedString() -> NSAttributedString {
         let str = NSMutableAttributedString(string: "")
-        switch self.node {
+        switch self {
         case .l(let lemma):
             for grapheme in lemma.wordForm.graphemeDescriptions {
                 let sstr = NSMutableAttributedString(string: "")
@@ -131,13 +131,13 @@ extension OraccCDLNode {
         case .d(let discontinuity):
             switch discontinuity.type {
             case .obverse:
-                let obv = NSAttributedString(string: "Obverse: \n", attributes: [.formatting: TextEditionFormatting([.editorial, .bold])])
+                let obv = NSAttributedString(string: "Obverse: \n", attributes: [.formatting: TextEditionFormatting([.editorial, .bold]).rawValue])
                 str.append(obv)
             case .linestart:
-                let ln = NSAttributedString(string: "\n\(discontinuity.label ?? "") ", attributes: [.formatting: TextEditionFormatting([.editorial])])
+                let ln = NSAttributedString(string: "\n\(discontinuity.label ?? "") ", attributes: [.formatting: TextEditionFormatting([.editorial]).rawValue])
                 str.append(ln)
             case .reverse:
-                let rev = NSAttributedString(string: "\n\n\n Reverse: \n", attributes: [.formatting: TextEditionFormatting([.editorial, .bold])])
+                let rev = NSAttributedString(string: "\n\n\n Reverse: \n", attributes: [.formatting: TextEditionFormatting([.editorial, .bold]).rawValue])
                 str.append(rev)
             default:
                 break
@@ -154,8 +154,9 @@ extension OraccCDLNode {
 
 extension GraphemeDescription {
      func portableTransliteratedAttributedString() -> NSAttributedString {
-        let italicFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.italic])]
-        let superscriptFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.superscript])]
+        let italicFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.italic]).rawValue]
+        let superscriptFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.superscript]).rawValue]
+        let damagedFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.damaged]).rawValue]
         
         
         let str = NSMutableAttributedString(string: "")
@@ -180,27 +181,48 @@ extension GraphemeDescription {
             
             str.append(syllable)
             str.append(delim)
-        } else if let group = group {
-            
-            //Recursing
-            
+        } else if let group = group {       //Recursing
             group.forEach{str.append($0.portableTransliteratedAttributedString())}
         } else if let gdl = gdl {
             gdl.forEach{str.append($0.portableTransliteratedAttributedString())}
         } else if let sequence = sequence {
             sequence.forEach{str.append($0.portableTransliteratedAttributedString())}
         } else {
+            if case let Preservation.damaged(breakPosition) = self.preservation {
+                if case Preservation.BreakPosition.start = breakPosition {
+                    let startBreak = NSAttributedString(string: "[", attributes: noFormatting)
+                    str.append(startBreak)
+                }
+            }
+
+            
             switch self.sign {
             case .value(let syllable): // Syllabographic
                 let akkSyllable: NSAttributedString
-                if syllable == "x" {
-                    akkSyllable = NSAttributedString(string: syllable, attributes: noFormatting) // Formats broken signs
-                } else {
-                    akkSyllable = NSAttributedString(
-                        string: syllable,
-                        attributes: italicFormatting)
+                
+                switch self.preservation {
+                case .damaged:
+                    let startBreak = NSAttributedString(string: "⸢", attributes: noFormatting)
+                    str.append(startBreak)
+                    akkSyllable = NSAttributedString(string: syllable,
+                                                     attributes: damagedFormatting)
+                    str.append(akkSyllable)
+                    let endBreak = NSAttributedString(string: "⸣", attributes: noFormatting)
+                    str.append(endBreak)
+                case .missing:
+                    let startBreak = NSAttributedString(string: "[", attributes: noFormatting)
+                    str.append(startBreak)
+                    akkSyllable = NSAttributedString(string: syllable,
+                                                     attributes: damagedFormatting)
+                    str.append(akkSyllable)
+                    let endBreak = NSAttributedString(string: "]", attributes: noFormatting)
+                    str.append(endBreak)
+                case .preserved:
+                    akkSyllable = NSAttributedString(string: syllable,
+                                                     attributes: italicFormatting)
+                    str.append(akkSyllable)
                 }
-                str.append(akkSyllable)
+
                 let delimiter = NSAttributedString(
                     string: delim ?? " ",
                     attributes: noFormatting
@@ -245,6 +267,12 @@ extension GraphemeDescription {
             }
         }
         
+        if case let Preservation.damaged(breakPosition) = self.preservation {
+            if case Preservation.BreakPosition.start = breakPosition {
+                let endBreak = NSAttributedString(string: "]", attributes: noFormatting)
+                str.append(endBreak)
+            }
+        }
         
         return str
     }

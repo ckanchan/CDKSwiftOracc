@@ -24,8 +24,8 @@ public enum OraccCDLDecodingError: Error {
 }
 
 
-/// A single node in an Oracc CDL nested representation of a cuneiform document. Wraps a single `CDLNode` property.
-public struct OraccCDLNode {
+/// A single node in an Oracc CDL nested representation of a cuneiform document.
+public enum OraccCDLNode {
     
     /// A single unit of meaning, in cuneiform and translated forms. Summary information is included in the top-level properties; more detailed information can be accessed under the Form property and its Translation and GraphemeDescription fields.
     public struct Lemma: Equatable, Hashable, CustomStringConvertible {
@@ -110,30 +110,13 @@ public struct OraccCDLNode {
         }
     }
     
-    /// Base element of a cuneiform document: a `Chunk` representing a section of text, which contains further `Chunk`s, `Discontinuity` or `Lemma`
-    public enum CDLNode {
+    /// Base element of a cuneiform document: a `Chunk` representing a section of text, which contains further `Chunk`s, `Discontinuity` or `Lemma`. The abbreviated `c`, `d`, `l`, cases reflect the Oracc usage.
+   
         case l(Lemma)
         case c(Chunk)
         case d(Discontinuity)
         case linkbase([Linkset])
-    }
-    
-    public let node: CDLNode
-    public init(lemma l: Lemma) {
-        self.node = CDLNode.l(l)
-    }
-    
-    public init(chunk c: Chunk) {
-        self.node = CDLNode.c(c)
-    }
-    
-    public init(discontinuity d: Discontinuity) {
-        self.node = CDLNode.d(d)
-    }
-    
-    public init(linkbase lb: [Linkset]){
-        self.node = CDLNode.linkbase(lb)
-    }
+  
 }
 
 extension OraccCDLNode: Decodable {
@@ -162,7 +145,7 @@ extension OraccCDLNode: Decodable {
                 let type = try container.decode(String.self, forKey: .type)
                 let label = try container.decodeIfPresent(String.self, forKey: .label)
                 let d = OraccCDLNode.Discontinuity(type: OraccCDLNode.Discontinuity.DiscontinuityType(rawValue: type)!, label: label)
-                self = OraccCDLNode(discontinuity: d)
+                self = OraccCDLNode.d(d)
                 
             case "l":
                 let frag = try container.decode(String.self, forKey: .fragment)
@@ -173,7 +156,7 @@ extension OraccCDLNode: Decodable {
                
                 
                 let l = OraccCDLNode.Lemma(fragment: frag, instanceTranslation: inst, wordForm: f, reference: ref)
-                self = OraccCDLNode(lemma: l)
+                self = OraccCDLNode.l(l)
                 
             case "ll":
                 let choices = try container.decode([OraccCDLNode].self, forKey: .choices)
@@ -184,7 +167,7 @@ extension OraccCDLNode: Decodable {
                 let cdl = try container.decode([OraccCDLNode].self, forKey: .cdl)
                 let chunktype = OraccCDLNode.Chunk.Chunktype(rawValue: type)!
                 let c = OraccCDLNode.Chunk(type: chunktype, cdl: cdl)
-                self = OraccCDLNode(chunk: c)
+                self = OraccCDLNode.c(c)
                 
             default:
                 let error: Error = "Error!" as! Error
@@ -195,7 +178,7 @@ extension OraccCDLNode: Decodable {
             let linkbase = try container.decodeIfPresent([Linkset].self, forKey: .linkbase)
             
             if let linksets = linkbase {
-                self = OraccCDLNode.init(linkbase: linksets)
+                self = OraccCDLNode.linkbase(linksets)
                 
             } else {
                 throw OraccCDLDecodingError.unableToDecode("at node: \(node ?? "unknown node")")
@@ -208,7 +191,7 @@ extension OraccCDLNode: Encodable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         
-        switch self.node {
+        switch self {
         case .l(let lemma):
             try container.encode("l", forKey: .node)
             try container.encode(lemma.fragment, forKey: .fragment)
@@ -238,7 +221,7 @@ extension OraccCDLNode: Encodable {
 public extension OraccCDLNode { //Text analysis functions
     public func transliterated() -> String {
         var str = ""
-        switch self.node {
+        switch self {
         case .l(let lemma):
             str.append(lemma.transliteration)
         case .c(let chunk):
@@ -265,7 +248,7 @@ public extension OraccCDLNode { //Text analysis functions
     func normalised() -> String {
         var str = ""
         
-        switch self.node {
+        switch self {
         case .l(let lemma):
             str.append(lemma.wordForm.normalisation ?? "[x]")
             str.append(" ")
@@ -296,7 +279,7 @@ public extension OraccCDLNode { //Text analysis functions
     func literalTranslation() -> String {
         var str = ""
         
-        switch self.node {
+        switch self {
             
         case .linkbase(_):
             break
@@ -327,7 +310,7 @@ public extension OraccCDLNode { //Text analysis functions
     func cuneiform() -> String {
         var str = ""
         
-        switch self.node {
+        switch self {
         case .linkbase(_):
             break
             
@@ -359,7 +342,7 @@ public extension OraccCDLNode { //Text analysis functions
     func discontinuityTypes() -> Set<String> {
         var types = Set<String>()
         
-        switch self.node {
+        switch self {
             
         case .linkbase(_):
             break
@@ -381,7 +364,7 @@ public extension OraccCDLNode { //Text analysis functions
     func chunkTypes() -> Set<String> {
         var types = Set<String>()
         
-        switch self.node {
+        switch self {
             
         case .linkbase(_):
             break
@@ -402,7 +385,7 @@ public extension OraccCDLNode { //Text analysis functions
     }
 }
 
-extension OraccCDLNode.CDLNode: CustomStringConvertible {
+extension OraccCDLNode: CustomStringConvertible {
     public var description: String {
         switch self {
         case .l(let lemma):
