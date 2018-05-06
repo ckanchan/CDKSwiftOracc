@@ -59,6 +59,26 @@ public struct OraccCatalogEntry {
     public static func initFromSaved(id: String, displayName: String, ancientAuthor: String?, title: String, project: String) -> OraccCatalogEntry {
         return OraccCatalogEntry(displayName: displayName, title: title, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: nil, chapterName: nil, genre: nil, material: nil, period: nil, provenience: nil, primaryPublication: nil, museumNumber: nil, publicationHistory: nil, notes: nil, credits: nil)
     }
+    
+    public init(displayName: String, title: String, id: String, ancientAuthor: String?, project: String, chapterNumber: Int?, chapterName: String?, genre: String?, material: String?, period: String?, provenience: String?, primaryPublication: String?, museumNumber: String?, publicationHistory: String?, notes: String?, credits: String?) {
+        self.displayName = displayName
+        self.title = title
+        self.id = id
+        
+        self.ancientAuthor = ancientAuthor
+        self.project = project
+        self.chapterNumber = chapterNumber
+        self.chapterName = chapterName
+        self.genre = genre
+        self.material = material
+        self.period = period
+        self.provenience = provenience
+        self.primaryPublication = primaryPublication
+        self.museumNumber = museumNumber
+        self.publicationHistory = publicationHistory
+        self.notes = notes
+        self.credits = credits
+    }
 }
 
 extension OraccCatalogEntry: Decodable {
