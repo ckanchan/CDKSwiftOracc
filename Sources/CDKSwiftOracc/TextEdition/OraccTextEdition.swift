@@ -80,6 +80,10 @@ public struct OraccTextEdition: Codable {
         let edition = OraccTextEdition(type: "modern", project: "none", loadedFrom: nil, cdl: nodes, textid: "n/a")
         return edition
     }
+    
+    public enum Representation: Int {
+        case cuneiform = 0, transliteration, normalisation, translation
+    }
 }
 
 extension OraccTextEdition: Sequence {

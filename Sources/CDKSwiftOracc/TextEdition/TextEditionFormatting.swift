@@ -359,8 +359,8 @@ extension NSAttributedString {
 import AppKit.NSFont
 
 @available(macOS 10.11, *)
-extension NSFont {
-    func getItalicFont() -> NSFont {
+public extension NSFont {
+    public func getItalicFont() -> NSFont {
         let fontDsc = self.fontDescriptor
         let italicDsc = NSFontDescriptor.SymbolicTraits.italic
         let italicfntDsc = fontDsc.withSymbolicTraits(italicDsc)
@@ -385,8 +385,8 @@ extension NSFont {
 #if os(iOS)
 import UIKit.UIFont
 
-extension UIFont {
-        func getItalicFont() -> UIFont {
+public extension UIFont {
+        public func getItalicFont() -> UIFont {
             let fontDsc = self.fontDescriptor
             let italicDsc = UIFontDescriptorSymbolicTraits.traitItalic
             let italicfntDsc = fontDsc.withSymbolicTraits(italicDsc)
@@ -397,7 +397,7 @@ extension UIFont {
             }
         }
         
-        var reducedFontSize: UIFont {
+        public var reducedFontSize: UIFont {
             return UIFont(descriptor: self.fontDescriptor, size: self.pointSize / 2)
         }
     
