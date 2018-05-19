@@ -25,8 +25,9 @@ public struct XISReference: CustomStringConvertible {
     }
     
     public let project: String
-    public var cdliID: String {
-        return String(reference.prefix{$0 != "."})
+    public var cdliID: TextID {
+        let str = String(reference.prefix{$0 != "."})
+        return TextID(stringLiteral: str)
     }
     
     public let reference: String

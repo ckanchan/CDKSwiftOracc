@@ -18,8 +18,7 @@
 
 import Foundation
 
-
 public protocol TextSet {
     var title: String { get }
-    var members: [String: OraccCatalogEntry] { get }
+    var members: [TextID: OraccCatalogEntry] { get }
 }

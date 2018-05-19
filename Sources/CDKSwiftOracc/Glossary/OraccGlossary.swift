@@ -84,7 +84,7 @@ public final class OraccGlossary {
         let instances = self.instancesOf(entry)
         let searchIDs = instances.map{$0.reference}
         
-        var resultSet = [String: OraccCatalogEntry]()
+        var resultSet = [TextID: OraccCatalogEntry]()
         
         for instance in instances {
             let id = instance.cdliID

@@ -24,11 +24,11 @@ public struct TextSearchCollection: TextSet {
     }
     
     public var searchTerm: String
-    public var members: [String : OraccCatalogEntry]
+    public var members: [TextID : OraccCatalogEntry]
     
     let searchIDs: [String]
     
-    public init(searchTerm: String, members: [String: OraccCatalogEntry], searchIDs: [String]) {
+    public init(searchTerm: String, members: [TextID: OraccCatalogEntry], searchIDs: [String]) {
         self.searchTerm = searchTerm
         self.members = members
         self.searchIDs = searchIDs

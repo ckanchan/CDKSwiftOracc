@@ -27,7 +27,7 @@ public struct OraccCatalogEntry {
     public let title: String
     
     /// CDLI ID, ususally a P or X number
-    public let id: String
+    public let id: TextID
     
     /// Ancient author, if available
     public let ancientAuthor: String?
@@ -63,7 +63,7 @@ public struct OraccCatalogEntry {
     public init(displayName: String, title: String, id: String, ancientAuthor: String?, project: String, chapterNumber: Int?, chapterName: String?, genre: String?, material: String?, period: String?, provenience: String?, primaryPublication: String?, museumNumber: String?, publicationHistory: String?, notes: String?, credits: String?) {
         self.displayName = displayName
         self.title = title
-        self.id = id
+        self.id = TextID.init(stringLiteral: id)
         
         self.ancientAuthor = ancientAuthor
         self.project = project

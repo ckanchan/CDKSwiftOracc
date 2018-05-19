@@ -18,13 +18,34 @@
 
 import Foundation
 
-public struct OraccCatalog: Decodable, TextSet {
+public struct OraccCatalog: TextSet {
     public let source: URL
     public let project: String
-    public let members: [String: OraccCatalogEntry]
+    public let members: [TextID: OraccCatalogEntry]
     
     public var title: String {
         return project
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case source, project, members
+    }
+}
+
+extension OraccCatalog: Decodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let source = try container.decode(URL.self, forKey: .source)
+        let project = try container.decode(String.self, forKey: .project)
+        let stringKeyedMembers = try container.decode([String: OraccCatalogEntry].self, forKey: .members)
+        var textIDMembers = [TextID: OraccCatalogEntry]()
+        stringKeyedMembers.forEach {
+            let id = TextID(stringLiteral: $0.key)
+            textIDMembers[id] = $0.value
+        }
+        
+        self.init(source: source, project: project, members: textIDMembers)
+        
     }
 }
 
