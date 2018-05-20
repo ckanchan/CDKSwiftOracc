@@ -1,5 +1,5 @@
 //
-//  CDLIIdentifier.swift
+//  TextID.swift
 //  CDKSwiftOracc: Cuneiform Documents for Swift
 //  Copyright (C) 2018 Chaitanya Kanchan
 //

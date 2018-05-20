@@ -26,18 +26,14 @@ public struct XISReference: CustomStringConvertible {
     
     public let project: String
     public var cdliID: TextID {
-        let str = String(reference.prefix{$0 != "."})
-        return TextID(stringLiteral: str)
+        return reference.base
     }
     
-    public let reference: String
+    public let reference: NodeReference
 
     public init?(withReference key: String) {
         let elements = key.split(separator: ":")
         self.project = String(elements[0])
-        self.reference = String(elements[1])
+        self.reference = NodeReference.init(stringLiteral: String(elements[1]))
     }
-    
-    
-    
 }

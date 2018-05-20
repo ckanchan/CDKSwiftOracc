@@ -30,7 +30,7 @@ public enum OraccCDLNode {
     /// A single unit of meaning, in cuneiform and translated forms. Summary information is included in the top-level properties; more detailed information can be accessed under the Form property and its Translation and GraphemeDescription fields.
     public struct Lemma: Equatable, Hashable, CustomStringConvertible {
         public var hashValue: Int {
-            return reference.hashValue
+            return reference.description.hashValue
         }
         
         public static func ==(lhs: OraccCDLNode.Lemma, rhs: OraccCDLNode.Lemma) -> Bool {
@@ -51,7 +51,7 @@ public enum OraccCDLNode {
         public let wordForm: WordForm
         
         /// Reference for glossary lookup
-        public let reference: String
+        public let reference: NodeReference
         
         public var transliteration: String {
             var str = ""
@@ -61,7 +61,7 @@ public enum OraccCDLNode {
             return str
         }
         
-        public init(fragment: String, instanceTranslation: String?, wordForm: WordForm, reference: String) {
+        public init(fragment: String, instanceTranslation: String?, wordForm: WordForm, reference: NodeReference) {
             self.fragment = fragment
             self.instanceTranslation = instanceTranslation
             self.wordForm = wordForm
@@ -129,6 +129,7 @@ extension OraccCDLNode: Decodable {
         case linkbase = "linkbase"
         case label = "label"
         case reference = "ref"
+        case id = "id"
         case choices
     }
     
@@ -148,7 +149,7 @@ extension OraccCDLNode: Decodable {
                 let frag = try container.decode(String.self, forKey: .fragment)
                 let inst = try container.decodeIfPresent(String.self, forKey: .instanceTranslation)
                 let f = try container.decode(WordForm.self, forKey: .wordForm)
-                let ref = try container.decode(String.self, forKey: .reference)
+                let ref = try container.decode(NodeReference.self, forKey: .reference)
                 
                
                 

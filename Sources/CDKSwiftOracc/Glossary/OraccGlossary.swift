@@ -82,7 +82,7 @@ public final class OraccGlossary {
         guard catalogue.project == self.project else { return nil }
         guard let entry = self.lookUp(citationForm: citationForm) else {return nil}
         let instances = self.instancesOf(entry)
-        let searchIDs = instances.map{$0.reference}
+        let searchIDs = instances.map{$0.reference.description}
         
         var resultSet = [TextID: OraccCatalogEntry]()
         

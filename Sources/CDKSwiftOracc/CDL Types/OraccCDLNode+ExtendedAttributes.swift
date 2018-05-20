@@ -29,7 +29,7 @@ extension OraccCDLNode.Lemma {
         attributes[.effectivePartOfSpeech] = self.wordForm.translation.effectivePartOfSpeech
         attributes[.writtenForm] = self.fragment
         attributes[.instanceTranslation] = self.instanceTranslation
-        attributes[.reference] = self.reference
+        attributes[.reference] = self.reference.path.joined(separator: ".")
         attributes[.oraccLanguage] = self.wordForm.language.protocolCode
         
         return attributes
