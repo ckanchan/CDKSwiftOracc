@@ -18,8 +18,8 @@
 
 import Foundation
 
-public extension NSAttributedStringKey {
-    public static var formatting: NSAttributedStringKey {
+public extension NSAttributedString.Key {
+    public static var formatting: NSAttributedString.Key {
         return self.init("formatting")
     }
 }
@@ -155,10 +155,10 @@ extension OraccCDLNode {
 
 extension GraphemeDescription {
      func transliterated() -> NSAttributedString {
-        let italicFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.italic]).rawValue]
-        let superscriptFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.superscript]).rawValue]
-        let damagedFormatting = [NSAttributedStringKey.formatting: TextEditionFormatting([.damaged]).rawValue]
-        let noFormatting = [NSAttributedStringKey.formatting: 0]
+        let italicFormatting = [NSAttributedString.Key.formatting: TextEditionFormatting([.italic]).rawValue]
+        let superscriptFormatting = [NSAttributedString.Key.formatting: TextEditionFormatting([.superscript]).rawValue]
+        let damagedFormatting = [NSAttributedString.Key.formatting: TextEditionFormatting([.damaged]).rawValue]
+        let noFormatting = [NSAttributedString.Key.formatting: 0]
         
         let str = NSMutableAttributedString(string: "")
         
@@ -285,14 +285,14 @@ extension GraphemeDescription {
 
 extension OraccTextEdition {
     public struct FormattingPreferences {
-        let editorial: [NSAttributedStringKey: Any]
-        let editorialBold: [NSAttributedStringKey: Any]
-        let italic: [NSAttributedStringKey: Any]
-        let superscript: [NSAttributedStringKey: Any]
-        let damaged: [NSAttributedStringKey: Any]
-        let none: [NSAttributedStringKey: Any]
+        let editorial: [NSAttributedString.Key: Any]
+        let editorialBold: [NSAttributedString.Key: Any]
+        let italic: [NSAttributedString.Key: Any]
+        let superscript: [NSAttributedString.Key: Any]
+        let damaged: [NSAttributedString.Key: Any]
+        let none: [NSAttributedString.Key: Any]
         
-        public init (editorial: [NSAttributedStringKey: Any], editorialBold: [NSAttributedStringKey: Any], italic: [NSAttributedStringKey: Any], superscript: [NSAttributedStringKey: Any], damaged: [NSAttributedStringKey: Any], none: [NSAttributedStringKey: Any]) {
+        public init (editorial: [NSAttributedString.Key: Any], editorialBold: [NSAttributedString.Key: Any], italic: [NSAttributedString.Key: Any], superscript: [NSAttributedString.Key: Any], damaged: [NSAttributedString.Key: Any], none: [NSAttributedString.Key: Any]) {
             self.editorial = editorial
             self.editorialBold = editorialBold
             self.italic = italic
@@ -369,13 +369,13 @@ public extension NSFont {
         return NSFont(descriptor: italicfntDsc, size: self.pointSize) ?? NSFont(descriptor: systemFontDsc, size: self.pointSize)!
     }
     public func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
-        let noFormatting = [NSAttributedStringKey.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]
-        let italicFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: self.getItalicFont()]
-        let superscriptFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.superscript: 1]
-        let damagedFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: self.getItalicFont(), NSAttributedStringKey.foregroundColor: NSColor.gray]
+        let noFormatting = [NSAttributedString.Key.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]
+        let italicFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont()]
+        let superscriptFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.superscript: 1]
+        let damagedFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont(), NSAttributedString.Key.foregroundColor: NSColor.gray]
         
-        let editorialFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.regular)]
-        let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.bold)]
+        let editorialFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.regular)]
+        let editorialBoldFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.bold)]
         
         return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting, editorialBold: editorialBoldFormatting, italic: italicFormatting, superscript: superscriptFormatting, damaged: damagedFormatting, none: noFormatting)
     }

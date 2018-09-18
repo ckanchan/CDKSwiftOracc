@@ -20,8 +20,8 @@
 import Foundation
 
 extension OraccCDLNode.Lemma {
-    public func getExtendedAttributes() -> [NSAttributedStringKey: Any] {
-        var attributes = [NSAttributedStringKey:Any]()
+    public func getExtendedAttributes() -> [NSAttributedString.Key: Any] {
+        var attributes = [NSAttributedString.Key:Any]()
         attributes[.oraccCitationForm] = self.wordForm.translation.citationForm ?? ""
         attributes[.oraccGuideWord] = self.wordForm.translation.guideWord
         attributes[.oraccSense] = self.wordForm.translation.sense ?? ""
@@ -37,8 +37,8 @@ extension OraccCDLNode.Lemma {
 }
 
 extension CuneiformSignReading {
-    public func getExtendedAttributes() -> [NSAttributedStringKey: Any] {
-        var attributes = [NSAttributedStringKey:Any]()
+    public func getExtendedAttributes() -> [NSAttributedString.Key: Any] {
+        var attributes = [NSAttributedString.Key:Any]()
         let signValue: String
         var modifiers: String? = nil
         // Get the appropriate values from the enumerated type

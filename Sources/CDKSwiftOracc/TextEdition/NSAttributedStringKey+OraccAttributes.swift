@@ -19,55 +19,55 @@
 import Foundation
 
 // Adds keys that support the encoding of Oracc lemmatisation information into attributed strings.
-public extension NSAttributedStringKey {
-    public static var oraccCitationForm: NSAttributedStringKey {
+public extension NSAttributedString.Key {
+    public static var oraccCitationForm: NSAttributedString.Key {
         return self.init("oraccCitationForm")
     }
     
-    public static var oraccGuideWord: NSAttributedStringKey {
+    public static var oraccGuideWord: NSAttributedString.Key {
         return self.init("oraccGuideWord")
     }
     
-    public static var oraccSense: NSAttributedStringKey {
+    public static var oraccSense: NSAttributedString.Key {
         return self.init("oraccSense")
     }
     
-    public static var partOfSpeech: NSAttributedStringKey {
+    public static var partOfSpeech: NSAttributedString.Key {
         return self.init("partOfSpeech")
     }
     
-    public static var effectivePartOfSpeech: NSAttributedStringKey {
+    public static var effectivePartOfSpeech: NSAttributedString.Key {
         return self.init("effectivePartOfSpeech")
     }
     
-    public static var oraccLanguage: NSAttributedStringKey {
+    public static var oraccLanguage: NSAttributedString.Key {
         return self.init("oraccLanguage")
     }
     
-    public static var writtenForm: NSAttributedStringKey {
+    public static var writtenForm: NSAttributedString.Key {
         return self.init("writtenForm")
     }
     
-    public static var normalisation: NSAttributedStringKey {
+    public static var normalisation: NSAttributedString.Key {
         return self.init("normalisation")
     }
     
-    public static var instanceTranslation: NSAttributedStringKey {
+    public static var instanceTranslation: NSAttributedString.Key {
         return self.init("instanceTranslation")
     }
     
-    public static var reference: NSAttributedStringKey {
+    public static var reference: NSAttributedString.Key {
         return self.init("reference")
     }
 }
 
 // Adds keys that support the encoding of GDL grapheme data into attributed strings
-public extension NSAttributedStringKey {
-    public static var signValue: NSAttributedStringKey {
+public extension NSAttributedString.Key {
+    public static var signValue: NSAttributedString.Key {
         return self.init("signValue")
     }
     
-    public static var signModifiers: NSAttributedStringKey {
+    public static var signModifiers: NSAttributedString.Key {
         return self.init("signModifiers")
     }
     
