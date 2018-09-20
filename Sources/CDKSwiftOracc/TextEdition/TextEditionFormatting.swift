@@ -388,7 +388,7 @@ import UIKit.UIFont
 public extension UIFont {
         public func getItalicFont() -> UIFont {
             let fontDsc = self.fontDescriptor
-            let italicDsc = UIFontDescriptorSymbolicTraits.traitItalic
+            let italicDsc = UIFontDescriptor.SymbolicTraits.traitItalic
             let italicfntDsc = fontDsc.withSymbolicTraits(italicDsc)
             if let descriptor = italicfntDsc {
                 return UIFont(descriptor: descriptor, size: self.pointSize)
@@ -402,14 +402,14 @@ public extension UIFont {
         }
     
     public func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
-        let noFormatting = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
-        let italicFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: self.getItalicFont()]
-        let superscriptFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.baselineOffset: 10,
-                                                                   NSAttributedStringKey.font: self.reducedFontSize]
-        let damagedFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: self.getItalicFont(), NSAttributedStringKey.foregroundColor: UIColor.gray]
+        let noFormatting = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
+        let italicFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont()]
+        let superscriptFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.baselineOffset: 10,
+                                                                    NSAttributedString.Key.font: self.reducedFontSize]
+        let damagedFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont(), NSAttributedString.Key.foregroundColor: UIColor.gray]
         
-        let editorialFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.regular)]
-        let editorialBoldFormatting: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.bold)]
+        let editorialFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.regular)]
+        let editorialBoldFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.bold)]
         
         return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting, editorialBold: editorialBoldFormatting, italic: italicFormatting, superscript: superscriptFormatting, damaged: damagedFormatting, none: noFormatting)
     }
