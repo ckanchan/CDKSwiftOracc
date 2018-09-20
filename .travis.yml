@@ -1,5 +1,5 @@
 language: objective-c
-osx_image: xcode9.3
+osx_image: xcode10
 script: 
 - swift package clean
 - swift test -Xswiftc "-target" -Xswiftc "x86_64-apple-macosx10.13"
