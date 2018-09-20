@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|2
   
   s.name         = "CDKSwiftOracc"
-  s.version      = "0.4.2"
+  s.version      = "0.5"
   s.summary      = "Cuneiform documents for Swift"
   
   s.description  = <<-DESC
@@ -19,6 +19,6 @@ Pod::Spec.new do |s|2
   s.osx.deployment_target = "10.11"
   s.source       = { :git => "https://github.com/ckanchan/CDKSwiftOracc.git", :tag => "#{s.version}" }
   s.source_files  = "Sources/CDKSwiftOracc/**/*.swift"
-  s.swift_version = "4.1"
+  s.swift_version = "4.2"
   
 end
