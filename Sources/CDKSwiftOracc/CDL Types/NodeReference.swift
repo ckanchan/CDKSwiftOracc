@@ -19,8 +19,8 @@
 import Foundation
 
 public struct NodeReference {
-    let base: TextID
-    let path: [String]
+    public var base: TextID
+    public var path: [String]
 }
 
 extension NodeReference: CustomStringConvertible {

@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|2
   
   s.name         = "CDKSwiftOracc"
-  s.version      = "0.5.1"
+  s.version      = "0.5.2"
   s.summary      = "Cuneiform documents for Swift"
   
   s.description  = <<-DESC
