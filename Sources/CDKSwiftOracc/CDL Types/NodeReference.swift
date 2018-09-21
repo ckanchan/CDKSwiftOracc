@@ -18,7 +18,7 @@
 
 import Foundation
 
-public struct NodeReference {
+public struct NodeReference: Hashable {
     public var base: TextID
     public var path: [String]
 }
