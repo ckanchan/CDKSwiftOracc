@@ -52,15 +52,17 @@ public struct OraccCatalogEntry {
     public let museumNumber: String?
     public let publicationHistory: String?
     public let notes: String?
+    public let pleiadesID: Int?
+    public let pleiadesCoordinate: (Int, Int)?
     
     ///Copyright and editorial information
     public let credits: String?
     
     public static func initFromSaved(id: String, displayName: String, ancientAuthor: String?, title: String, project: String) -> OraccCatalogEntry {
-        return OraccCatalogEntry(displayName: displayName, title: title, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: nil, chapterName: nil, genre: nil, material: nil, period: nil, provenience: nil, primaryPublication: nil, museumNumber: nil, publicationHistory: nil, notes: nil, credits: nil)
+        return OraccCatalogEntry(displayName: displayName, title: title, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: nil, chapterName: nil, genre: nil, material: nil, period: nil, provenience: nil, primaryPublication: nil, museumNumber: nil, publicationHistory: nil, notes: nil, pleiadesID: nil, pleiadesCoordinate: nil, credits: nil)
     }
     
-    public init(displayName: String, title: String, id: String, ancientAuthor: String?, project: String, chapterNumber: Int?, chapterName: String?, genre: String?, material: String?, period: String?, provenience: String?, primaryPublication: String?, museumNumber: String?, publicationHistory: String?, notes: String?, credits: String?) {
+    public init(displayName: String, title: String, id: String, ancientAuthor: String?, project: String, chapterNumber: Int?, chapterName: String?, genre: String?, material: String?, period: String?, provenience: String?, primaryPublication: String?, museumNumber: String?, publicationHistory: String?, notes: String?, pleiadesID: Int?, pleiadesCoordinate: (Int, Int)?, credits: String?) {
         self.displayName = displayName
         self.title = title
         self.id = TextID.init(stringLiteral: id)
@@ -78,6 +80,8 @@ public struct OraccCatalogEntry {
         self.publicationHistory = publicationHistory
         self.notes = notes
         self.credits = credits
+        self.pleiadesID = pleiadesID
+        self.pleiadesCoordinate = pleiadesCoordinate
     }
 }
 
@@ -100,6 +104,8 @@ extension OraccCatalogEntry: Decodable {
         case museumNumber = "museum_no"
         case publicationHistory = "publication_history"
         case credits
+        case pleiadesID = "pleiades_id"
+        case pleiadesCoordinate = "pleiades_coord"
         case notes
         
     }
@@ -133,9 +139,51 @@ extension OraccCatalogEntry: Decodable {
             return Int(String(chapterNumStr.split(separator: " ").last!))!
         }()
         
-        self.init(displayName: displayName ?? "no friendly name", title: title ?? popularName ?? designation, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: chapterNumber, chapterName: chapterName, genre: genre, material: material, period: period, provenience: provenience, primaryPublication: primaryPublication, museumNumber: museumNumber, publicationHistory: publicationHistory, notes: notes, credits: credits)
+
+        let pleiadesID: Int?
+        if let pleiadesIDStr = try container.decodeIfPresent(String.self, forKey: .pleiadesID) {
+            pleiadesID = Int(pleiadesIDStr)
+        } else {
+            pleiadesID = nil
+        }
+
+        let pleiadesCoordinates: (Int, Int)?
+        if let pleiadesCoordinateStr = try container.decodeIfPresent(String.self, forKey: .pleiadesCoordinate) {
+            let squareBrackets = CharacterSet(charactersIn: "[]")
+            let components = pleiadesCoordinateStr.trimmingCharacters(in: squareBrackets).split(separator: ",").map{String($0)}
+            let x: Int?
+            let y: Int?
+            
+            if let xStr = components.first {
+                if let xNum = Int(xStr) {
+                    x = xNum
+                } else {
+                    x = nil
+                }
+            } else {
+                x = nil
+            }
+            
+            if let yStr = components.last {
+                if let yNum = Int(yStr) {
+                    y = yNum
+                } else {
+                    y = nil
+                }
+            } else {
+                y = nil
+            }
+            
+            if let x = x, let y = y {
+                pleiadesCoordinates = (x, y)
+            } else {
+                pleiadesCoordinates = nil
+            }
+        } else {
+            pleiadesCoordinates = nil
+        }
         
-        
+        self.init(displayName: displayName ?? "no friendly name", title: title ?? popularName ?? designation, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: chapterNumber, chapterName: chapterName, genre: genre, material: material, period: period, provenience: provenience, primaryPublication: primaryPublication, museumNumber: museumNumber, publicationHistory: publicationHistory, notes: notes, pleiadesID: pleiadesID, pleiadesCoordinate: pleiadesCoordinates, credits: credits)
         
         
     }
