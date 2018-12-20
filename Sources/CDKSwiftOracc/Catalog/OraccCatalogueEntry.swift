@@ -53,7 +53,7 @@ public struct OraccCatalogEntry {
     public let publicationHistory: String?
     public let notes: String?
     public let pleiadesID: Int?
-    public let pleiadesCoordinate: (Int, Int)?
+    public let pleiadesCoordinate: (Float, Float)?
     
     ///Copyright and editorial information
     public let credits: String?
@@ -62,7 +62,7 @@ public struct OraccCatalogEntry {
         return OraccCatalogEntry(displayName: displayName, title: title, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: nil, chapterName: nil, genre: nil, material: nil, period: nil, provenience: nil, primaryPublication: nil, museumNumber: nil, publicationHistory: nil, notes: nil, pleiadesID: nil, pleiadesCoordinate: nil, credits: nil)
     }
     
-    public init(displayName: String, title: String, id: String, ancientAuthor: String?, project: String, chapterNumber: Int?, chapterName: String?, genre: String?, material: String?, period: String?, provenience: String?, primaryPublication: String?, museumNumber: String?, publicationHistory: String?, notes: String?, pleiadesID: Int?, pleiadesCoordinate: (Int, Int)?, credits: String?) {
+    public init(displayName: String, title: String, id: String, ancientAuthor: String?, project: String, chapterNumber: Int?, chapterName: String?, genre: String?, material: String?, period: String?, provenience: String?, primaryPublication: String?, museumNumber: String?, publicationHistory: String?, notes: String?, pleiadesID: Int?, pleiadesCoordinate: (Float, Float)?, credits: String?) {
         self.displayName = displayName
         self.title = title
         self.id = TextID.init(stringLiteral: id)
@@ -147,15 +147,15 @@ extension OraccCatalogEntry: Decodable {
             pleiadesID = nil
         }
 
-        let pleiadesCoordinates: (Int, Int)?
+        let pleiadesCoordinates: (Float, Float)?
         if let pleiadesCoordinateStr = try container.decodeIfPresent(String.self, forKey: .pleiadesCoordinate) {
             let squareBrackets = CharacterSet(charactersIn: "[]")
             let components = pleiadesCoordinateStr.trimmingCharacters(in: squareBrackets).split(separator: ",").map{String($0)}
-            let x: Int?
-            let y: Int?
+            let x: Float?
+            let y: Float?
             
             if let xStr = components.first {
-                if let xNum = Int(xStr) {
+                if let xNum = Float(xStr) {
                     x = xNum
                 } else {
                     x = nil
@@ -165,7 +165,7 @@ extension OraccCatalogEntry: Decodable {
             }
             
             if let yStr = components.last {
-                if let yNum = Int(yStr) {
+                if let yNum = Float(yStr) {
                     y = yNum
                 } else {
                     y = nil
