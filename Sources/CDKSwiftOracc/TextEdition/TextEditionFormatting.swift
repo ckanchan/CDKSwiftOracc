@@ -34,6 +34,7 @@ public struct TextEditionFormatting: OptionSet {
     public static let italic = TextEditionFormatting(rawValue: 1 << 2)
     public static let superscript = TextEditionFormatting(rawValue: 1 << 3)
     public static let damaged = TextEditionFormatting(rawValue: 1 << 4)
+    public static let damagedLogogram = TextEditionFormatting(rawValue: 1 << 5)
 
     public init(rawValue: Int) {
         self.rawValue = rawValue
@@ -152,12 +153,13 @@ extension OraccCDLNode {
     
 }
 
-
+#warning("Code handling 'damaged' and 'missing' signs is repetitive and needs to be tidied up")
 extension GraphemeDescription {
      func transliterated() -> NSAttributedString {
         let italicFormatting = [NSAttributedString.Key.formatting: TextEditionFormatting([.italic]).rawValue]
         let superscriptFormatting = [NSAttributedString.Key.formatting: TextEditionFormatting([.superscript]).rawValue]
         let damagedFormatting = [NSAttributedString.Key.formatting: TextEditionFormatting([.damaged]).rawValue]
+        let damagedSumerian = [NSAttributedString.Key.formatting: TextEditionFormatting(arrayLiteral: .damagedLogogram).rawValue]
         let noFormatting = [NSAttributedString.Key.formatting: 0]
         
         let str = NSMutableAttributedString(string: "")
@@ -231,10 +233,30 @@ extension GraphemeDescription {
                 str.append(delimiter)
                 
             case .name(let log): // Logographic
-                let logogram = NSAttributedString(
-                    string: log,
-                    attributes: noFormatting)
-                str.append(logogram)
+                let logogram: NSAttributedString
+                switch self.preservation {
+                case .damaged:
+                    let startBreak = NSAttributedString(string: "⸢", attributes: noFormatting)
+                    str.append(startBreak)
+                    logogram = NSAttributedString(string: log,
+                                                     attributes: damagedSumerian)
+                    str.append(logogram)
+                    let endBreak = NSAttributedString(string: "⸣", attributes: noFormatting)
+                    str.append(endBreak)
+                case .missing:
+                    let startBreak = NSAttributedString(string: "[", attributes: noFormatting)
+                    str.append(startBreak)
+                    logogram = NSAttributedString(string: log,
+                                                     attributes: damagedFormatting)
+                    str.append(logogram)
+                    let endBreak = NSAttributedString(string: "]", attributes: noFormatting)
+                    str.append(endBreak)
+                case .preserved:
+                    logogram = NSAttributedString(string: log,
+                                                     attributes: noFormatting)
+                    str.append(logogram)
+                }
+                
                 let delimiter = NSAttributedString(
                     string: delim ?? " ",
                     attributes: noFormatting)
@@ -252,12 +274,30 @@ extension GraphemeDescription {
                 
             case .formVariant(_, let base, _):
                 let specialForm: NSAttributedString
-                if self.isLogogram {
-                    specialForm = NSAttributedString(string: base, attributes: noFormatting)
-                } else {
-                    specialForm = NSAttributedString(string: base, attributes: italicFormatting)
+            
+                switch self.preservation {
+                case .damaged:
+                    let startBreak = NSAttributedString(string: "⸢", attributes: noFormatting)
+                    str.append(startBreak)
+                    specialForm = self.isLogogram ? NSAttributedString(string: base, attributes: damagedSumerian) :
+                        NSAttributedString(string: base, attributes: damagedFormatting)
+                    str.append(specialForm)
+                    let endBreak = NSAttributedString(string: "⸣", attributes: noFormatting)
+                    str.append(endBreak)
+                case .missing:
+                    let startBreak = NSAttributedString(string: "[", attributes: noFormatting)
+                    str.append(startBreak)
+                    specialForm = self.isLogogram ? NSAttributedString(string: base, attributes: damagedSumerian) :
+                        NSAttributedString(string: base, attributes: damagedFormatting)
+                    str.append(specialForm)
+                    let endBreak = NSAttributedString(string: "]", attributes: noFormatting)
+                    str.append(endBreak)
+                case .preserved:
+                    specialForm = self.isLogogram ? NSAttributedString(string: base, attributes: noFormatting) :
+                        NSAttributedString(string: base, attributes: italicFormatting)
+                    str.append(specialForm)
                 }
-                str.append(specialForm)
+            
                 let delimiter = NSAttributedString(
                     string: delim ?? " ",
                     attributes: noFormatting)
@@ -290,14 +330,16 @@ extension OraccTextEdition {
         let italic: [NSAttributedString.Key: Any]
         let superscript: [NSAttributedString.Key: Any]
         let damaged: [NSAttributedString.Key: Any]
+        let damagedLogogram: [NSAttributedString.Key: Any]
         let none: [NSAttributedString.Key: Any]
         
-        public init (editorial: [NSAttributedString.Key: Any], editorialBold: [NSAttributedString.Key: Any], italic: [NSAttributedString.Key: Any], superscript: [NSAttributedString.Key: Any], damaged: [NSAttributedString.Key: Any], none: [NSAttributedString.Key: Any]) {
+        public init (editorial: [NSAttributedString.Key: Any], editorialBold: [NSAttributedString.Key: Any], italic: [NSAttributedString.Key: Any], superscript: [NSAttributedString.Key: Any], damaged: [NSAttributedString.Key: Any], damagedLogogram: [NSAttributedString.Key: Any], none: [NSAttributedString.Key: Any]) {
             self.editorial = editorial
             self.editorialBold = editorialBold
             self.italic = italic
             self.superscript = superscript
             self.damaged = damaged
+            self.damagedLogogram = damagedLogogram
             self.none = none
         }
     }
@@ -308,7 +350,7 @@ extension OraccTextEdition {
 
 extension NSAttributedString {
     /// A platform agnostic interface to rendering an NSAttributedString.
-    /// - Parameter prefs : An `OraccTextEdition.FormattingPreferences` object filled with the requisited keys for formatting.
+    /// - Parameter prefs : An `OraccTextEdition.FormattingPreferences` object filled with the requisite keys for formatting.
     public func render(withPreferences prefs: OraccTextEdition.FormattingPreferences) -> NSAttributedString {
         let mutableSelf = NSMutableAttributedString(attributedString: self)
     
@@ -326,6 +368,11 @@ extension NSAttributedString {
             if formattingOptions.contains(.damaged){
                 //format for damaged
                 mutableSelf.addAttributes(prefs.damaged, range: range)
+            }
+            
+            if formattingOptions.contains(.damagedLogogram) {
+                //format for damaged logogram
+                mutableSelf.addAttributes(prefs.damagedLogogram, range: range)
             }
             
             if formattingOptions.contains(.editorial){
@@ -371,13 +418,14 @@ public extension NSFont {
     public func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
         let noFormatting = [NSAttributedString.Key.font: NSFont.systemFont(ofSize: NSFont.systemFontSize), NSAttributedString.Key.foregroundColor: NSColor.labelColor]
         let italicFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont(), NSAttributedString.Key.foregroundColor: NSColor.labelColor]
-        let superscriptFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.superscript: 1]
+        let superscriptFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.superscript: 1, NSAttributedString.Key.foregroundColor: NSColor.labelColor]
         let damagedFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont(), NSAttributedString.Key.foregroundColor: NSColor.gray]
+        let damagedLogogram: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: NSFont.systemFont(ofSize: NSFont.systemFontSize), NSAttributedString.Key.foregroundColor: NSColor.gray]
         
         let editorialFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.regular), NSAttributedString.Key.foregroundColor: NSColor.labelColor]
         let editorialBoldFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.bold), NSAttributedString.Key.foregroundColor: NSColor.labelColor]
         
-        return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting, editorialBold: editorialBoldFormatting, italic: italicFormatting, superscript: superscriptFormatting, damaged: damagedFormatting, none: noFormatting)
+        return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting, editorialBold: editorialBoldFormatting, italic: italicFormatting, superscript: superscriptFormatting, damaged: damagedFormatting, damagedLogogram: damagedLogogram, none: noFormatting)
     }
 }
 #endif
@@ -407,11 +455,12 @@ public extension UIFont {
         let superscriptFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.baselineOffset: 10,
                                                                     NSAttributedString.Key.font: self.reducedFontSize]
         let damagedFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont(), NSAttributedString.Key.foregroundColor: UIColor.gray]
+        let damagedLogogram = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: UIFont.systemFontSize), NSAttributedString.Key.foregroundColor: UIColor.gray]
         
         let editorialFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.regular)]
         let editorialBoldFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.bold)]
         
-        return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting, editorialBold: editorialBoldFormatting, italic: italicFormatting, superscript: superscriptFormatting, damaged: damagedFormatting, none: noFormatting)
+        return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting, editorialBold: editorialBoldFormatting, italic: italicFormatting, superscript: superscriptFormatting, damaged: damagedFormatting, damagedLogogram: damagedLogogram, none: noFormatting)
     }
 }
 
