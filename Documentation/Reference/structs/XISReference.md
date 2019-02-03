@@ -24,13 +24,13 @@ public let project: String
 ### `cdliID`
 
 ```swift
-public var cdliID: String
+public var cdliID: TextID
 ```
 
 ### `reference`
 
 ```swift
-public let reference: String
+public let reference: NodeReference
 ```
 
 ## Methods

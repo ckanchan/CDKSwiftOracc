@@ -7,13 +7,13 @@ public enum Language
 ```
 
 ## Cases
-### `Akkadian`
+### `Akkadian(_:)`
 
 ```swift
 case Akkadian(AkkadianDialect)
 ```
 
-### `Sumerian`
+### `Sumerian(_:)`
 
 ```swift
 case Sumerian(SumerianDialect)
@@ -25,7 +25,7 @@ case Sumerian(SumerianDialect)
 case Hittite
 ```
 
-### `Other`
+### `Other(_:)`
 
 ```swift
 case Other(String)

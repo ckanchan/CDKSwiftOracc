@@ -7,7 +7,7 @@ public enum BreakPosition
 ```
 
 ## Cases
-### `start`
+### `start(_:)`
 
 ```swift
 case start(String), end(String), undefined

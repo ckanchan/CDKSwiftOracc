@@ -7,8 +7,8 @@ public struct FormattingPreferences
 ```
 
 ## Methods
-### `init(editorial:editorialBold:italic:superscript:damaged:none:)`
+### `init(editorial:editorialBold:italic:superscript:damaged:damagedLogogram:none:)`
 
 ```swift
-public init (editorial: [NSAttributedStringKey: Any], editorialBold: [NSAttributedStringKey: Any], italic: [NSAttributedStringKey: Any], superscript: [NSAttributedStringKey: Any], damaged: [NSAttributedStringKey: Any], none: [NSAttributedStringKey: Any])
+public init (editorial: [NSAttributedString.Key: Any], editorialBold: [NSAttributedString.Key: Any], italic: [NSAttributedString.Key: Any], superscript: [NSAttributedString.Key: Any], damaged: [NSAttributedString.Key: Any], damagedLogogram: [NSAttributedString.Key: Any], none: [NSAttributedString.Key: Any])
 ```

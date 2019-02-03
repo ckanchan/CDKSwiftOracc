@@ -2,5 +2,10 @@
 
 # `UIFont`
 
+## Properties
+### `reducedFontSize`
+
 ## Methods
+### `getItalicFont()`
+
 ### `makeDefaultPreferences()`

@@ -26,7 +26,7 @@ public let title: String
 ### `id`
 
 ```swift
-public let id: String
+public let id: TextID
 ```
 
 > CDLI ID, ususally a P or X number
@@ -113,6 +113,18 @@ public let publicationHistory: String?
 public let notes: String?
 ```
 
+### `pleiadesID`
+
+```swift
+public let pleiadesID: Int?
+```
+
+### `pleiadesCoordinate`
+
+```swift
+public let pleiadesCoordinate: (Double, Double)?
+```
+
 ### `credits`
 
 ```swift
@@ -120,16 +132,3 @@ public let credits: String?
 ```
 
 > Copyright and editorial information
-
-## Methods
-### `initFromSaved(id:displayName:ancientAuthor:title:project:)`
-
-```swift
-public static func initFromSaved(id: String, displayName: String, ancientAuthor: String?, title: String, project: String) -> OraccCatalogEntry
-```
-
-### `init(displayName:title:id:ancientAuthor:project:chapterNumber:chapterName:genre:material:period:provenience:primaryPublication:museumNumber:publicationHistory:notes:credits:)`
-
-```swift
-public init(displayName: String, title: String, id: String, ancientAuthor: String?, project: String, chapterNumber: Int?, chapterName: String?, genre: String?, material: String?, period: String?, provenience: String?, primaryPublication: String?, museumNumber: String?, publicationHistory: String?, notes: String?, credits: String?)
-```

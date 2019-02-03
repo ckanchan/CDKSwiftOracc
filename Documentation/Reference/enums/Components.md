@@ -9,7 +9,7 @@ public enum Components
 > Presents a single interface to any signs that are comprised of subsigns, whilst preserving the 'group|gdl|seq' metadata
 
 ## Cases
-### `group`
+### `group(_:)`
 
 ```swift
 case group([GraphemeDescription])
@@ -17,7 +17,7 @@ case group([GraphemeDescription])
 
 > If a logogram consists of multiple graphemes, it seems to be represented by this
 
-### `gdl`
+### `gdl(_:)`
 
 ```swift
 case gdl([GraphemeDescription])
@@ -25,7 +25,7 @@ case gdl([GraphemeDescription])
 
 > Seems to represent subelements in a name
 
-### `sequence`
+### `sequence(_:)`
 
 ```swift
 case sequence([GraphemeDescription])

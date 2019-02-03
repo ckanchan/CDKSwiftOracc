@@ -9,7 +9,7 @@ public enum OraccCDLNode
 > A single node in an Oracc CDL nested representation of a cuneiform document.
 
 ## Cases
-### `l`
+### `l(_:)`
 
 ```swift
 case l(Lemma)
@@ -17,19 +17,19 @@ case l(Lemma)
 
 > Base element of a cuneiform document: a `Chunk` representing a section of text, which contains further `Chunk`s, `Discontinuity` or `Lemma`. The abbreviated `c`, `d`, `l`, cases reflect the Oracc usage.
 
-### `c`
+### `c(_:)`
 
 ```swift
 case c(Chunk)
 ```
 
-### `d`
+### `d(_:)`
 
 ```swift
 case d(Discontinuity)
 ```
 
-### `linkbase`
+### `linkbase(_:)`
 
 ```swift
 case linkbase([Linkset])

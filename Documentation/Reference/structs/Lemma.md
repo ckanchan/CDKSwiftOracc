@@ -48,7 +48,7 @@ public let wordForm: WordForm
 ### `reference`
 
 ```swift
-public let reference: String
+public let reference: NodeReference
 ```
 
 > Reference for glossary lookup
@@ -76,5 +76,5 @@ public static func ==(lhs: OraccCDLNode.Lemma, rhs: OraccCDLNode.Lemma) -> Bool
 ### `init(fragment:instanceTranslation:wordForm:reference:)`
 
 ```swift
-public init(fragment: String, instanceTranslation: String?, wordForm: WordForm, reference: String)
+public init(fragment: String, instanceTranslation: String?, wordForm: WordForm, reference: NodeReference)
 ```

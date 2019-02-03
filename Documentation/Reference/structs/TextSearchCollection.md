@@ -22,12 +22,12 @@ public var searchTerm: String
 ### `members`
 
 ```swift
-public var members: [String : OraccCatalogEntry]
+public var members: [TextID : OraccCatalogEntry]
 ```
 
 ## Methods
 ### `init(searchTerm:members:searchIDs:)`
 
 ```swift
-public init(searchTerm: String, members: [String: OraccCatalogEntry], searchIDs: [String])
+public init(searchTerm: String, members: [TextID: OraccCatalogEntry], searchIDs: [String])
 ```

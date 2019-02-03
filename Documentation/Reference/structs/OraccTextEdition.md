@@ -72,10 +72,3 @@ public var cuneiform: String
 ```
 
 > Computed cuneiform. This is recalculated every time it is called so you will need to store it yourself.
-
-## Methods
-### `createNewText(nodes:)`
-
-```swift
-public static func createNewText(nodes: [OraccCDLNode] = []) -> OraccTextEdition
-```

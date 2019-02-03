@@ -3,22 +3,6 @@
 # `OraccTextEdition`
 
 ## Methods
-### `normalised()`
-
-```swift
-public func normalised() -> NSAttributedString
-```
-
-> Returns a normalisation of the text edition with formatting hints as a platform-independent NSAttributedString
-
-### `transliterated()`
-
-```swift
-public func transliterated() -> NSAttributedString
-```
-
-> Returns a transliteration of the text edition with formatting hints as a platform-independent NSAttributedString
-
 ### `html5Transliteration()`
 
 ```swift
@@ -39,10 +23,10 @@ public func html5Normalisation() -> String
 public func html5NormalisationPage() -> String
 ```
 
-### `makeIterator()`
+### `init(withCDL:textID:)`
 
 ```swift
-public func makeIterator() -> OraccTextEdition.Iterator
+public init(withCDL nodes: [OraccCDLNode] = [], textID: TextID = "")
 ```
 
 ### `scrapeTranslation()`
@@ -57,3 +41,19 @@ public func scrapeTranslation() -> String?
 
 > Asynchronously scrapes a text translation from the Oracc webpage using an event-based parser, then calls the supplied completion handler. You will need to check manually whether the copyright notice and license are included in the scraped text. If the copyright notice and license are not included, you *must* include this manually.
 > - Throws: `ScrapeError.NoDataAtURL` if the URL could not be reached.
+
+### `normalised()`
+
+```swift
+public func normalised() -> NSAttributedString
+```
+
+> Returns a normalisation of the text edition with formatting hints as a platform-independent NSAttributedString
+
+### `transliterated()`
+
+```swift
+public func transliterated() -> NSAttributedString
+```
+
+> Returns a transliteration of the text edition with formatting hints as a platform-independent NSAttributedString

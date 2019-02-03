@@ -44,6 +44,25 @@ public func encode(to encoder: Encoder) throws
 | ---- | ----------- |
 | encoder | The encoder to write data to. |
 
+### `init(syllable:delimiter:cuneifier:)`
+
+```swift
+init(syllable: String, delimiter: String, cuneifier: ((String) -> String?))
+```
+
+> A simplified initialiser that creates a basic grapheme with no complex metadata.
+> - Parameter syllable: transliterated syllable in Roman script
+> - Parameter delimiter: separator between this sign and the next. Supply the empty string if at the end of a word.
+> - Parameter cuneifier: function that converts a transliterated syllable into a cuneiform glyph.
+
+#### Parameters
+
+| Name | Description |
+| ---- | ----------- |
+| syllable | transliterated syllable in Roman script |
+| delimiter | separator between this sign and the next. Supply the empty string if at the end of a word. |
+| cuneifier | function that converts a transliterated syllable into a cuneiform glyph. |
+
 ### `transliteratedHTML5()`
 
 ```swift

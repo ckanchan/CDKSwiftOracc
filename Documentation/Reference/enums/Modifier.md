@@ -15,13 +15,13 @@ public enum Modifier
 case curved, flat, gunu, šešig, tenu, nutillu, zidatenu, kabatenu, verticallyReflected, horizontallyReflected, rotated(Int), variant
 ```
 
-### `Allograph`
+### `Allograph(_:)`
 
 ```swift
 case Allograph(String)
 ```
 
-### `FormVariant`
+### `FormVariant(_:)`
 
 ```swift
 case FormVariant(String)

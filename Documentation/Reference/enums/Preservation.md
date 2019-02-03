@@ -15,7 +15,7 @@ public enum Preservation
 case preserved
 ```
 
-### `damaged`
+### `damaged(_:)`
 
 ```swift
 case damaged(BreakPosition)

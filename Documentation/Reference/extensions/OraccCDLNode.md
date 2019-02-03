@@ -9,6 +9,14 @@
 public var description: String
 ```
 
+### `reference`
+
+```swift
+public var reference: String
+```
+
+> The unique `NodeReference` for the node. Only implemented for `OraccCDLNode.Lemma` at the moment. An empty string if not a lemma.
+
 ## Methods
 ### `init(from:)`
 
@@ -68,4 +76,10 @@ func discontinuityTypes() -> Set<String>
 
 ```swift
 func chunkTypes() -> Set<String>
+```
+
+### `init(normalisation:transliteration:translation:cuneifier:documentID:position:)`
+
+```swift
+public init(normalisation: String, transliteration: String, translation: String, cuneifier: ((String) -> String?), documentID: UUID, position: Int)
 ```

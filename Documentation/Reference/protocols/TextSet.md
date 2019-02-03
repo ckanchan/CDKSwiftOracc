@@ -16,5 +16,5 @@ var title: String
 ### `members`
 
 ```swift
-var members: [String: OraccCatalogEntry]
+var members: [TextID: OraccCatalogEntry]
 ```

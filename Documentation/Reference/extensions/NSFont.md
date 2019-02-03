@@ -3,6 +3,12 @@
 # `NSFont`
 
 ## Methods
+### `getItalicFont()`
+
+```swift
+public func getItalicFont() -> NSFont
+```
+
 ### `makeDefaultPreferences()`
 
 ```swift

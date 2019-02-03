@@ -6,5 +6,5 @@
 ### `getExtendedAttributes()`
 
 ```swift
-public func getExtendedAttributes() -> [NSAttributedStringKey: Any]
+public func getExtendedAttributes() -> [NSAttributedString.Key: Any]
 ```
