@@ -215,7 +215,7 @@ public extension GraphemeDescription {
     /// - Parameter delimiter: separator between this sign and the next. Supply the empty string if at the end of a word.
     /// - Parameter cuneifier: function that converts a transliterated syllable into a cuneiform glyph.
     
-    init(syllable: String, delimiter: String, cuneifier: ((String) -> String)) {
+    init(syllable: String, delimiter: String, cuneifier: ((String) -> String?)) {
         let sign: CuneiformSignReading
         var logogram = false
         if syllable.uppercased() == syllable {
