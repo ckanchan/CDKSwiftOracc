@@ -66,7 +66,7 @@ extension OraccTextEdition {
 
 extension OraccCDLNode {
     
-    /// Returns a portable normalised string with platform-independent formatting attributes encoded under the `Formatting` key. These strings can be transformed with the `.render()` function for display.
+    /// Returns a portable normalised string with platform-independent formatting attributes encoded under the `Formatting` key. These strings can be transformed with the `.render(withPreferences:)` function for display.
     func normalised() -> NSAttributedString {
         let str = NSMutableAttributedString(string: "")
         
@@ -159,7 +159,7 @@ extension GraphemeDescription {
         let italicFormatting = [NSAttributedString.Key.formatting: TextEditionFormatting([.italic]).rawValue]
         let superscriptFormatting = [NSAttributedString.Key.formatting: TextEditionFormatting([.superscript]).rawValue]
         let damagedFormatting = [NSAttributedString.Key.formatting: TextEditionFormatting([.damaged]).rawValue]
-        let damagedSumerian = [NSAttributedString.Key.formatting: TextEditionFormatting(arrayLiteral: .damagedLogogram).rawValue]
+        let damagedSumerian = [NSAttributedString.Key.formatting: TextEditionFormatting([.damagedLogogram]).rawValue]
         let noFormatting = [NSAttributedString.Key.formatting: 0]
         
         let str = NSMutableAttributedString(string: "")
