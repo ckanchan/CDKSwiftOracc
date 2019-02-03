@@ -1,5 +1,5 @@
 //
-//  NodeID.swift
+//  NodeReference.swift
 //  CDKSwiftOracc: Cuneiform Documents for Swift
 //  Copyright (C) 2018 Chaitanya Kanchan
 //
@@ -18,6 +18,7 @@
 
 import Foundation
 
+/// Uniquely identifies a lemma within a text, specifying the text ID, line and line position
 public struct NodeReference: Hashable {
     public var base: TextID
     public var path: [String]

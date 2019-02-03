@@ -19,11 +19,6 @@
 
 import Foundation
 
-public enum OraccCDLDecodingError: Error {
-    case unableToDecode(String)
-}
-
-
 /// A single node in an Oracc CDL nested representation of a cuneiform document.
 public enum OraccCDLNode {
     
@@ -114,106 +109,6 @@ public enum OraccCDLNode {
         case d(Discontinuity)
         case linkbase([Linkset])
   
-}
-
-extension OraccCDLNode: Decodable {
-    enum CodingKeys: String, CodingKey {
-        case fragment = "frag"
-        case instanceTranslation = "inst"
-        case wordForm = "f"
-        case sense = "sense"
-        case norm = "norm"
-        case type = "type"
-        case cdl = "cdl"
-        case node = "node"
-        case linkbase = "linkbase"
-        case label = "label"
-        case reference = "ref"
-        case id = "id"
-        case choices
-    }
-    
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let node = try container.decodeIfPresent(String.self, forKey: .node)
-        
-        if let node = node {
-            switch node {
-            case "d":
-                let type = try container.decode(String.self, forKey: .type)
-                let label = try container.decodeIfPresent(String.self, forKey: .label)
-                let d = OraccCDLNode.Discontinuity(type: OraccCDLNode.Discontinuity.DiscontinuityType(rawValue: type)!, label: label)
-                self = OraccCDLNode.d(d)
-                
-            case "l":
-                let frag = try container.decode(String.self, forKey: .fragment)
-                let inst = try container.decodeIfPresent(String.self, forKey: .instanceTranslation)
-                let f = try container.decode(WordForm.self, forKey: .wordForm)
-                let ref = try container.decode(NodeReference.self, forKey: .reference)
-                
-               
-                
-                let l = OraccCDLNode.Lemma(fragment: frag, instanceTranslation: inst, wordForm: f, reference: ref)
-                self = OraccCDLNode.l(l)
-                
-            case "ll":
-                let choices = try container.decode([OraccCDLNode].self, forKey: .choices)
-                self = choices.first!
-                
-            case "c":
-                let type = try container.decode(String.self, forKey: .type)
-                let cdl = try container.decode([OraccCDLNode].self, forKey: .cdl)
-                let chunktype = OraccCDLNode.Chunk.Chunktype(rawValue: type)!
-                let c = OraccCDLNode.Chunk(type: chunktype, cdl: cdl)
-                self = OraccCDLNode.c(c)
-                
-            default:
-                let error: Error = "Error!" as! Error
-                throw error
-            }
-        }
-        else {
-            let linkbase = try container.decodeIfPresent([Linkset].self, forKey: .linkbase)
-            
-            if let linksets = linkbase {
-                self = OraccCDLNode.linkbase(linksets)
-                
-            } else {
-                throw OraccCDLDecodingError.unableToDecode("at node: \(node ?? "unknown node")")
-            }
-        }
-    }
-}
-
-extension OraccCDLNode: Encodable {
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        switch self {
-        case .l(let lemma):
-            try container.encode("l", forKey: .node)
-            try container.encode(lemma.fragment, forKey: .fragment)
-            try container.encodeIfPresent(lemma.instanceTranslation, forKey: .instanceTranslation)
-            try container.encodeIfPresent(lemma.wordForm, forKey: .wordForm)
-            try container.encode(lemma.reference, forKey: .reference)
-            
-        case .c(let chunk):
-            try container.encode("c", forKey: .node)
-            try container.encode(chunk.type.rawValue, forKey: .type)
-            try container.encode(chunk.cdl, forKey: .cdl)
-            
-        case .d(let d):
-            try container.encode("d", forKey: .node)
-            try container.encode(d.type.rawValue, forKey: .type)
-            try container.encodeIfPresent(d.label, forKey: .label)
-            
-        case .linkbase(let linkSet):
-            try container.encodeIfPresent(linkSet, forKey: .linkbase)
-            
-            
-            break
-        }
-    }
 }
 
 public extension OraccCDLNode { //Text analysis functions
@@ -395,5 +290,40 @@ extension OraccCDLNode: CustomStringConvertible {
         case .linkbase(_):
             return ""
         }
+    }
+}
+
+public extension OraccCDLNode {
+    /// The unique `NodeReference` for the node. Only implemented for `OraccCDLNode.Lemma` at the moment. An empty string if not a lemma.
+    public var reference: String {
+        switch self {
+        case .l(let lemma):
+            return String(describing: lemma.reference)
+        default:
+            return ""
+        }
+    }
+}
+
+public extension OraccCDLNode {
+    public init(normalisation: String, transliteration: String, translation: String, cuneifier: ((String) -> String?), documentID: UUID, position: Int) {
+        var graphemes = [GraphemeDescription]()
+        let syllables = transliteration.split(separator: "-")
+        for syllable in syllables.dropLast() {
+            let grapheme = GraphemeDescription(syllable: String(syllable), delimiter: "-", cuneifier: cuneifier)
+            graphemes.append(grapheme)
+        }
+        
+        graphemes.append(GraphemeDescription(syllable: String(syllables.last!), delimiter: " ", cuneifier: cuneifier))
+        
+        
+        let transl = WordForm.Translation(guideWord: translation, citationForm: nil, sense: translation, partOfSpeech: nil, effectivePartOfSpeech: nil)
+        let wordForm = WordForm(language: .Akkadian(.conventional), form: normalisation, graphemeDescriptions: graphemes, normalisation: normalisation, translation: transl, delimiter: " ")
+        
+        let referenceString = "U\(documentID).0.\(position)"
+        let reference = NodeReference.init(stringLiteral: referenceString)
+        
+        let lemma = OraccCDLNode.Lemma(fragment: transliteration, instanceTranslation: nil, wordForm: wordForm, reference: reference)
+        self = OraccCDLNode.l(lemma)
     }
 }
