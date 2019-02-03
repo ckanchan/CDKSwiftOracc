@@ -25,7 +25,7 @@ public struct OraccTextEdition: Codable {
     
     /// Access to the raw CDL node array
     public let cdl: [OraccCDLNode]
-    let textid: String
+    let textid: TextID
     
     /// URL for online edition. Returns `nil` if unable to form URL.
     public var url: URL? {
@@ -76,13 +76,14 @@ public struct OraccTextEdition: Codable {
         return str
     }
     
-    public static func createNewText(nodes: [OraccCDLNode] = []) -> OraccTextEdition {
-        let edition = OraccTextEdition(type: "modern", project: "none", loadedFrom: nil, cdl: nodes, textid: "n/a")
-        return edition
-    }
-    
     public enum Representation: Int {
         case cuneiform = 0, transliteration, normalisation, translation
+    }
+}
+
+public extension OraccTextEdition {
+    public init(withCDL nodes: [OraccCDLNode] = [], textID: TextID = "") {
+        self.init(type: "modern", project: "none", loadedFrom: nil, cdl: nodes, textid: textID)
     }
 }
 

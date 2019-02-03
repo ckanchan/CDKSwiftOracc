@@ -57,11 +57,9 @@ public struct OraccCatalogEntry {
     
     ///Copyright and editorial information
     public let credits: String?
-    
-    public static func initFromSaved(id: String, displayName: String, ancientAuthor: String?, title: String, project: String) -> OraccCatalogEntry {
-        return OraccCatalogEntry(displayName: displayName, title: title, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: nil, chapterName: nil, genre: nil, material: nil, period: nil, provenience: nil, primaryPublication: nil, museumNumber: nil, publicationHistory: nil, notes: nil, pleiadesID: nil, pleiadesCoordinate: nil, credits: nil)
-    }
-    
+}
+
+extension OraccCatalogEntry {
     public init(displayName: String, title: String, id: String, ancientAuthor: String?, project: String, chapterNumber: Int?, chapterName: String?, genre: String?, material: String?, period: String?, provenience: String?, primaryPublication: String?, museumNumber: String?, publicationHistory: String?, notes: String?, pleiadesID: Int?, pleiadesCoordinate: (Double, Double)?, credits: String?) {
         self.displayName = displayName
         self.title = title
@@ -83,6 +81,11 @@ public struct OraccCatalogEntry {
         self.pleiadesID = pleiadesID
         self.pleiadesCoordinate = pleiadesCoordinate
     }
+    
+    public init(id: String, displayName: String, ancientAuthor: String?, title: String, project: String) {
+        self.init(displayName: displayName, title: title, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: nil, chapterName: nil, genre: nil, material: nil, period: nil, provenience: nil, primaryPublication: nil, museumNumber: nil, publicationHistory: nil, notes: nil, pleiadesID: nil, pleiadesCoordinate: nil, credits: nil)
+    }
+
 }
 
 extension OraccCatalogEntry: Decodable {
