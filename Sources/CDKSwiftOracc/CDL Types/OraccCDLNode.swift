@@ -306,7 +306,8 @@ public extension OraccCDLNode {
 }
 
 public extension OraccCDLNode {
-    public init(normalisation: String, transliteration: String, translation: String, cuneifier: ((String) -> String?), documentID: UUID, position: Int) {
+    /// Convenience initialiser which returns a Lemma with basic metadata.
+    public init(normalisation: String, transliteration: String, translation: String, cuneifier: ((String) -> String?), textID: TextID, line: Int, position: Int) {
         var graphemes = [GraphemeDescription]()
         let syllables = transliteration.split(separator: "-")
         for syllable in syllables.dropLast() {
@@ -320,8 +321,7 @@ public extension OraccCDLNode {
         let transl = WordForm.Translation(guideWord: translation, citationForm: nil, sense: translation, partOfSpeech: nil, effectivePartOfSpeech: nil)
         let wordForm = WordForm(language: .Akkadian(.conventional), form: normalisation, graphemeDescriptions: graphemes, normalisation: normalisation, translation: transl, delimiter: " ")
         
-        let referenceString = "U\(documentID).0.\(position)"
-        let reference = NodeReference.init(stringLiteral: referenceString)
+        let reference = NodeReference(base: textID, path: [String(line), String(position)])
         
         let lemma = OraccCDLNode.Lemma(fragment: transliteration, instanceTranslation: nil, wordForm: wordForm, reference: reference)
         self = OraccCDLNode.l(lemma)
