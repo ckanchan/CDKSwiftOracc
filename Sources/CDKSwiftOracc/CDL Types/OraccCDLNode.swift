@@ -326,4 +326,11 @@ public extension OraccCDLNode {
         let lemma = OraccCDLNode.Lemma(fragment: transliteration, instanceTranslation: nil, wordForm: wordForm, reference: reference)
         self = OraccCDLNode.l(lemma)
     }
+    
+    /// Convenience initialiser which returns a Line Break discontinuity.
+    /// - Parameter lineBreakLabel: Optional information about the line break
+    public init(lineBreakLabel: String = "") {
+        let discontinuity = Discontinuity(type: .linestart, label: lineBreakLabel)
+        self = OraccCDLNode.d(discontinuity)
+    }
 }

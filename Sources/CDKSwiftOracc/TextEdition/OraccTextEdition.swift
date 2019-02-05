@@ -25,7 +25,7 @@ public struct OraccTextEdition: Codable {
     
     /// Access to the raw CDL node array
     public let cdl: [OraccCDLNode]
-    let textid: TextID
+    public let textid: TextID
     
     /// URL for online edition. Returns `nil` if unable to form URL.
     public var url: URL? {
