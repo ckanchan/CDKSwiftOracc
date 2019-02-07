@@ -45,7 +45,7 @@ extension OraccCatalogEntry: Decodable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let designation = try container.decode(String.self, forKey: .designation)
+        let designation = try container.decodeIfPresent(String.self, forKey: .designation) ?? "no designation"
         let displayName = try container.decodeIfPresent(String.self, forKey: .displayName)
         let title = try container.decodeIfPresent(String.self, forKey: .title)
         let popularName = try container.decodeIfPresent(String.self, forKey: .popular_name)
