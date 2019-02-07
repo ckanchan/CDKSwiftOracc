@@ -61,8 +61,8 @@ public extension OraccTextEdition {
 }
 
 public extension OraccTextEdition {
-    public init(withCDL nodes: [OraccCDLNode] = [], textID: TextID = "") {
-        self.init(type: "modern", project: "none", loadedFrom: nil, cdl: nodes, textid: textID)
+    public init(type: String, project: String, cdl: [OraccCDLNode], textID: TextID = "") {
+        self.init(type: type, project: project, loadedFrom: nil, cdl: cdl, textid: textID)
     }
 }
 
