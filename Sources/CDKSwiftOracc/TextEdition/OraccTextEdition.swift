@@ -19,65 +19,44 @@
 import Foundation
 
 public struct OraccTextEdition: Codable {
-    public let type: String
-    public let project: String
+    public var type: String
+    public var project: String
     public var loadedFrom: URL? = nil
     
     /// Access to the raw CDL node array
-    public let cdl: [OraccCDLNode]
-    public let textid: TextID
+    public var cdl: [OraccCDLNode]
+    public var textid: TextID
     
     /// URL for online edition. Returns `nil` if unable to form URL.
     public var url: URL? {
         return URL(string: "http://oracc.museum.upenn.edu/\(project)/\(textid)/html")
     }
+
     
+    public enum Representation: Int {
+        case cuneiform = 0, transliteration, normalisation, translation
+    }
+}
+
+public extension OraccTextEdition {
     /// Computed transliteration. This is recalculated every time it is called so you will need to store it yourself.
     public var transliteration: String {
-        var str = ""
-        
-        for node in self.cdl {
-            str.append(node.transliterated())
-        }
-        
-        return str
+        return cdl.reduce(""){$0 + $1.transliterated()}
     }
     
     /// Computed normalisation. This may not be applicable if a text has not been lemmatised. This is recalculated every time it is called so you will need to store it yourself.
     public var transcription: String {
-        var str = ""
-        
-        for node in self.cdl {
-            str.append(node.normalised())
-        }
-        
-        return str
+        return cdl.reduce(""){$0 + $1.normalised()}
     }
     
     /// Computed literal translation. This may not be applicable if a text has not been lemmatised. This is recalculated every time it is called so you will need to store it yourself.
     public var literalTranslation: String  {
-        var str = ""
-        
-        for node in self.cdl {
-            str.append(node.literalTranslation())
-        }
-        
-        return str
+        return cdl.reduce(""){$0 + $1.literalTranslation()}
     }
     
     /// Computed cuneiform. This is recalculated every time it is called so you will need to store it yourself.
     public var cuneiform: String  {
-        var str = ""
-        
-        for node in self.cdl {
-            str.append(node.cuneiform())
-        }
-        
-        return str
-    }
-    
-    public enum Representation: Int {
-        case cuneiform = 0, transliteration, normalisation, translation
+        return cdl.reduce(""){$0 + $1.cuneiform()}
     }
 }
 
