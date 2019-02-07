@@ -60,27 +60,28 @@ public struct OraccCatalogEntry {
 }
 
 extension OraccCatalogEntry {
-//    public init(displayName: String, title: String, id: String, ancientAuthor: String?, project: String, chapterNumber: Int?, chapterName: String?, genre: String?, material: String?, period: String?, provenience: String?, primaryPublication: String?, museumNumber: String?, publicationHistory: String?, notes: String?, pleiadesID: Int?, pleiadesCoordinate: (Double, Double)?, credits: String?) {
-//        self.displayName = displayName
-//        self.title = title
-//        self.id = TextID.init(stringLiteral: id)
-//
-//        self.ancientAuthor = ancientAuthor
-//        self.project = project
-//        self.chapterNumber = chapterNumber
-//        self.chapterName = chapterName
-//        self.genre = genre
-//        self.material = material
-//        self.period = period
-//        self.provenience = provenience
-//        self.primaryPublication = primaryPublication
-//        self.museumNumber = museumNumber
-//        self.publicationHistory = publicationHistory
-//        self.notes = notes
-//        self.credits = credits
-//        self.pleiadesID = pleiadesID
-//        self.pleiadesCoordinate = pleiadesCoordinate
-//    }
+    // Swift requires that any public initialisers be explicitly declared. The memberwise initialiser is not available outside of the module.
+    public init(displayName: String, title: String, id: String, ancientAuthor: String?, project: String, chapterNumber: Int?, chapterName: String?, genre: String?, material: String?, period: String?, provenience: String?, primaryPublication: String?, museumNumber: String?, publicationHistory: String?, notes: String?, pleiadesID: Int?, pleiadesCoordinate: (Double, Double)?, credits: String?) {
+        self.displayName = displayName
+        self.title = title
+        self.id = TextID.init(stringLiteral: id)
+
+        self.ancientAuthor = ancientAuthor
+        self.project = project
+        self.chapterNumber = chapterNumber
+        self.chapterName = chapterName
+        self.genre = genre
+        self.material = material
+        self.period = period
+        self.provenience = provenience
+        self.primaryPublication = primaryPublication
+        self.museumNumber = museumNumber
+        self.publicationHistory = publicationHistory
+        self.notes = notes
+        self.credits = credits
+        self.pleiadesID = pleiadesID
+        self.pleiadesCoordinate = pleiadesCoordinate
+    }
     
     public init(id: TextID, displayName: String, ancientAuthor: String?, title: String, project: String) {
         self.init(displayName: displayName, title: title, id: id, ancientAuthor: ancientAuthor, project: project, chapterNumber: nil, chapterName: nil, genre: nil, material: nil, period: nil, provenience: nil, primaryPublication: nil, museumNumber: nil, publicationHistory: nil, notes: nil, pleiadesID: nil, pleiadesCoordinate: nil, credits: nil)
