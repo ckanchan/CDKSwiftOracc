@@ -19,9 +19,9 @@
 import Foundation
 
 public struct OraccCatalog: TextSet {
-    public let source: URL
-    public let project: String
-    public let members: [TextID: OraccCatalogEntry]
+    public var source: URL
+    public var project: String
+    public var members: [TextID: OraccCatalogEntry]
     
     public var title: String {
         return project

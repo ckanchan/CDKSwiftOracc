@@ -20,11 +20,11 @@ import Foundation
 
 public struct WordForm {
     public struct Translation: Decodable {
-        public let guideWord: String?
-        public let citationForm: String?
-        public let sense: String?
-        public let partOfSpeech: String?
-        public let effectivePartOfSpeech: String?
+        public var guideWord: String?
+        public var citationForm: String?
+        public var sense: String?
+        public var partOfSpeech: String?
+        public var effectivePartOfSpeech: String?
         
         public init(guideWord: String?, citationForm: String?, sense: String?, partOfSpeech: String?, effectivePartOfSpeech: String?) {
             self.guideWord = guideWord
@@ -35,12 +35,12 @@ public struct WordForm {
         }
     }
     
-    public let language: Language
-    public let form: String
-    public let graphemeDescriptions: [GraphemeDescription]
-    public let normalisation: String?
-    public let translation: Translation
-    public let delimiter: String?
+    public var language: Language
+    public var form: String
+    public var graphemeDescriptions: [GraphemeDescription]
+    public var normalisation: String?
+    public var translation: Translation
+    public var delimiter: String?
     
     public init(language: Language, form: String, graphemeDescriptions: [GraphemeDescription], normalisation: String?, translation: Translation, delimiter: String?){
         self.language = language

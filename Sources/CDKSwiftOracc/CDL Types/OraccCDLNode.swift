@@ -37,16 +37,16 @@ public enum OraccCDLNode {
         }
         
         /// Transliteration with diacritical marks.
-        public let fragment: String
+        public var fragment: String
         
         /// String key containing normalisation[translation]partofspeech
-        public let instanceTranslation: String?
+        public var instanceTranslation: String?
         
         /// Detailed wordform information
-        public let wordForm: WordForm
+        public var wordForm: WordForm
         
         /// Reference for glossary lookup
-        public let reference: NodeReference
+        public var reference: NodeReference
         
         public var transliteration: String {
             var str = ""
@@ -72,8 +72,8 @@ public enum OraccCDLNode {
             case sentence, text, phrase, discourse
         }
         
-        public let type: Chunktype
-        public let cdl: [OraccCDLNode]
+        public var type: Chunktype
+        public var cdl: [OraccCDLNode]
         
         public var description: String {
             return self.type.rawValue
@@ -86,8 +86,8 @@ public enum OraccCDLNode {
             case bottom, broken = "nonx", cellStart = "cell-start", cellEnd = "cell-end", column, edge, envelope, excised, fieldStart = "field-start", left, obverse, object, linestart = "line-start", punct, right, reverse, surface, surrogate = "surro", tablet, top, uninscribed = "nonw"
         }
         
-        public let type: DiscontinuityType
-        public let label: String?
+        public var type: DiscontinuityType
+        public var label: String?
         
         public var description: String {
             return "\(self.type) \(self.label ?? "")"

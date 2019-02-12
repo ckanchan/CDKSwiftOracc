@@ -76,26 +76,26 @@ public enum Components {
 
 public struct GraphemeDescription {
     /// Cuneiform glyph in UTF-8
-    public let graphemeUTF8: String?
+    public var graphemeUTF8: String?
     
     /// Sign reading metadata
-    public let sign: CuneiformSignReading
+    public var sign: CuneiformSignReading
     
     /// True if the sign is a logogram; used for formatting purposes.
-    public let isLogogram: Bool
+    public var isLogogram: Bool
     
     /// Sign preservation
-    public let preservation: Preservation
+    public var preservation: Preservation
     
     
     /// If a determinative, what role it plays (usually 'semantic'), and position it occupies
-    public let isDeterminative: Determinative?
+    public var isDeterminative: Determinative?
     
     /// Present if the sign contains subunits
-    public let components: Components?
+    public var components: Components?
     
     /// If defined, a string that separates this character from the next one.
-    public let delim: String?
+    public var delim: String?
     
     /// Creates a single grapheme description containing the Unicode cuneiform, sign metadata and delimiter information for formatting
     public init(graphemeUTF8: String?, sign: CuneiformSignReading, isLogogram: Bool, preservation: Preservation = Preservation.preserved, isDeterminative: Determinative?, components: Components?, delimiter: String?) {
