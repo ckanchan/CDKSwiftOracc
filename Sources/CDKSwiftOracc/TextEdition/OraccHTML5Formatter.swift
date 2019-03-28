@@ -22,7 +22,7 @@ import Foundation
 public extension OraccTextEdition {
     /// Returns an HTML formatted transliteration suitable for embedding in a web page
     
-    public func html5Transliteration() -> String {
+    func html5Transliteration() -> String {
         var str = ""
         
         for node in self.cdl {
@@ -32,7 +32,7 @@ public extension OraccTextEdition {
         return str
     }
     
-    public func html5Normalisation() -> String {
+    func html5Normalisation() -> String {
         var str = ""
         
         for node in self.cdl {
@@ -42,7 +42,7 @@ public extension OraccTextEdition {
         return str
     }
     
-    public func html5NormalisationPage() -> String {
+    func html5NormalisationPage() -> String {
         let str = self.html5Normalisation()
         
         let html = """

@@ -20,7 +20,7 @@ import Foundation
 
 /// Datatype enumerating a localized reading of a cuneiform sign from a tablet.
 
-public enum CuneiformSignReading {
+public enum CuneiformSignReading: Hashable, Equatable {
     
     /// Sign read with syllabic value.
     case value(String)
@@ -41,7 +41,7 @@ public enum CuneiformSignReading {
     case null
     
     /// Various kinds of cuneiform sign graphical variations.
-    public enum Modifier {
+    public enum Modifier: Hashable, Equatable {
         case curved, flat, gunu, šešig, tenu, nutillu, zidatenu, kabatenu, verticallyReflected, horizontallyReflected, rotated(Int), variant
         
         case Allograph(String)

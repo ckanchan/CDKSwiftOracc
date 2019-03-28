@@ -19,16 +19,16 @@
 import Foundation
 
 public struct OraccTextEdition: Codable {
-    public var type: String
-    public var project: String
-    public var loadedFrom: URL? = nil
+    var type: String
+    var project: String
+    var loadedFrom: URL? = nil
     
     /// Access to the raw CDL node array
-    public var cdl: [OraccCDLNode]
-    public var textid: TextID
+    var cdl: [OraccCDLNode]
+    var textid: TextID
     
     /// URL for online edition. Returns `nil` if unable to form URL.
-    public var url: URL? {
+    var url: URL? {
         return URL(string: "http://oracc.museum.upenn.edu/\(project)/\(textid)/html")
     }
 
@@ -40,28 +40,28 @@ public struct OraccTextEdition: Codable {
 
 public extension OraccTextEdition {
     /// Computed transliteration. This is recalculated every time it is called so you will need to store it yourself.
-    public var transliteration: String {
+    var transliteration: String {
         return cdl.reduce(""){$0 + $1.transliterated()}
     }
     
     /// Computed normalisation. This may not be applicable if a text has not been lemmatised. This is recalculated every time it is called so you will need to store it yourself.
-    public var transcription: String {
+    var transcription: String {
         return cdl.reduce(""){$0 + $1.normalised()}
     }
     
     /// Computed literal translation. This may not be applicable if a text has not been lemmatised. This is recalculated every time it is called so you will need to store it yourself.
-    public var literalTranslation: String  {
+    var literalTranslation: String  {
         return cdl.reduce(""){$0 + $1.literalTranslation()}
     }
     
     /// Computed cuneiform. This is recalculated every time it is called so you will need to store it yourself.
-    public var cuneiform: String  {
+    var cuneiform: String  {
         return cdl.reduce(""){$0 + $1.cuneiform()}
     }
 }
 
 public extension OraccTextEdition {
-    public init(type: String, project: String, cdl: [OraccCDLNode], textID: TextID = "") {
+    init(type: String, project: String, cdl: [OraccCDLNode], textID: TextID = "") {
         self.init(type: type, project: project, loadedFrom: nil, cdl: cdl, textid: textID)
     }
 }
@@ -71,7 +71,7 @@ public extension OraccTextEdition {
 public extension OraccTextEdition {
     
     /// Tries to scrape translation from Oracc HTML using the XML tree-based parser. A bit hackish. Returns nil if a translation can't be formed. If you use this method you *must* include the copyright and license for the text manually.
-    public func scrapeTranslation() -> String? {
+    func scrapeTranslation() -> String? {
         var translation: String = ""
         
         do {
@@ -150,7 +150,7 @@ enum ScrapeError: Error {
         
         /// Asynchronously scrapes a text translation from the Oracc webpage using an event-based parser, then calls the supplied completion handler. You will need to check manually whether the copyright notice and license are included in the scraped text. If the copyright notice and license are not included, you *must* include this manually.
         /// - Throws: `ScrapeError.NoDataAtURL` if the URL could not be reached.
-        public func scrapeTranslation(_ completion: @escaping (String) -> Void) throws {
+        func scrapeTranslation(_ completion: @escaping (String) -> Void) throws {
             guard let url = self.url else { throw ScrapeError.NoDataAtURL }
             let scraper = OraccTranslationScraper(withURL: url, completion: completion)
             scraper.scrape()

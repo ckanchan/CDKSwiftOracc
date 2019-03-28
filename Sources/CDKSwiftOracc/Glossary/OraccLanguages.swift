@@ -18,16 +18,16 @@
 
 import Foundation
 
-public enum Language {
+public enum Language: Hashable, Equatable {
     case Akkadian(AkkadianDialect)
     case Sumerian(SumerianDialect)
     case Hittite
     case Other(String)
     
-    public enum AkkadianDialect: String {
+    public enum AkkadianDialect: String, Hashable, Equatable {
             case Akkadian = "akk", EarlyAkkadian = "akk-x-earakk", OldAkkadian = "akk-x-oldakk", UrIIIAkkadian = "ua", conventional = "akk-x-conakk", OldAssyrian = "akk-x-oldass", MiddleAssyrian = "akk-x-midass", NeoAssyrian = "akk-x-neoass", OldBabylonian = "akk-x-oldbab", OldBabylonianPeripheral = "akk-x-obperi", MiddleBabylonian = "akk-x-midbab", MiddleBabylonianPeripheral = "akk-x-mbperi", NeoBabylonian = "akk-x-neobab", LateBabylonian = "akk-x-ltebab", StandardBabylonian = "akk-x-stdbab"
     }
-    public enum SumerianDialect: String {
+    public enum SumerianDialect: String, Hashable, Equatable {
         case Emegir = "sux-x-emegir", Emesal = "sux-x-emesal", Syllabic = "sux-x-syllabic", Udgalnun = "sux-x-udgalnun", Sumerian
     }
 
@@ -87,7 +87,7 @@ public extension Language {
         }
     }
     
-    public init(withCode code: String) {
+    init(withCode code: String) {
         self = Language.init(withInlineCode: code) ?? Language.init(withProtocolCode: code) ?? Language.Other(code)
     }
 

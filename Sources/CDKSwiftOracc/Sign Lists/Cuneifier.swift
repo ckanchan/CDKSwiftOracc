@@ -52,7 +52,7 @@ extension Cuneifier {
 public extension Cuneifier {
     /// Initialises a `Cuneifier` struct from a validly formatted JSON file.
     
-    public init(json: Data) throws {
+    init(json: Data) throws {
         let decoder = JSONDecoder()
         let list = try decoder.decode([OSL.Sign].self, from: json)
         self.init(signList: list)
@@ -60,7 +60,7 @@ public extension Cuneifier {
     
     /// Initialises a `Cuneifier` from an Oracc [`.asl` sign list format](https://github.com/oracc/oracc/blob/master/doc/ns/sl/1.0/sl.xdf). This is twice as slow as initialising from a codable JSON file so that method is preferred.
     
-    public init(asl: Data) throws {
+    init(asl: Data) throws {
         guard let aslString = String(data: asl, encoding: .utf8) else {throw OSL.DecodeError.InvalidASL}
         let list = OSL.makeSignList(aslString)
         self.init(signList: list)

@@ -19,7 +19,7 @@
 import Foundation
 
 public extension NSAttributedString.Key {
-    public static var formatting: NSAttributedString.Key {
+    static var formatting: NSAttributedString.Key {
         return self.init("formatting")
     }
 }
@@ -407,7 +407,7 @@ import AppKit.NSFont
 
 @available(macOS 10.11, *)
 public extension NSFont {
-    public func getItalicFont() -> NSFont {
+    func getItalicFont() -> NSFont {
         let fontDsc = self.fontDescriptor
         let italicDsc = NSFontDescriptor.SymbolicTraits.italic
         let italicfntDsc = fontDsc.withSymbolicTraits(italicDsc)
@@ -415,7 +415,7 @@ public extension NSFont {
         
         return NSFont(descriptor: italicfntDsc, size: self.pointSize) ?? NSFont(descriptor: systemFontDsc, size: self.pointSize)!
     }
-    public func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
+    func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
         let noFormatting = [NSAttributedString.Key.font: NSFont.systemFont(ofSize: NSFont.systemFontSize), NSAttributedString.Key.foregroundColor: NSColor.labelColor]
         let italicFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont(), NSAttributedString.Key.foregroundColor: NSColor.labelColor]
         let superscriptFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.superscript: 1, NSAttributedString.Key.foregroundColor: NSColor.labelColor]

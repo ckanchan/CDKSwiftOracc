@@ -24,9 +24,6 @@ public enum OraccCDLNode {
     
     /// A single unit of meaning, in cuneiform and translated forms. Summary information is included in the top-level properties; more detailed information can be accessed under the Form property and its Translation and GraphemeDescription fields.
     public struct Lemma: Equatable, Hashable, CustomStringConvertible {
-        public var hashValue: Int {
-            return reference.description.hashValue
-        }
         
         public static func ==(lhs: OraccCDLNode.Lemma, rhs: OraccCDLNode.Lemma) -> Bool {
             return lhs.hashValue == rhs.hashValue
@@ -43,7 +40,7 @@ public enum OraccCDLNode {
         public var instanceTranslation: String?
         
         /// Detailed wordform information
-        public var wordForm: WordForm
+        public var wordForm:  WordForm
         
         /// Reference for glossary lookup
         public var reference: NodeReference
@@ -112,7 +109,7 @@ public enum OraccCDLNode {
 }
 
 public extension OraccCDLNode { //Text analysis functions
-    public func transliterated() -> String {
+    func transliterated() -> String {
         var str = ""
         switch self {
         case .l(let lemma):
@@ -295,7 +292,7 @@ extension OraccCDLNode: CustomStringConvertible {
 
 public extension OraccCDLNode {
     /// The unique `NodeReference` for the node. Only implemented for `OraccCDLNode.Lemma` at the moment. An empty string if not a lemma.
-    public var reference: String {
+     var reference: String {
         switch self {
         case .l(let lemma):
             return String(describing: lemma.reference)
@@ -307,7 +304,7 @@ public extension OraccCDLNode {
 
 public extension OraccCDLNode {
     /// Convenience initialiser which returns a Lemma with basic metadata.
-    public init(normalisation: String, transliteration: String, translation: String, cuneifier: ((String) -> String?), textID: TextID, line: Int, position: Int) {
+     init(normalisation: String, transliteration: String, translation: String, cuneifier: ((String) -> String?), textID: TextID, line: Int, position: Int) {
         var graphemes = [GraphemeDescription]()
         let syllables = transliteration.split(separator: "-")
         for syllable in syllables.dropLast() {
@@ -329,7 +326,7 @@ public extension OraccCDLNode {
     
     /// Convenience initialiser which returns a Line Break discontinuity.
     /// - Parameter lineBreakLabel: Optional information about the line break
-    public init(lineBreakLabel: String = "") {
+     init(lineBreakLabel: String = "") {
         let discontinuity = Discontinuity(type: .linestart, label: lineBreakLabel)
         self = OraccCDLNode.d(discontinuity)
     }

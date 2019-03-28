@@ -18,8 +18,8 @@
 
 import Foundation
 
-public struct WordForm {
-    public struct Translation: Decodable {
+public struct WordForm: Hashable, Equatable {
+    public struct Translation: Decodable, Hashable, Equatable {
         public var guideWord: String?
         public var citationForm: String?
         public var sense: String?

@@ -36,8 +36,8 @@ public enum Determinative: String {
 }
 
 /// Preservation status of a sign
-public enum Preservation {
-    public enum BreakPosition {
+public enum Preservation: Hashable, Equatable {
+    public enum BreakPosition: Hashable, Equatable {
         case start(String), end(String), undefined
     }
     
@@ -48,7 +48,7 @@ public enum Preservation {
 
 
 /// Presents a single interface to any signs that are comprised of subsigns, whilst preserving the 'group|gdl|seq' metadata
-public enum Components {
+public enum Components: Hashable, Equatable {
     /// If a logogram consists of multiple graphemes, it seems to be represented by this
     case group([GraphemeDescription])
     
@@ -74,7 +74,7 @@ public enum Components {
 
 /// Base structure for representing cuneiform signs (graphemes) decoded from the grapheme description language. Enables sign-by-sign cuneiform and transliteration functionality. Simplified implementation of the GDL specification, found [here](https://github.com/oracc/oracc/blob/master/doc/ns/gdl/1.0/gdl.xdf)
 
-public struct GraphemeDescription {
+public struct GraphemeDescription: Hashable, Equatable {
     /// Cuneiform glyph in UTF-8
     public var graphemeUTF8: String?
     
@@ -112,7 +112,7 @@ public struct GraphemeDescription {
 public extension GraphemeDescription {
     
     /// A computed property that returns cuneiform.
-    public var cuneiform: String {
+    var cuneiform: String {
         var str = ""
         if let components = components {
             for grapheme in components.items {
@@ -126,7 +126,7 @@ public extension GraphemeDescription {
     }
     
     /// A computed property that returns transliteration as an unformatted string.
-    public var transliteration: String {
+    var transliteration: String {
         var str = ""
         //Determinatives
         if let determinative = isDeterminative {
