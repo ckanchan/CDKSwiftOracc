@@ -19,13 +19,13 @@
 import Foundation
 
 public struct OraccTextEdition: Codable {
-    var type: String
-    var project: String
-    var loadedFrom: URL? = nil
+    public var type: String
+    public var project: String
+    public var loadedFrom: URL? = nil
     
     /// Access to the raw CDL node array
-    var cdl: [OraccCDLNode]
-    var textid: TextID
+    public var cdl: [OraccCDLNode]
+    public var textid: TextID
     
     /// URL for online edition. Returns `nil` if unable to form URL.
     var url: URL? {
