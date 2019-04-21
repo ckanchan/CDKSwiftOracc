@@ -66,6 +66,12 @@ extension TextID: CustomStringConvertible {
     }
 }
 
+extension TextID: LosslessStringConvertible {
+    public init?(_ description: String) {
+        self = TextID.init(stringLiteral: description)
+    }
+}
+
 extension TextID: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
