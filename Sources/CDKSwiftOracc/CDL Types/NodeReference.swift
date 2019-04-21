@@ -22,12 +22,23 @@ import Foundation
 public struct NodeReference: Hashable {
     public var base: TextID
     public var path: [String]
+    
+    public init(base: TextID, path: [String]) {
+        self.base = base
+        self.path = path
+    }
 }
 
 extension NodeReference: CustomStringConvertible {
     public var description: String {
         let pathString = path.joined(separator: ".")
         return "\(base).\(pathString)"
+    }
+}
+
+extension NodeReference: LosslessStringConvertible {
+    public init?(_ description: String) {
+        self = NodeReference.init(stringLiteral: description)
     }
 }
 

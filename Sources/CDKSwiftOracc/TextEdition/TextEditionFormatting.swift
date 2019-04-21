@@ -434,7 +434,7 @@ public extension NSFont {
 import UIKit.UIFont
 
 public extension UIFont {
-        public func getItalicFont() -> UIFont {
+    func getItalicFont() -> UIFont {
             let fontDsc = self.fontDescriptor
             let italicDsc = UIFontDescriptor.SymbolicTraits.traitItalic
             let italicfntDsc = fontDsc.withSymbolicTraits(italicDsc)
@@ -445,11 +445,11 @@ public extension UIFont {
             }
         }
         
-        public var reducedFontSize: UIFont {
+    var reducedFontSize: UIFont {
             return UIFont(descriptor: self.fontDescriptor, size: self.pointSize / 2)
         }
     
-    public func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
+    func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
         let noFormatting = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
         let italicFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont()]
         let superscriptFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.baselineOffset: 10,
