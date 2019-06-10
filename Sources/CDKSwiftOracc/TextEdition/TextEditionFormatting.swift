@@ -18,6 +18,8 @@
 
 import Foundation
 
+typealias Format = [NSAttributedStringKey: Any]
+
 public extension NSAttributedString.Key {
     static var formatting: NSAttributedString.Key {
         return self.init("formatting")
@@ -416,16 +418,35 @@ public extension NSFont {
         return NSFont(descriptor: italicfntDsc, size: self.pointSize) ?? NSFont(descriptor: systemFontDsc, size: self.pointSize)!
     }
     func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
-        let noFormatting = [NSAttributedString.Key.font: NSFont.systemFont(ofSize: NSFont.systemFontSize), NSAttributedString.Key.foregroundColor: NSColor.labelColor]
-        let italicFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont(), NSAttributedString.Key.foregroundColor: NSColor.labelColor]
-        let superscriptFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.superscript: 1, NSAttributedString.Key.foregroundColor: NSColor.labelColor]
-        let damagedFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont(), NSAttributedString.Key.foregroundColor: NSColor.gray]
-        let damagedLogogram: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: NSFont.systemFont(ofSize: NSFont.systemFontSize), NSAttributedString.Key.foregroundColor: NSColor.gray]
+        let noFormatting: Formatting = [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize),
+                                        .foregroundColor: NSColor.labelColor]
         
-        let editorialFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.regular), NSAttributedString.Key.foregroundColor: NSColor.labelColor]
-        let editorialBoldFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: NSFont.Weight.bold), NSAttributedString.Key.foregroundColor: NSColor.labelColor]
+        let italicFormatting: Formatting = [.font: self.getItalicFont(),
+                                            .foregroundColor: NSColor.labelColor]
         
-        return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting, editorialBold: editorialBoldFormatting, italic: italicFormatting, superscript: superscriptFormatting, damaged: damagedFormatting, damagedLogogram: damagedLogogram, none: noFormatting)
+        let superscriptFormatting: Formatting = [.superscript: 1,
+                                                 foregroundColor: NSColor.labelColor]
+        
+        let damagedFormatting: Formatting = [.font: self.getItalicFont(),
+                                             .foregroundColor: NSColor.gray]
+        
+        let damagedLogogram: Formatting = [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize),
+                                           .foregroundColor: NSColor.gray]
+        
+        let editorialFormatting: Formatting = [.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize,
+                                                                                       weight: NSFont.Weight.regular),
+                                               .foregroundColor: NSColor.labelColor]
+        let editorialBoldFormatting: Formatting = [.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize,
+                                                                                           weight: NSFont.Weight.bold),
+                                                   .foregroundColor: NSColor.labelColor]
+        
+        return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting,
+                                                      editorialBold: editorialBoldFormatting,
+                                                      italic: italicFormatting,
+                                                      superscript: superscriptFormatting,
+                                                      damaged: damagedFormatting,
+                                                      damagedLogogram: damagedLogogram,
+                                                      none: noFormatting)
     }
 }
 #endif
@@ -450,17 +471,37 @@ public extension UIFont {
         }
     
     func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
-        let noFormatting = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
-        let italicFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont()]
-        let superscriptFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.baselineOffset: 10,
-                                                                    NSAttributedString.Key.font: self.reducedFontSize]
-        let damagedFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: self.getItalicFont(), NSAttributedString.Key.foregroundColor: UIColor.gray]
-        let damagedLogogram = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: UIFont.systemFontSize), NSAttributedString.Key.foregroundColor: UIColor.gray]
+        let noFormatting: Format = [.font: UIFont.systemFont(ofSize: UIFont.systemFontSize),
+                                    .foregroundColor: UIColor.label]
         
-        let editorialFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.regular)]
-        let editorialBoldFormatting: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize, weight: UIFont.Weight.bold)]
+        let italicFormatting: Format = [.font: self.getItalicFont(),
+                                        .foregroundColor: UIColor.label]
         
-        return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting, editorialBold: editorialBoldFormatting, italic: italicFormatting, superscript: superscriptFormatting, damaged: damagedFormatting, damagedLogogram: damagedLogogram, none: noFormatting)
+        let superscriptFormatting: Format = [.baselineOffset: 10,
+                                             .font: self.reducedFontSize,
+                                             .foregroundColor: UIColor.label]
+        
+        let damagedFormatting: Format = [.font: self.getItalicFont(),
+                                         .foregroundColor: UIColor.secondaryLabel]
+        
+        let damagedLogogram: Format = [.font: UIFont.systemFont(ofSize: UIFont.systemFontSize),
+                                       .foregroundColor: UIColor.secondaryLabel]
+        
+        let editorialFormatting: Format = [.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize,
+                                                                                   weight: UIFont.Weight.regular),
+                                           .foregroundColor: UIColor.secondaryLabel]
+        
+        let editorialBoldFormatting: Format = [.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize,
+                                                                                       weight: UIFont.Weight.bold),
+                                               .foregroundColor: UIColor.secondaryLabel]
+        
+        return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting,
+                                                      editorialBold: editorialBoldFormatting,
+                                                      italic: italicFormatting,
+                                                      superscript: superscriptFormatting,
+                                                      damaged: damagedFormatting,
+                                                      damagedLogogram: damagedLogogram,
+                                                      none: noFormatting)
     }
 }
 
