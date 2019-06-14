@@ -497,6 +497,14 @@ public extension UIFont {
                                                                                            weight: UIFont.Weight.bold),
                                                    .foregroundColor: UIColor.secondaryLabel]
             
+            return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting,
+                                                          editorialBold: editorialBoldFormatting,
+                                                          italic: italicFormatting,
+                                                          superscript: superscriptFormatting,
+                                                          damaged: damagedFormatting,
+                                                          damagedLogogram: damagedLogogram,
+                                                          none: noFormatting)
+            
         } else {
             let noFormatting: Format = [.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
             let italicFormatting: Format = [.font: self.getItalicFont()]
@@ -514,15 +522,16 @@ public extension UIFont {
             
             let editorialBoldFormatting: Format = [.font: UIFont.monospacedDigitSystemFont(ofSize: UIFont.smallSystemFontSize,
                                                                                            weight: UIFont.Weight.bold)]
+            
+            return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting,
+                                                          editorialBold: editorialBoldFormatting,
+                                                          italic: italicFormatting,
+                                                          superscript: superscriptFormatting,
+                                                          damaged: damagedFormatting,
+                                                          damagedLogogram: damagedLogogram,
+                                                          none: noFormatting)
         }
         
-        return OraccTextEdition.FormattingPreferences(editorial: editorialFormatting,
-                                                      editorialBold: editorialBoldFormatting,
-                                                      italic: italicFormatting,
-                                                      superscript: superscriptFormatting,
-                                                      damaged: damagedFormatting,
-                                                      damagedLogogram: damagedLogogram,
-                                                      none: noFormatting)
     }
 }
 
