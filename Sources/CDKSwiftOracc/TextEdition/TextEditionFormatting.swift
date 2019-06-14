@@ -18,7 +18,7 @@
 
 import Foundation
 
-typealias Format = [NSAttributedStringKey: Any]
+typealias Format = [NSAttributedString.Key: Any]
 
 public extension NSAttributedString.Key {
     static var formatting: NSAttributedString.Key {
