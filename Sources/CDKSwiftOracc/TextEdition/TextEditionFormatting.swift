@@ -418,25 +418,25 @@ public extension NSFont {
         return NSFont(descriptor: italicfntDsc, size: self.pointSize) ?? NSFont(descriptor: systemFontDsc, size: self.pointSize)!
     }
     func makeDefaultPreferences() -> OraccTextEdition.FormattingPreferences {
-        let noFormatting: Formatting = [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize),
+        let noFormatting: Format = [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize),
                                         .foregroundColor: NSColor.labelColor]
         
-        let italicFormatting: Formatting = [.font: self.getItalicFont(),
+        let italicFormatting: Format = [.font: self.getItalicFont(),
                                             .foregroundColor: NSColor.labelColor]
         
-        let superscriptFormatting: Formatting = [.superscript: 1,
-                                                 foregroundColor: NSColor.labelColor]
+        let superscriptFormatting: Format = [.superscript: 1,
+                                                 .foregroundColor: NSColor.labelColor]
         
-        let damagedFormatting: Formatting = [.font: self.getItalicFont(),
+        let damagedFormatting: Format = [.font: self.getItalicFont(),
                                              .foregroundColor: NSColor.gray]
         
-        let damagedLogogram: Formatting = [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize),
+        let damagedLogogram: Format = [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize),
                                            .foregroundColor: NSColor.gray]
         
-        let editorialFormatting: Formatting = [.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize,
+        let editorialFormatting: Format = [.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize,
                                                                                        weight: NSFont.Weight.regular),
                                                .foregroundColor: NSColor.labelColor]
-        let editorialBoldFormatting: Formatting = [.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize,
+        let editorialBoldFormatting: Format = [.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize,
                                                                                            weight: NSFont.Weight.bold),
                                                    .foregroundColor: NSColor.labelColor]
         
