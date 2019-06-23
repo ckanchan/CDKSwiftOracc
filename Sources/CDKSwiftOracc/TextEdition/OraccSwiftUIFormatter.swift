@@ -22,6 +22,8 @@
 import Foundation
 import SwiftUI
 
+@available(iOS 13, *)
+@available(macOS 10.15, *)
 extension NSAttributedString {
     func substring(range: NSRange) -> String {
         self.attributedSubstring(from: range).string
