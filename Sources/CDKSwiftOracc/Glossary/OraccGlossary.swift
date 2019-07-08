@@ -172,7 +172,7 @@ public struct GlossaryEntry: Codable, CustomStringConvertible {
         /// The percentage of spellings this form makes up within the corpus.
         public let instancePercentage: String
         
-        enum CodingKeys: String, CodingKey {
+        public enum CodingKeys: String, CodingKey {
             case spelling = "n"
             case reference = "ref"
             case id
@@ -190,7 +190,7 @@ public struct GlossaryEntry: Codable, CustomStringConvertible {
         public let instanceCount: String
         public let instancePercentage: String
         
-        enum CodingKeys: String, CodingKey {
+        public enum CodingKeys: String, CodingKey {
             case id
             case normalisation = "n"
             case instanceCount = "icount"
@@ -210,7 +210,7 @@ public struct GlossaryEntry: Codable, CustomStringConvertible {
         public let partOfSpeech: String
         public let signatures: [Signature]?
         
-        enum CodingKeys: String, CodingKey {
+        public enum CodingKeys: String, CodingKey {
             case id
             case headWord = "n"
             case meaning = "mng"
@@ -222,7 +222,7 @@ public struct GlossaryEntry: Codable, CustomStringConvertible {
     public struct Signature: Codable {
         public let signature: String
         
-        enum CodingKeys: String, CodingKey {
+        public enum CodingKeys: String, CodingKey {
             case signature = "sig"
         }
     }
@@ -259,7 +259,7 @@ public struct GlossaryEntry: Codable, CustomStringConvertible {
     public let senses: [Sense]?
     
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case headWord = "headword"
         case citationForm = "cf"
         case guideWord = "gw"
