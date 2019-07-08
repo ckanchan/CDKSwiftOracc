@@ -19,62 +19,62 @@
 
 #if canImport(SwiftUI)
 
-import Foundation
-import SwiftUI
-
-@available(iOS 13, *)
-@available(macOS 10.15, *)
-extension NSAttributedString {
-    func substring(range: NSRange) -> String {
-        self.attributedSubstring(from: range).string
-    }
-    
-    public func renderForSwiftUI() -> Text {
-        var textArray = [Text]()
-        self.enumerateAttribute(
-            .formatting,
-            in: NSMakeRange(0, self.length),
-            options: .longestEffectiveRangeNotRequired,
-            using: { value, range, stop in
-                guard let formattingInt = value as? Int else {return}
-                let formattingOptions = TextEditionFormatting(rawValue: formattingInt)
-                var text = Text(self.substring(range: range))
-                
-                if formattingOptions.contains(.italic) {
-                    text = text.italic()
-                }
-                
-                if formattingOptions.contains(.damaged) {
-                    text = text.color(.secondary).italic()
-                }
-                
-                if formattingOptions.contains(.damagedLogogram) {
-                    text = text.color(.secondary)
-                }
-                
-                if formattingOptions.contains(.editorial) {
-                    text = text.color(.secondary)
-                }
-                
-                if formattingOptions.contains([.editorial, .bold]){
-                    text = text.bold().color(.secondary)
-                }
-                
-                if formattingOptions.contains(.superscript) {
-                    text = text.font(.footnote).baselineOffset(5)
-                }
-                
-                if formattingOptions.rawValue == 0 {
-                    text = text.color(.primary)
-                }
-                
-                textArray.append(text)
-        })
-        
-        return textArray.reduce(Text("")) { $0 + $1 }
-    }
-    
-}
+//import Foundation
+//import SwiftUI
+//
+//@available(iOS 13, *)
+//@available(macOS 10.15, *)
+//extension NSAttributedString {
+//    func substring(range: NSRange) -> String {
+//        self.attributedSubstring(from: range).string
+//    }
+//
+//    public func renderForSwiftUI() -> Text {
+//        var textArray = [Text]()
+//        self.enumerateAttribute(
+//            .formatting,
+//            in: NSMakeRange(0, self.length),
+//            options: .longestEffectiveRangeNotRequired,
+//            using: { value, range, stop in
+//                guard let formattingInt = value as? Int else {return}
+//                let formattingOptions = TextEditionFormatting(rawValue: formattingInt)
+//                var text = Text(self.substring(range: range))
+//
+//                if formattingOptions.contains(.italic) {
+//                    text = text.italic()
+//                }
+//
+//                if formattingOptions.contains(.damaged) {
+//                    text = text.color(.secondary).italic()
+//                }
+//
+//                if formattingOptions.contains(.damagedLogogram) {
+//                    text = text.color(.secondary)
+//                }
+//
+//                if formattingOptions.contains(.editorial) {
+//                    text = text.color(.secondary)
+//                }
+//
+//                if formattingOptions.contains([.editorial, .bold]){
+//                    text = text.bold().color(.secondary)
+//                }
+//
+//                if formattingOptions.contains(.superscript) {
+//                    text = text.font(.footnote).baselineOffset(5)
+//                }
+//
+//                if formattingOptions.rawValue == 0 {
+//                    text = text.color(.primary)
+//                }
+//
+//                textArray.append(text)
+//        })
+//
+//        return textArray.reduce(Text("")) { $0 + $1 }
+//    }
+//
+//}
 
 #endif
 
