@@ -264,9 +264,9 @@ extension GraphemeDescription {
                     attributes: noFormatting)
                 str.append(delimiter)
                 
-            case .number(let number):
+            case .number(let number, _):
                 let num = NSAttributedString(
-                    string: number.value.asString,
+                    string: number.asString,
                     attributes: noFormatting)
                 str.append(num)
                 let delimiter = NSAttributedString(

@@ -181,8 +181,8 @@ public extension GraphemeDescription {
             case .name(let log): // Logographic
                 str.append("\(log)\(delim ?? " ")")
                 
-            case .number(let number):
-                str.append("\(number.value.asString)\(delim ?? " ")")
+            case .number(let number, _):
+                str.append("\(number.asString)\(delim ?? " ")")
                 
             case .formVariant(_, let base, _):
 
