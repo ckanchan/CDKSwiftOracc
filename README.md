@@ -1,5 +1,5 @@
 # CDKSwiftOracc
-Cuneiform documents for Swift. [![Build Status](https://travis-ci.org/ckanchan/CDKSwiftOracc.svg?branch=master)](https://travis-ci.org/ckanchan/CDKSwiftOracc)
+Cuneiform documents for Swift.
 
 ## Introduction
 This package is a Swift implementation of the Open Richly Annotated Cuneiform Corpus ("Oracc")  schemas for encoding cuneiform texts. In particular, it seeks to provide:
