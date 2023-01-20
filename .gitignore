@@ -5,3 +5,4 @@
 /*.xcodeproj
 Package.resolved
 .idea
+.swiftpm

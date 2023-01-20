@@ -19,7 +19,7 @@
 import Foundation
 
 /// A path reference to a specific instance of a glossary lemma. Indexed by a XISKey string.
-public struct XISReference: CustomStringConvertible {
+public struct XISReference: CustomStringConvertible, Hashable {
     public var description: String {
         return "\(project):\(cdliID)"
     }

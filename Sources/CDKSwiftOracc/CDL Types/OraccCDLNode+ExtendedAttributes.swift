@@ -34,13 +34,29 @@ extension OraccCDLNode.Lemma {
         
         return attributes
     }
+    
+    @available(macOS 12, *)
+    public func getExtendedAttributeValues() -> AttributeContainer {
+        var container = AttributeContainer()
+        container.citationForm = self.wordForm.translation.citationForm ?? ""
+        container.guideWord = self.wordForm.translation.guideWord
+        container.sense = self.wordForm.translation.sense ?? ""
+        container.partOfSpeech = self.wordForm.translation.partOfSpeech
+        container.effectivePartOfSpeech = self.wordForm.translation.effectivePartOfSpeech
+        container.writtenForm = self.fragment
+        container.instanceTranslation = self.instanceTranslation
+        container.reference = self.reference
+        container.language = self.wordForm.language
+        
+        return container
+    }
 }
 
 extension CuneiformSignReading {
-    public func getExtendedAttributes() -> [NSAttributedString.Key: Any] {
-        var attributes = [NSAttributedString.Key:Any]()
+    
+    private func getSignValueAndModifiers() -> (signValue: String, modifier: [CuneiformSignReading.Modifier]?) {
         let signValue: String
-        var modifiers: String? = nil
+        var modifiers: [CuneiformSignReading.Modifier]? = nil
         // Get the appropriate values from the enumerated type
         switch self {
         case .value(let value):
@@ -51,20 +67,30 @@ extension CuneiformSignReading {
             signValue = number.value.asString
         case .formVariant(_, let base, let modifier):
             signValue = base
-            modifiers = modifier.description
+            modifiers = modifier
         case .null:
             signValue = ""
         }
+        return (signValue, modifiers)
+    }
+    
+    public func getExtendedAttributes() -> [NSAttributedString.Key: Any] {
+        var attributes = [NSAttributedString.Key:Any]()
+        let (signValue, modifiers) = getSignValueAndModifiers()
         
         attributes[.signValue] = signValue
-        if let modifiers = modifiers { attributes[.signModifiers] = modifiers}
+        if let modifiers = modifiers { attributes[.signModifiers] = modifiers.description }
         return attributes
     }
+    
+    @available(macOS 12, *)
+    public func getExtendedAttributeValues() -> AttributeContainer {
+        var container = AttributeContainer()
+        let (signValue, modifiers) = getSignValueAndModifiers()
+        container.signValue = signValue
+        if let modifiers {
+            container.modifiers = modifiers
+        }
+        return container
+    }
 }
-
-
-
-
-
-
-
