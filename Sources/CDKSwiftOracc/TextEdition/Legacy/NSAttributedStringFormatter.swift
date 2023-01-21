@@ -21,16 +21,20 @@ import Foundation
 
 typealias Format = [NSAttributedString.Key: Any]
 
+@available(macOS, obsoleted: 12)
+@available(iOS, obsoleted: 15)
 public extension NSAttributedString.Key {
     static var formatting: NSAttributedString.Key {
         return self.init("formatting")
     }
 }
 
-extension OraccTextEdition {
+@available(macOS, obsoleted: 12)
+@available(iOS, obsoleted: 15)
+public extension OraccTextEdition {
     
     /// Returns a normalisation of the text edition with formatting hints as a platform-independent NSAttributedString
-    public func normalised() -> NSAttributedString {
+    func normalised() -> NSAttributedString {
         let str = NSMutableAttributedString(string: "")
         for node in self.cdl {
             str.append(node.normalised())
@@ -39,7 +43,7 @@ extension OraccTextEdition {
     }
     
     /// Returns a transliteration of the text edition with formatting hints as a platform-independent NSAttributedString
-    public func transliterated() -> NSAttributedString {
+    func transliterated() -> NSAttributedString {
         let str = NSMutableAttributedString(string: "")
         for node in self.cdl {
             str.append(node.transliterated())
@@ -306,7 +310,8 @@ extension GraphemeDescription {
 
 
 
-
+@available(macOS, obsoleted: 12)
+@available(iOS, obsoleted: 15)
 extension OraccTextEdition {
     public struct FormattingPreferences {
         let editorial: [NSAttributedString.Key: Any]
@@ -331,11 +336,12 @@ extension OraccTextEdition {
 
 
 
-
-extension NSAttributedString {
+@available(macOS, obsoleted: 12)
+@available(iOS, obsoleted: 15)
+public extension NSAttributedString {
     /// A platform agnostic interface to rendering an NSAttributedString.
     /// - Parameter prefs : An `OraccTextEdition.FormattingPreferences` object filled with the requisite keys for formatting.
-    public func render(withPreferences prefs: OraccTextEdition.FormattingPreferences) -> NSAttributedString {
+    func render(withPreferences prefs: OraccTextEdition.FormattingPreferences) -> NSAttributedString {
         let mutableSelf = NSMutableAttributedString(attributedString: self)
     
         mutableSelf.enumerateAttribute(.formatting, in: NSMakeRange(0, mutableSelf.length), options: .longestEffectiveRangeNotRequired, using: { value, range, stop in
@@ -389,7 +395,7 @@ extension NSAttributedString {
 #if os(macOS)
 import AppKit.NSFont
 
-@available(macOS 10.11, *)
+@available(macOS, introduced: 10.11, obsoleted: 12, message: "Prefer AttributedString value-type methods instead")
 public extension NSFont {
     func getItalicFont() -> NSFont {
         let fontDsc = self.fontDescriptor

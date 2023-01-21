@@ -150,6 +150,20 @@ class CDKSwiftOraccTextEditionTests: XCTestCase {
         _ = textEdition.html5NormalisationPage()
     }
     
+    func testAttributedString() throws {
+        guard let data = P334176.data(using: .utf8) else {
+            XCTFail("Unable to generate data from string")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        
+        let textEdition = try decoder.decode(OraccTextEdition.self, from: data)
+        XCTAssert(textEdition.textid == "P334176", "Text did not decode successfully")
+        
+        _ = textEdition
+    }
+    
     func testFromOnline() throws {
         let url =  URL(string: "https://raw.githubusercontent.com/ckanchan/oraccjsonmirror/master/saao/saa01/corpusjson/P224485.json")!
         

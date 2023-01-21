@@ -18,16 +18,16 @@
 
 import Foundation
 
-public enum Language: Hashable, Equatable {
+public enum Language: Hashable, Equatable, Codable {
     case Akkadian(AkkadianDialect)
     case Sumerian(SumerianDialect)
     case Hittite
     case Other(String)
     
-    public enum AkkadianDialect: String, Hashable, Equatable {
+    public enum AkkadianDialect: String, Hashable, Equatable, Codable {
             case Akkadian = "akk", EarlyAkkadian = "akk-x-earakk", OldAkkadian = "akk-x-oldakk", UrIIIAkkadian = "ua", conventional = "akk-x-conakk", OldAssyrian = "akk-x-oldass", MiddleAssyrian = "akk-x-midass", NeoAssyrian = "akk-x-neoass", OldBabylonian = "akk-x-oldbab", OldBabylonianPeripheral = "akk-x-obperi", MiddleBabylonian = "akk-x-midbab", MiddleBabylonianPeripheral = "akk-x-mbperi", NeoBabylonian = "akk-x-neobab", LateBabylonian = "akk-x-ltebab", StandardBabylonian = "akk-x-stdbab"
     }
-    public enum SumerianDialect: String, Hashable, Equatable {
+    public enum SumerianDialect: String, Hashable, Equatable, Codable {
         case Emegir = "sux-x-emegir", Emesal = "sux-x-emesal", Syllabic = "sux-x-syllabic", Udgalnun = "sux-x-udgalnun", Sumerian
     }
 

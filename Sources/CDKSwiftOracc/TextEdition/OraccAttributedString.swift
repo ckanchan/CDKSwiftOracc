@@ -19,6 +19,7 @@
 
 import Foundation
 
+@available(macOS 12, *)
 public struct CDLTextAttributes: AttributeScope {
     let citationForm: OraccCitationForm
     let guideWord: OraccGuideWord
@@ -32,6 +33,7 @@ public struct CDLTextAttributes: AttributeScope {
     let reference: Reference
 }
 
+@available(macOS 12, *)
 public struct GDLGraphemeAttributes: AttributeScope {
     let signValue: SignValue
     let modifiers: SignModifiers
@@ -49,62 +51,68 @@ public extension AttributeDynamicLookup {
     
 }
 
-enum OraccCitationForm: AttributedStringKey {
-    typealias Value = String
-    static let name = "oraccCitationForm"
+@available(macOS 12, *)
+extension CDLTextAttributes {
+    enum OraccCitationForm: CodableAttributedStringKey {
+        typealias Value = String
+        static let name = "oraccCitationForm"
+    }
+    
+    enum OraccGuideWord: CodableAttributedStringKey {
+        typealias Value = String
+        static let name = "oraccGuideWord"
+    }
+    
+    enum OraccSense: CodableAttributedStringKey {
+        typealias Value = String
+        static let name = "oraccSense"
+    }
+    
+    enum OraccPartOfSpeech: CodableAttributedStringKey {
+        typealias Value = String
+        static let name = "PartOfSpeech"
+    }
+    
+    enum OraccEffectivePartOfSpeech: CodableAttributedStringKey {
+        typealias Value = String
+        static let name = "EffectivePartOfSpeech"
+    }
+    
+    enum OraccLanguage: CodableAttributedStringKey {
+        typealias Value = Language
+        static let name = "OraccLanguage"
+    }
+    
+    enum WrittenForm: CodableAttributedStringKey {
+        typealias Value = String
+        static let name = "WrittenForm"
+    }
+    
+    enum Normalisation: CodableAttributedStringKey {
+        typealias Value = String
+        static let name = "Normalisation"
+    }
+    
+    enum InstanceTranslation: CodableAttributedStringKey {
+        typealias Value = String
+        static let name = "InstanceTranslation"
+    }
+    
+    enum Reference: CodableAttributedStringKey {
+        typealias Value = NodeReference
+        static let name = "Reference"
+    }
 }
 
-enum OraccGuideWord: AttributedStringKey {
-    typealias Value = String
-    static let name = "oraccGuideWord"
-}
-
-enum OraccSense: AttributedStringKey {
-    typealias Value = String
-    static let name = "oraccSense"
-}
-
-enum OraccPartOfSpeech: AttributedStringKey {
-    typealias Value = String
-    static let name = "PartOfSpeech"
-}
-
-enum OraccEffectivePartOfSpeech: AttributedStringKey {
-    typealias Value = String
-    static let name = "EffectivePartOfSpeech"
-}
-
-enum OraccLanguage: AttributedStringKey {
-    typealias Value = Language
-    static let name = "OraccLanguage"
-}
-
-enum WrittenForm: AttributedStringKey {
-    typealias Value = String
-    static let name = "WrittenForm"
-}
-
-enum Normalisation: AttributedStringKey {
-    typealias Value = String
-    static let name = "Normalisation"
-}
-
-enum InstanceTranslation: AttributedStringKey {
-    typealias Value = String
-    static let name = "InstanceTranslation"
-}
-
-enum Reference: AttributedStringKey {
-    typealias Value = NodeReference
-    static let name = "Reference"
-}
-
-enum SignValue: AttributedStringKey {
-    typealias Value = String
-    static let name = "SignValue"
-}
-
-enum SignModifiers: AttributedStringKey {
-    typealias Value = [CuneiformSignReading.Modifier]
-    static let name = "signModifiers"
+@available(macOS 12, *)
+extension GDLGraphemeAttributes{
+    enum SignValue: CodableAttributedStringKey {
+        typealias Value = String
+        static let name = "SignValue"
+    }
+    
+    enum SignModifiers: CodableAttributedStringKey {
+        typealias Value = [CuneiformSignReading.Modifier]
+        static let name = "signModifiers"
+    }
 }

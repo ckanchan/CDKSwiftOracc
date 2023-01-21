@@ -16,9 +16,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /// Provides formatting hints
-public struct TextEditionFormatting: OptionSet {
+public struct TextEditionFormatting: OptionSet, Hashable {
     public let rawValue: Int
     
     public static let editorial = TextEditionFormatting(rawValue: 1 << 0)
