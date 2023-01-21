@@ -63,8 +63,8 @@ extension CuneiformSignReading {
             signValue = value
         case .name(let name):
             signValue = name
-        case .number(let number):
-            signValue = number.value.asString
+        case .number(value: let value, sexagesimal: _):
+            signValue = value.asString
         case .formVariant(_, let base, let modifier):
             signValue = base
             modifiers = modifier

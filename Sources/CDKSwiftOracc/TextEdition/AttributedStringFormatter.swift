@@ -47,6 +47,33 @@ public extension OraccTextEdition {
 
 @available(macOS 12, iOS 15, *)
 extension OraccCDLNode {
+    func formattedDiscontinuity(_ discontinuity: Discontinuity) -> AttributedString? {
+        var formatting = AttributeContainer()
+        let discontinuityString: String?
+        switch discontinuity.type {
+        case .obverse:
+            formatting.formatting = [.editorial, .bold]
+            discontinuityString = "Obverse: \n"
+            
+        case .linestart:
+            formatting.formatting = [.editorial]
+            discontinuityString = "\n\(discontinuity.label ?? "") "
+            
+        case .reverse:
+            formatting.formatting = [.editorial, .bold]
+            discontinuityString = "\n\n\n Reverse: \n"
+            
+        default:
+            discontinuityString = nil
+        }
+        
+        if let discontinuityString {
+           return AttributedString(discontinuityString, attributes: formatting)
+        } else {
+            return nil
+        }
+    }
+    
     func normalisedAttributedString() -> AttributedString {
         var str = AttributedString()
         
@@ -75,45 +102,43 @@ extension OraccCDLNode {
             }
             
         case .d(let discontinuity):
-            var formatting = AttributeContainer()
-            let discontinuityString: String?
-            
-            switch discontinuity.type {
-            case .obverse:
-                formatting.formatting = [.editorial, .bold]
-                discontinuityString = "Obverse: \n"
-                
-            case .linestart:
-                formatting.formatting = [.editorial]
-                discontinuityString = "\n\(discontinuity.label ?? "") "
-                
-            case .reverse:
-                formatting.formatting = [.editorial, .bold]
-                discontinuityString = "\n\n\n Reverse: \n"
-                
-            default:
-                discontinuityString = nil
-            }
-            
+            let discontinuityString = formattedDiscontinuity(discontinuity)
             if let discontinuityString {
-                let attributedStr = AttributedString(discontinuityString, attributes: formatting)
-                str.append(attributedStr)
+                str.append(discontinuityString)
             }
-            
             
         case .linkbase(_):
             break
         }
-        
         return str
-        
     }
     
     func transliteratedAttributedString() -> AttributedString {
         var str = AttributedString()
+        switch self {
+        case .l(let lemma):
+            for grapheme in lemma.wordForm.graphemeDescriptions {
+                var graphemeStr = grapheme.transliteratedAttributedString()
+                graphemeStr.mergeAttributes(lemma.getExtendedAttributeValues())
+                str.append(graphemeStr)
+            }
+        case .c(let chunk):
+            for node in chunk.cdl {
+                str.append(node.transliteratedAttributedString())
+            }
+            
+        case .d(let discontinuity):
+            let discontinuityString = formattedDiscontinuity(discontinuity)
+            if let discontinuityString {
+                str.append(discontinuityString)
+            }
+            
+        case .linkbase:
+            break
+        }
+        
         return str
     }
-    
 }
 
 @available(macOS 12, iOS 15, *)
