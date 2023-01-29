@@ -19,7 +19,7 @@
 
 import Foundation
 
-@available(macOS 12, *)
+@available(macOS 12, iOS 15, *)
 public struct CDLTextAttributes: AttributeScope {
     let citationForm: OraccCitationForm
     let guideWord: OraccGuideWord
@@ -33,13 +33,13 @@ public struct CDLTextAttributes: AttributeScope {
     let reference: Reference
 }
 
-@available(macOS 12, *)
+@available(macOS 12, iOS 15, *)
 public struct GDLGraphemeAttributes: AttributeScope {
     let signValue: SignValue
     let modifiers: SignModifiers
 }
 
-@available(macOS 12, *)
+@available(macOS 12, iOS 15, *)
 public extension AttributeDynamicLookup {
     subscript<T: AttributedStringKey>(dynamicMember keyPath: KeyPath<CDLTextAttributes, T>) -> T {
         return self[T.self]
@@ -51,7 +51,7 @@ public extension AttributeDynamicLookup {
     
 }
 
-@available(macOS 12, *)
+@available(macOS 12, iOS 15, *)
 extension CDLTextAttributes {
     enum OraccCitationForm: CodableAttributedStringKey {
         typealias Value = String
@@ -104,7 +104,7 @@ extension CDLTextAttributes {
     }
 }
 
-@available(macOS 12, *)
+@available(macOS 12, iOS 15, *)
 extension GDLGraphemeAttributes{
     enum SignValue: CodableAttributedStringKey {
         typealias Value = String

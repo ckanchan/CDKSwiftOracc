@@ -19,9 +19,9 @@
 import XCTest
 @testable import CDKSwiftOracc
 
-import AppKit.NSFont
+// import AppKit.NSFont
 
-class CDKSwiftOraccTests: XCTestCase {
+final class CDKSwiftOraccTests: XCTestCase {
     
     func testCatalogDecode() throws {
         guard let data = catalogueString.data(using: .utf8) else {
@@ -164,20 +164,7 @@ class CDKSwiftOraccTextEditionTests: XCTestCase {
         _ = textEdition
     }
     
-    func testFromOnline() throws {
-        let url =  URL(string: "https://raw.githubusercontent.com/ckanchan/oraccjsonmirror/master/saao/saa01/corpusjson/P224485.json")!
-        
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        let textEdition = try decoder.decode(OraccTextEdition.self, from: data)
-        let portable = textEdition.transliterated()
-        print(textEdition.transliteration)
-        
-        
-        let formatted = portable.render(withPreferences: NSFont.systemFont(ofSize: NSFont.systemFontSize).makeDefaultPreferences())
-        
-        XCTAssert(textEdition.textid == "P224485", "Text did not decode successfully")
-    }
+
     
     func testDecodeEncodeDecode() throws {
         let url =  URL(string: "https://raw.githubusercontent.com/ckanchan/oraccjsonmirror/master/saao/saa01/corpusjson/P224485.json")!
@@ -194,19 +181,5 @@ class CDKSwiftOraccTextEditionTests: XCTestCase {
         print(newDecode.transliteration)
     }
     
-    func testRINAP4() throws {
-        let url =  URL(string: "https://raw.githubusercontent.com/ckanchan/oraccjsonmirror/master/rinap/rinap4/corpusjson/Q003230.json")!
-        
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        let textEdition = try decoder.decode(OraccTextEdition.self, from: data)
-        let portable = textEdition.transliterated()
-        print(textEdition.transliteration)
-        
-        
-        let formatted = portable.render(withPreferences: NSFont.systemFont(ofSize: NSFont.systemFontSize).makeDefaultPreferences())
-        
-        XCTAssert(textEdition.textid == "Q003230", "Text did not decode successfully")
-    }
     
 }

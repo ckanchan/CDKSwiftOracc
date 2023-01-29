@@ -35,7 +35,7 @@ extension OraccCDLNode.Lemma {
         return attributes
     }
     
-    @available(macOS 12, *)
+    @available(macOS 12, iOS 15, *)
     public func getExtendedAttributeValues() -> AttributeContainer {
         var container = AttributeContainer()
         container.citationForm = self.wordForm.translation.citationForm ?? ""
@@ -83,7 +83,7 @@ extension CuneiformSignReading {
         return attributes
     }
     
-    @available(macOS 12, *)
+    @available(macOS 12, iOS 15, *)
     public func getExtendedAttributeValues() -> AttributeContainer {
         var container = AttributeContainer()
         let (signValue, modifiers) = getSignValueAndModifiers()
