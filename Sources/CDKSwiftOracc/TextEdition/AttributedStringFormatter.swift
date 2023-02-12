@@ -43,6 +43,15 @@ public extension OraccTextEdition {
         }
         return normalisedAttributedString
     }
+    
+    func transliteratedAttributedString() -> AttributedString {
+        var normalisedAttributedString = AttributedString()
+        for node in self.cdl {
+            normalisedAttributedString.append(node.transliteratedAttributedString())
+        }
+        return normalisedAttributedString
+    }
+    
 }
 
 @available(macOS 12, iOS 15, *)
