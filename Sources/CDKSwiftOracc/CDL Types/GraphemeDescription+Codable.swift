@@ -214,9 +214,9 @@ extension GraphemeDescription: Encodable {
             try container.encode(signValue, forKey: .signValue)
         case .name(let signName):
             try container.encode(signName, forKey: .signName)
-        case .number(let number):
-            try container.encode(number.value.asString, forKey: .form)
-            try container.encode(number.sexagesimal, forKey: .sexagesimal)
+        case .number(value: let value, sexagesimal: let sexagesimal):
+            try container.encode(value.asString, forKey: .form)
+            try container.encode(sexagesimal, forKey: .sexagesimal)
         case .formVariant(let form, let base, let modifier):
             
             try container.encode(form, forKey: .form)

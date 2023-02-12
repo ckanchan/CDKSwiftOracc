@@ -19,12 +19,12 @@
 import Foundation
 
 public struct FormattingAttributes: AttributeScope {
-    let formatting: FormattingValue
+    public let formatting: FormattingValue
 }
 
-enum FormattingValue: AttributedStringKey {
-    typealias Value = [TextEditionFormatting]
-    static let name = "formatting"
+public enum FormattingValue: AttributedStringKey {
+    public typealias Value = [TextEditionFormatting]
+    public static let name = "formatting"
 }
 
 @available(macOS 12, iOS 15, *)

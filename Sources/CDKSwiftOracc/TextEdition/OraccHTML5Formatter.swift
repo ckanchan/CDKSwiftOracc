@@ -114,8 +114,8 @@ extension GraphemeDescription {
             case .name(let log):
                 str.append("\(log)\(delim ?? " ")")
                 
-            case .number(let number):
-                str.append("\(number.value.asString)\(delim ?? " ")")
+            case .number(value: let value, sexagesimal: _):
+                str.append("\(value.asString)\(delim ?? " ")")
                 
             case .formVariant(_, let base, _):
                 if self.isLogogram {
