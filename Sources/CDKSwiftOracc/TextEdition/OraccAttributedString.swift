@@ -107,7 +107,7 @@ extension CDLTextAttributes {
         static let name = "Reference"
     }
     
-    enum FormattingValue: AttributedStringKey {
+    enum FormattingValue: CodableAttributedStringKey {
         public typealias Value = [TextEditionFormatting]
         public static let name = "formatting"
     }
