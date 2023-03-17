@@ -35,7 +35,7 @@ public struct CDLTextAttributes: AttributeScope {
     let signValue: SignValue
     let modifiers: SignModifiers
     
-    let formatting: FormattingValue
+    let cdlTextFormatting: FormattingValue
 }
 
 @available(macOS 12, iOS 15, *)

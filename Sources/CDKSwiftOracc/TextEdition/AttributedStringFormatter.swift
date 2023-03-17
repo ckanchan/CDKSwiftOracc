@@ -45,15 +45,15 @@ extension OraccCDLNode {
         let discontinuityString: String?
         switch discontinuity.type {
         case .obverse:
-            formatting.formatting = [.editorial, .bold]
+            formatting.cdlTextFormatting = [.editorial, .bold]
             discontinuityString = "Obverse: \n"
             
         case .linestart:
-            formatting.formatting = [.editorial]
+            formatting.cdlTextFormatting = [.editorial]
             discontinuityString = "\n\(discontinuity.label ?? "") "
             
         case .reverse:
-            formatting.formatting = [.editorial, .bold]
+            formatting.cdlTextFormatting = [.editorial, .bold]
             discontinuityString = "\n\n\n Reverse: \n"
             
         default:
@@ -75,7 +75,7 @@ extension OraccCDLNode {
             let attributedLemma: AttributedString
             if let norm = lemma.wordForm.normalisation {
                 var translationAttrs = lemma.getExtendedAttributeValues()
-                translationAttrs.formatting = [.italic]
+                translationAttrs.cdlTextFormatting = [.italic]
                 attributedLemma = AttributedString(
                     "\(norm) ",
                     attributes: translationAttrs
@@ -186,7 +186,7 @@ extension GraphemeDescription {
                 delim = AttributedString(" ")
             }
                      
-            syllable.formatting = [.superscript]
+            syllable.cdlTextFormatting = [.superscript]
             str.append(syllable)
             str.append(delim)
         } else if let components {
@@ -206,11 +206,11 @@ extension GraphemeDescription {
                 
                 switch self.preservation {
                 case .damaged, .missing:
-                    akkSyllable.formatting = [.damaged]
+                    akkSyllable.cdlTextFormatting = [.damaged]
                     str.append(formatAs(self.preservation, sign: akkSyllable))
             
                 case .preserved:
-                    akkSyllable.formatting = [.italic]
+                    akkSyllable.cdlTextFormatting = [.italic]
                     str.append(akkSyllable)
                 }
                 
@@ -221,7 +221,7 @@ extension GraphemeDescription {
                 
                 switch self.preservation {
                 case .damaged, .missing:
-                    logogram.formatting = [.damagedLogogram]
+                    logogram.cdlTextFormatting = [.damagedLogogram]
                     str.append(formatAs(self.preservation, sign: logogram))
                     
                 case .preserved:
@@ -240,9 +240,9 @@ extension GraphemeDescription {
                 switch self.preservation {
                 case .damaged, .missing:
                     if self.isLogogram {
-                        specialForm.formatting = [.damagedLogogram]
+                        specialForm.cdlTextFormatting = [.damagedLogogram]
                     } else {
-                        specialForm.formatting = [.damaged]
+                        specialForm.cdlTextFormatting = [.damaged]
                     }
                     
                     str.append(formatAs(self.preservation, sign: specialForm))
@@ -251,7 +251,7 @@ extension GraphemeDescription {
                     if self.isLogogram {
                         str.append(specialForm)
                     } else {
-                        specialForm.formatting = [.italic]
+                        specialForm.cdlTextFormatting = [.italic]
                         str.append(specialForm)
                     }
                 }
