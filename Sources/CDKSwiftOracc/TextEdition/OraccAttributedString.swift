@@ -21,21 +21,21 @@ import Foundation
 
 @available(macOS 12, iOS 15, *)
 public struct CDLTextAttributes: AttributeScope {
-    let citationForm: OraccCitationForm
-    let guideWord: OraccGuideWord
-    let sense: OraccSense
-    let partOfSpeech: OraccPartOfSpeech
-    let effectivePartOfSpeech: OraccEffectivePartOfSpeech
-    let language: OraccLanguage
-    let writtenForm: WrittenForm
-    let normalisation: Normalisation
-    let instanceTranslation: InstanceTranslation
-    let reference: Reference
+    public let citationForm: OraccCitationForm
+    public let guideWord: OraccGuideWord
+    public let sense: OraccSense
+    public let partOfSpeech: OraccPartOfSpeech
+    public let effectivePartOfSpeech: OraccEffectivePartOfSpeech
+    public let language: OraccLanguage
+    public let writtenForm: WrittenForm
+    public let normalisation: Normalisation
+    public let instanceTranslation: InstanceTranslation
+    public let reference: Reference
     
-    let signValue: SignValue
-    let modifiers: SignModifiers
+    public let signValue: SignValue
+    public let modifiers: SignModifiers
     
-    let cdlTextFormatting: FormattingValue
+    public let cdlTextFormatting: FormattingValue
 }
 
 @available(macOS 12, iOS 15, *)
@@ -56,55 +56,55 @@ public extension AttributeDynamicLookup {
 }
 
 @available(macOS 12, iOS 15, *)
-extension CDLTextAttributes {
+public extension CDLTextAttributes {
     enum OraccCitationForm: CodableAttributedStringKey {
-        typealias Value = String
-        static let name = "oraccCitationForm"
+        public typealias Value = String
+        public static let name = "oraccCitationForm"
     }
     
     enum OraccGuideWord: CodableAttributedStringKey {
-        typealias Value = String
-        static let name = "oraccGuideWord"
+        public typealias Value = String
+        public static let name = "oraccGuideWord"
     }
     
     enum OraccSense: CodableAttributedStringKey {
-        typealias Value = String
-        static let name = "oraccSense"
+        public typealias Value = String
+        public static let name = "oraccSense"
     }
     
     enum OraccPartOfSpeech: CodableAttributedStringKey {
-        typealias Value = String
-        static let name = "PartOfSpeech"
+        public typealias Value = String
+        public static let name = "PartOfSpeech"
     }
     
     enum OraccEffectivePartOfSpeech: CodableAttributedStringKey {
-        typealias Value = String
-        static let name = "EffectivePartOfSpeech"
+        public typealias Value = String
+        public static let name = "EffectivePartOfSpeech"
     }
     
     enum OraccLanguage: CodableAttributedStringKey {
-        typealias Value = Language
-        static let name = "OraccLanguage"
+        public typealias Value = Language
+        public static let name = "OraccLanguage"
     }
     
     enum WrittenForm: CodableAttributedStringKey {
-        typealias Value = String
-        static let name = "WrittenForm"
+        public typealias Value = String
+        public static let name = "WrittenForm"
     }
     
     enum Normalisation: CodableAttributedStringKey {
-        typealias Value = String
-        static let name = "Normalisation"
+        public typealias Value = String
+        public static let name = "Normalisation"
     }
     
     enum InstanceTranslation: CodableAttributedStringKey {
-        typealias Value = String
-        static let name = "InstanceTranslation"
+        public typealias Value = String
+        public static let name = "InstanceTranslation"
     }
     
     enum Reference: CodableAttributedStringKey {
-        typealias Value = NodeReference
-        static let name = "Reference"
+        public typealias Value = NodeReference
+        public static let name = "Reference"
     }
     
     enum FormattingValue: CodableAttributedStringKey {
@@ -116,14 +116,14 @@ extension CDLTextAttributes {
 
 
 @available(macOS 12, iOS 15, *)
-extension CDLTextAttributes {
+public extension CDLTextAttributes {
     enum SignValue: CodableAttributedStringKey {
-        typealias Value = String
-        static let name = "SignValue"
+        public typealias Value = String
+        public static let name = "SignValue"
     }
     
     enum SignModifiers: CodableAttributedStringKey {
-        typealias Value = [CuneiformSignReading.Modifier]
-        static let name = "signModifiers"
+        public typealias Value = [CuneiformSignReading.Modifier]
+        public static let name = "signModifiers"
     }
 }
