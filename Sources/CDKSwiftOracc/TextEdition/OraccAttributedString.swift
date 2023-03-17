@@ -31,12 +31,16 @@ public struct CDLTextAttributes: AttributeScope {
     let normalisation: Normalisation
     let instanceTranslation: InstanceTranslation
     let reference: Reference
+    
+    let signValue: SignValue
+    let modifiers: SignModifiers
+    
+    let formatting: FormattingValue
 }
 
 @available(macOS 12, iOS 15, *)
 public struct GDLGraphemeAttributes: AttributeScope {
-    let signValue: SignValue
-    let modifiers: SignModifiers
+
 }
 
 @available(macOS 12, iOS 15, *)
@@ -102,10 +106,17 @@ extension CDLTextAttributes {
         typealias Value = NodeReference
         static let name = "Reference"
     }
+    
+    enum FormattingValue: AttributedStringKey {
+        public typealias Value = [TextEditionFormatting]
+        public static let name = "formatting"
+    }
 }
 
+
+
 @available(macOS 12, iOS 15, *)
-extension GDLGraphemeAttributes{
+extension CDLTextAttributes {
     enum SignValue: CodableAttributedStringKey {
         typealias Value = String
         static let name = "SignValue"

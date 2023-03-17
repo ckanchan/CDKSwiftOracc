@@ -18,22 +18,6 @@
 
 import Foundation
 
-public struct FormattingAttributes: AttributeScope {
-    public let formatting: FormattingValue
-}
-
-public enum FormattingValue: AttributedStringKey {
-    public typealias Value = [TextEditionFormatting]
-    public static let name = "formatting"
-}
-
-@available(macOS 12, iOS 15, *)
-public extension AttributeDynamicLookup {
-    subscript<T: AttributedStringKey>(dynamicMember keyPath: KeyPath<FormattingAttributes, T>) -> T {
-        return self[T.self]
-    }
-}
-
 @available(macOS 12, iOS 15, *)
 public extension OraccTextEdition {
     func normalisedAttributedString() -> AttributedString {
