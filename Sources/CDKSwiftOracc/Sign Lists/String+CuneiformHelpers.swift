@@ -32,10 +32,12 @@ extension String {
 
     func cuneifyInputEncoded() -> String {
         #warning("Code handling numbers needs to convert all sign variant signifiers into Unicode subscripts; handle actual numbers")
-        if self.decomposedStringWithCanonicalMapping.contains(String.combiningAcuteAccent) {
+        if self.decomposedStringWithCanonicalMapping.unicodeScalars.contains(Unicode.Scalar.combiningAcuteAccent) {
             return self.decomposedStringWithCanonicalMapping.replacingOccurrences(of: String.combiningAcuteAccent, with: "").appending("₂")
-        } else if self.decomposedStringWithCanonicalMapping.contains(String.combiningGraveAccent) {
+        } else if self.decomposedStringWithCanonicalMapping.unicodeScalars.contains(Unicode.Scalar.combiningGraveAccent) {
             return self.decomposedStringWithCanonicalMapping.replacingOccurrences(of: String.combiningGraveAccent, with: "").appending("₃")
+        } else if self.contains("2") {
+            return self.replacingOccurrences(of: "2", with: "₂")
         } else if self.contains("3") {
             return self.replacingOccurrences(of: "3", with: "₃")
         } else {
